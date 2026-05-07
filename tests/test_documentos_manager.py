@@ -2,7 +2,7 @@ import pytest
 from collections.abc import Callable
 from datetime import date
 from src.managers import DBManager, DocumentosManager
-from src.entidades import DocumentoBase, DocumentoDesdeDB
+from src.entidades import DocumentoBase, DocumentoDesdeDB, PasajeroBase, PasajeroDesdeDB
 from src.columnas import COLUMNAS_DOCUMENTOS
 from src.errores import ERROR_STAFF_INVALIDO, ERROR_FORMATO_DATOS
 
