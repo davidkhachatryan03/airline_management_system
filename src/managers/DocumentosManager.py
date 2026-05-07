@@ -1,5 +1,4 @@
-from typing import Any
-from datetime import datetime, date
+from datetime import date
 from src.tipos import FilaDocumento
 from src.managers.TablaManager import TablaManager
 from src.entidades import DocumentoBase, DocumentoDesdeDB

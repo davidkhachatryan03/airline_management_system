@@ -1,4 +1,3 @@
-from typing import Any
 from datetime import datetime
 from src.tipos import FilaTarjetaEmbarque
 from src.managers.TablaManager import TablaManager

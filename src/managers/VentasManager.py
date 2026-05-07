@@ -1,4 +1,3 @@
-from typing import Any
 from decimal import Decimal
 import random
 from src.tipos import FilaVenta

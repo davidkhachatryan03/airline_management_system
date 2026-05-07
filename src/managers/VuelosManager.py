@@ -1,4 +1,3 @@
-from typing import Any, cast
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from src.tipos import FilaVuelo
