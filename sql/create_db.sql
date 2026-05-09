@@ -68,7 +68,7 @@ CREATE TABLE documents (
     valid_until DATE NOT NULL,
     issue_country CHAR(3) NOT NULL,
     passenger_id INT UNSIGNED NOT NULL,
-    documento_type_id INT UNSIGNED NOT NULL,
+    document_type_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (passenger_id) REFERENCES passengers(id),
     FOREIGN KEY (document_type_id) REFERENCES document_types(id),
     UNIQUE (document_type_id, document_number, issue_country)
