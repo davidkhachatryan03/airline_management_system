@@ -1,0 +1,32 @@
+USE airline;
+
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE staff_certifications;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO staff_certifications (description, valid_from, valid_until, staff_id) VALUES 
+('Captain License', '2023-12-31', '2028-12-31', 1),
+('Captain License', '2025-06-15', '2027-06-15', 2),
+('Captain License', '2024-11-30', '2026-11-30', 3),
+('Captain License', '2024-03-01', '2029-03-01', 4),
+('First Officer License', '2026-05-20', '2028-05-20', 5),
+('First Officer License', '2025-08-10', '2027-08-10', 6),
+('First Officer License', '2024-10-15', '2026-10-15', 7),
+('First Officer License', '2025-01-01', '2030-01-01', 8),
+('Flight Attendant License', '2026-01-01', '2027-12-31', 9),
+('Ground Agent License', '2025-03-15', '2027-03-15', 10),
+('Ground Agent License', '2024-08-30', '2026-08-30', 11),
+('Ground Agent License', '2026-01-01', '2028-01-01', 12),
+('Ground Agent License', '2025-05-20', '2027-05-20', 13),
+('Ground Agent License', '2024-12-10', '2026-12-10', 14),
+('Ground Manager License', '2026-10-31', '2029-10-31', 15),
+('Ground Manager License', '2025-02-28', '2028-02-28', 16),
+('Cabin Manager License', '2026-06-30', '2028-06-30', 17),
+('Cabin Manager License', '2025-04-15', '2027-04-15', 18),
+('Cabin Manager License', '2024-09-20', '2026-09-20', 19),
+('Maintenance License', '2021-12-31', '2031-12-31', 20),
+('Maintenance License', '2024-07-10', '2029-07-10', 21),
+('Aeronautical Engineering License', '2025-12-31', '2035-12-31', 22),
+('Aeronautical Engineering License', '2020-11-01', '2030-11-01', 23),
+('Aeronautical Engineering License', '2025-12-31', '2035-12-31', 24),
+('Tester License', '2022-01-01', '2032-01-01', 25);

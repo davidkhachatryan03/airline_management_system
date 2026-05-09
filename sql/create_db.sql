@@ -1,0 +1,169 @@
+DROP DATABASE IF EXISTS airline;
+CREATE DATABASE airline CHARACTER SET utf8mb4;
+
+USE airline;
+
+CREATE TABLE routes (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    flight_number CHAR(6) UNIQUE NOT NULL,
+    origin CHAR(3) NOT NULL,
+    destination CHAR(3) NOT NULL,
+    distance_km INT UNSIGNED NOT NULL,
+    duration_min SMALLINT UNSIGNED NOT NULL
+);
+
+CREATE TABLE passengers (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone_number INT NOT NULL,
+    is_blacklisted BOOLEAN NOT NULL,
+    is_vip BOOLEAN NOT NULL
+);
+
+CREATE TABLE sale_stasuses (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE flight_stasuses (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE airpline_stasuses (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE positions (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	description VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE staff_stasuses (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE boarding_pass_stasuses (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE document_types (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE roles (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	description VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE documents (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    document_number VARCHAR(20) NOT NULL,
+    valid_from DATE NOT NULL,
+    valid_until DATE NOT NULL,
+    issue_country CHAR(3) NOT NULL,
+    passenger_id INT UNSIGNED NOT NULL,
+    documento_type_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (passenger_id) REFERENCES passengers(id),
+    FOREIGN KEY (document_type_id) REFERENCES document_types(id),
+    UNIQUE (document_type_id, document_number, issue_country)
+);
+
+CREATE TABLE airplanes (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    tail_number VARCHAR(10) UNIQUE NOT NULL,
+    manufacturer VARCHAR(50) NOT NULL,
+    model VARCHAR(50) NOT NULL,
+    capacity SMALLINT UNSIGNED NOT NULL,
+    range_km SMALLINT UNSIGNED NOT NULL,
+    flight_hour_cost DECIMAL(10,2) NOT NULL,
+    current_status_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (current_status_id) REFERENCES airplane_stasuses(id)
+);
+
+CREATE TABLE flights (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    scheduled_departure_time DATETIME NOT NULL,
+    scheduled_arrival_time DATETIME NOT NULL,
+    actual_departure_time DATETIME,
+    actual_arrival_time DATETIME,
+    operating_cost_usd DECIMAL(10,2) NOT NULL,
+    base_price_usd DECIMAL(10,2) NOT NULL,
+    current_status_id INT UNSIGNED NOT NULL,
+    route_id INT UNSIGNED NOT NULL,
+    airplane_id INT UNSIGNED,
+    FOREIGN KEY (current_status_id) REFERENCES flights_stasuses(id),
+    FOREIGN KEY (route_id) REFERENCES routes(id),
+    FOREIGN KEY (airplane_id) REFERENCES airplanes(id)
+);
+
+CREATE TABLE staff (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    current_status_id INT UNSIGNED NOT NULL,
+    current_position_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (current_status_id) REFERENCES staff_stasuses(id),
+    FOREIGN KEY (current_position_id) REFERENCES positions(id)
+);
+
+CREATE TABLE crew_assignments (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+    role_id INT UNSIGNED NOT NULL,
+    flight_id INT UNSIGNED NOT NULL,
+    staff_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (role_id) REFERENCES roles(id),
+    FOREIGN KEY (flight_id) REFERENCES flights(id),
+    FOREIGN KEY (staff_id) REFERENCES staff(id),
+    UNIQUE (role_id, flight_id, staff_id)
+);
+
+CREATE TABLE sales (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    booking_reference VARCHAR(6) NOT NULL,
+    booking_date DATETIME NOT NULL DEFAULT NOW(),
+    paid_amount_usd DECIMAL(10,2) NOT NULL,
+    current_status_id INT UNSIGNED NOT NULL,
+    flight_id INT UNSIGNED NOT NULL,
+    passenger_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (current_status_id) REFERENCES sale_stasuses(id),
+    FOREIGN KEY (flight_id) REFERENCES flights(id),
+    FOREIGN KEY (passenger_id) REFERENCES passengers(id)
+);
+
+CREATE TABLE boarding_passes (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    issue_date DATETIME DEFAULT NOW(),
+    boarding_date DATETIME DEFAULT NULL,
+    current_status_id INT UNSIGNED NOT NULL,
+    sale_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (current_status_id) REFERENCES boarding_pass_stasuses(id),
+	FOREIGN KEY (sale_id) REFERENCES sales(id)
+);
+
+CREATE TABLE staff_certifications (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100) NOT NULL,
+    valid_from DATE NOT NULL,
+    valid_until DATE NOT NULL,
+    staff_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (staff_id) REFERENCES staff(id)
+);
+
+CREATE TABLE audit_logs (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    table_name VARCHAR(100) NOT NULL,
+    action VARCHAR(100) NOT NULL,
+    record_id VARCHAR(100) NOT NULL,
+    column_name VARCHAR(100),
+    old_value VARCHAR(100),
+    new_value VARCHAR(100),
+    changed_at DATETIME NOT NULL,
+    changed_by_staff_id INT UNSIGNED
+);

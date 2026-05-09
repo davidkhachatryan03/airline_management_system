@@ -1,10 +1,10 @@
-USE aerolinea;
+USE airline;
 
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE staff;
 SET FOREIGN_KEY_CHECKS = 1;
 
-INSERT INTO staff (nombre_completo, id_cargo_actual, id_estado_actual) VALUES 
+INSERT INTO staff (full_name, current_position_id, current_status_id) VALUES 
 ('Carlos Gómez', 1, 1),
 ('Lucía Benitez', 1, 1), 
 ('Ricardo Darín', 1, 2),

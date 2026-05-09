@@ -1,10 +1,10 @@
-USE aerolinea;
+USE airline;
 
 SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE aviones;
+TRUNCATE TABLE airplanes;
 SET FOREIGN_KEY_CHECKS = 1;
 
-INSERT INTO aviones (matricula, marca, modelo, capacidad, autonomia_km, costo_hora_vuelo, id_estado_actual) VALUES 
+INSERT INTO aviones (tail_number, manufacturer, model, capacity, range_km, flight_hour_cost, current_status_id) VALUES 
 ('LV-GLF', 'Gulfstream', 'G650ER', 18, 13890, 15500.00, 1),
 ('N-750GL', 'Bombardier', 'Global 7500', 19, 14260, 16200.00, 1),
 ('LV-F8X', 'Dassault', 'Falcon 8X', 14, 11945, 14800.50, 1),
