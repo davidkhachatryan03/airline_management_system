@@ -84,7 +84,7 @@ CREATE TABLE airplanes (
     tail_number VARCHAR(10) UNIQUE NOT NULL,
     manufacturer VARCHAR(50) NOT NULL,
     model VARCHAR(50) NOT NULL,
-    capacity_km SMALLINT UNSIGNED NOT NULL,
+    capacity SMALLINT UNSIGNED NOT NULL,
     range_km SMALLINT UNSIGNED NOT NULL,
     flight_hour_cost_usd DECIMAL(10,2) NOT NULL,
     current_status_id INT UNSIGNED NOT NULL,
