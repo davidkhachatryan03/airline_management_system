@@ -156,8 +156,8 @@ CREATE TABLE tickets (
 
 CREATE TABLE boarding_passes (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    issue_date DATETIME,
-    boarding_date DATETIME DEFAULT NULL,
+    issue_datetime DATETIME,
+    boarding_datetime DATETIME DEFAULT NULL,
     current_status_id INT UNSIGNED NOT NULL,
     ticket_id INT UNSIGNED UNIQUE NOT NULL,
     FOREIGN KEY (current_status_id) REFERENCES boarding_pass_statuses(id),
