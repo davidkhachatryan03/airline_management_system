@@ -84,19 +84,19 @@ CREATE TABLE airplanes (
     tail_number VARCHAR(10) UNIQUE NOT NULL,
     manufacturer VARCHAR(50) NOT NULL,
     model VARCHAR(50) NOT NULL,
-    capacity SMALLINT UNSIGNED NOT NULL,
+    capacity_km SMALLINT UNSIGNED NOT NULL,
     range_km SMALLINT UNSIGNED NOT NULL,
-    flight_hour_cost DECIMAL(10,2) NOT NULL,
+    flight_hour_cost_usd DECIMAL(10,2) NOT NULL,
     current_status_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (current_status_id) REFERENCES airplane_statuses(id)
 );
 
 CREATE TABLE flights (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    scheduled_departure_time DATETIME NOT NULL,
-    scheduled_arrival_time DATETIME NOT NULL,
-    actual_departure_time DATETIME,
-    actual_arrival_time DATETIME,
+    scheduled_departure_datetime DATETIME NOT NULL,
+    scheduled_arrival_datetime DATETIME NOT NULL,
+    actual_departure_datetime DATETIME,
+    actual_arrival_datetime DATETIME,
     operating_cost_usd DECIMAL(10,2) NOT NULL,
     base_price_usd DECIMAL(10,2) NOT NULL,
     current_status_id INT UNSIGNED NOT NULL,
