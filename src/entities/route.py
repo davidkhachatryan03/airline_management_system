@@ -24,7 +24,10 @@ class RouteCreated:
         
         if not value.strip():
             raise ValueError("The flight number can not be empty.")
-        
+
+        if len(value.strip()) != 5:
+            raise ValueError("The origin must be 5 characters long.")
+                
         self._flight_number = value
     
     @property
@@ -39,6 +42,9 @@ class RouteCreated:
         if not value.strip():
             raise ValueError("The origin can not be empty.")
         
+        if len(value.strip()) != 3:
+            raise ValueError("The origin must be 3 characters long.")
+        
         self._origin = value
     
     @property
@@ -52,6 +58,9 @@ class RouteCreated:
         
         if not value.strip():
             raise ValueError("The destination can not be empty.")
+        
+        if len(value.strip()) != 3:
+            raise ValueError("The origin must be 3 characters long.")
         
         self._destination = value
 
