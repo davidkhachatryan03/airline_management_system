@@ -15,6 +15,7 @@ def test_valid_document(valid_document: dict) -> None:
     ("document_number", 123456, TypeError),
     ("document_number", "   ", ValueError),
     ("document_number", "", ValueError),
+    ("document_number", "012345678901234567890", ValueError),
     ("valid_from", 123, TypeError),
     ("valid_until", 123, TypeError),
     ("issue_country", 123, TypeError),

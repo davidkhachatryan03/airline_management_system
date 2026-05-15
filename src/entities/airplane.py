@@ -28,8 +28,13 @@ class AirplaneCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        if not value.strip():
+        value = value.strip()
+        
+        if not value:
             raise ValueError(f"The tail number can not be empty.")
+        
+        if len(value) > 10:
+            raise ValueError("The tail number must be 10 characters or less.")
         
         self._tail_number = value
 
@@ -42,8 +47,13 @@ class AirplaneCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        if not value.strip():
+        value = value.strip()
+        
+        if not value:
             raise ValueError(f"The tail number can not be empty.")
+        
+        if len(value) > 50:
+            raise ValueError("The tail number must be 50 characters or less.")
         
         self._manufacturer = value
 
@@ -56,8 +66,13 @@ class AirplaneCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        if not value.strip():
+        value = value.strip()
+        
+        if not value:
             raise ValueError(f"The tail number can not be empty.")
+        
+        if len(value) > 50:
+            raise ValueError("The tail number must be 50 characters or less.")
         
         self._model = value
 

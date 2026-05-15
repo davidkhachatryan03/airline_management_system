@@ -22,8 +22,13 @@ class PassengerCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        if not value.strip():
+        value = value.strip()
+
+        if not value:
             raise ValueError("The full name can not be empty.")
+        
+        if len(value) > 100:
+            raise ValueError("The full name must be 100 characters long or less.")
         
         self._full_name = value
 
@@ -36,8 +41,13 @@ class PassengerCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        if not value.strip():
+        value = value.strip()
+        
+        if not value:
             raise ValueError("The email can not be empty.")
+        
+        if len(value) > 100:
+            raise ValueError("The full name must be 100 characters long or less.")
         
         self._email = value
 

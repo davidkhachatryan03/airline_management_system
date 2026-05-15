@@ -26,8 +26,13 @@ class DocumentCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        if not value.strip():
+        value = value.strip()
+        
+        if not value:
             raise ValueError("The document number can not be empty.")
+        
+        if len(value) > 20:
+            raise ValueError("The document number mut be 20 characters or less.")
         
         self._document_number = value
         
