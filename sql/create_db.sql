@@ -142,7 +142,7 @@ CREATE TABLE bookings (
 
 CREATE TABLE tickets (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    ticket_number VARCHAR(13) UNIQUE NOT NULL,
+    ticket_number CHAR(13) UNIQUE NOT NULL,
     paid_amount_usd DECIMAL(10,2) NOT NULL,
     current_status_id INT UNSIGNED NOT NULL,
     booking_id INT UNSIGNED NOT NULL,
