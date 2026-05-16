@@ -26,8 +26,13 @@ class TicketCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        if not value.strip():
-            raise ValueError("The ticket numbet can not be empty.")
+        value = value.strip()
+        
+        if not value:
+            raise ValueError("The ticket number can not be empty.")
+        
+        if len(value) != 13:
+            raise ValueError("The ticket number must be exactly 13 characters long.")
         
         self._ticket_number = value
 
