@@ -105,7 +105,7 @@ CREATE TABLE flights (
     FOREIGN KEY (current_status_id) REFERENCES flight_statuses(id),
     FOREIGN KEY (route_id) REFERENCES routes(id),
     FOREIGN KEY (airplane_id) REFERENCES airplanes(id),
-    UNIQUE (scheduled_departure_time, route_id)
+    UNIQUE (scheduled_departure_datetime, route_id)
 );
 
 CREATE TABLE staff (
