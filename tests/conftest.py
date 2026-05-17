@@ -20,8 +20,8 @@ def valid_flight() -> dict:
         "operating_cost_usd": Decimal("10000.13"),
         "base_price_usd": Decimal("20000.14"),
         "current_status_id": 1,
-        "route_id": 1,
-        "airplane_id": 1
+        "route_id": 2,
+        "airplane_id": 3
     }
 
 @pytest.fixture
@@ -32,7 +32,7 @@ def valid_document() -> dict:
         "valid_until": date(2035,1,1),
         "issue_country": "ARG",
         "passenger_id": 1,
-        "document_type_id": 1
+        "document_type_id": 2
     }
 
 @pytest.fixture
@@ -41,7 +41,8 @@ def valid_booking() -> dict:
         "booking_reference": "ABC123",
         "booking_datetime": datetime(2026,1,1),
         "paid_amount_usd": Decimal("5000.25"),
-        "current_status_id": 1
+        "current_status_id": 1,
+        "flight_id": 2
     }
 
 @pytest.fixture
@@ -62,7 +63,7 @@ def valid_boarding_pass() -> dict:
         "issue_datetime": datetime(2026,1,1),
         "boarding_datetime": datetime(2026,1,1),
         "current_status_id": 1,
-        "ticket_id": 1
+        "ticket_id": 2
     }
 
 @pytest.fixture
@@ -81,7 +82,6 @@ def valid_ticket() -> dict:
         "ticket_number": "1234567890123",
         "paid_amount_usd": Decimal("1000.13"),
         "current_status_id": 1,
-        "booking_id": 1,
-        "flight_id": 1,
-        "passenger_id": 1
+        "booking_id": 2,
+        "passenger_id": 3
     }

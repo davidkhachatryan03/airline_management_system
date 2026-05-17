@@ -7,12 +7,14 @@ class BookingCreated:
                 booking_reference: str,
                 booking_datetime: datetime,
                 paid_amount_usd: Decimal,
-                current_status_id: int) -> None:
+                current_status_id: int,
+                flight_id: int) -> None:
         
         self.booking_reference = booking_reference
         self.booking_datetime = booking_datetime
         self.paid_amount_usd = paid_amount_usd
         self.current_status_id = current_status_id
+        self.flight_id = flight_id
 
     @property
     def booking_reference(self) -> str:
@@ -69,6 +71,20 @@ class BookingCreated:
             raise ValueError(f"The current status id can not be negative or zero.")
         
         self._current_status_id = value
+    
+    @property
+    def flight_id(self) -> int:
+        return self._flight_id
+    
+    @flight_id.setter
+    def flight_id(self, value: int) -> None:
+        if not isinstance(value, int):
+            raise TypeError(f"The type of {value} is not int.")
+        
+        if value <= 0:
+            raise ValueError(f"The flight id can not be negative or zero.")
+        
+        self._flight_id = value
 
 class BookingRetrieved:
 
@@ -77,10 +93,12 @@ class BookingRetrieved:
                 booking_reference: str,
                 booking_datetime: datetime,
                 paid_amount_usd: Decimal,
-                current_status_id: int) -> None:
+                current_status_id: int,
+                flight_id: int) -> None:
         
         self.id = id
         self.booking_reference = booking_reference
         self.booking_datetime = booking_datetime
         self.paid_amount_usd = paid_amount_usd
         self.current_status_id = current_status_id
+        self.flight_id = flight_id

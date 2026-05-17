@@ -7,14 +7,12 @@ class TicketCreated:
                 paid_amount_usd: Decimal,
                 current_status_id: int,
                 booking_id: int,
-                flight_id: int,
                 passenger_id: int) -> None:
         
         self.ticket_number = ticket_number
         self.paid_amount_usd = paid_amount_usd
         self.current_status_id = current_status_id
         self.booking_id = booking_id
-        self.flight_id = flight_id
         self.passenger_id = passenger_id
 
     @property
@@ -82,22 +80,8 @@ class TicketCreated:
         self._booking_id = value
 
     @property
-    def flight_id(self) -> int:
-        return self._flight_id
-    
-    @flight_id.setter
-    def flight_id(self, value: int) -> None:
-        if not isinstance(value, int):
-            raise TypeError(f"The type of {value} is not int.")
-        
-        if value <= 0:
-            raise ValueError(f"The flight id can not be negative or zero.")
-        
-        self._flight_id = value
-
-    @property
     def passenger_id(self) -> int:
-        return self._flight_id
+        return self._passenger_id
     
     @passenger_id.setter
     def passenger_id(self, value: int) -> None:
@@ -117,7 +101,6 @@ class TicketRetrieved:
                 paid_amount_usd: Decimal,
                 current_status_id: int,
                 booking_id: int,
-                flight_id: int,
                 passenger_id: int) -> None:
         
         self.id = id
@@ -125,5 +108,4 @@ class TicketRetrieved:
         self.paid_amount_usd = paid_amount_usd
         self.current_status_id = current_status_id
         self.booking_id = booking_id
-        self.flight_id = flight_id
         self.passenger_id = passenger_id

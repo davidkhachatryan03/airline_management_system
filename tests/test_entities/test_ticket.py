@@ -9,7 +9,6 @@ def test_valid_ticket(valid_ticket: dict) -> None:
     assert ticket_created.paid_amount_usd == valid_ticket["paid_amount_usd"]
     assert ticket_created.current_status_id == valid_ticket["current_status_id"]
     assert ticket_created.booking_id == valid_ticket["booking_id"]
-    assert ticket_created.flight_id == valid_ticket["flight_id"]
     assert ticket_created.passenger_id == valid_ticket["passenger_id"]
 
 @pytest.mark.parametrize("field, value, expected_exception", [
@@ -27,9 +26,6 @@ def test_valid_ticket(valid_ticket: dict) -> None:
     ("booking_id", "123", TypeError),
     ("booking_id", 0, ValueError),
     ("booking_id", -100, ValueError),
-    ("flight_id", "123", TypeError),
-    ("flight_id", 0, ValueError),
-    ("flight_id", -100, ValueError),
     ("passenger_id", "123", TypeError),
     ("passenger_id", 0, ValueError),
     ("passenger_id", -100, ValueError),
