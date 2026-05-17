@@ -3,7 +3,7 @@ import mysql.connector, os
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
 from dotenv import load_dotenv
-from exceptions import CursorNotFound, DatabaseError, SQLFileNotFound
+from src.common.exceptions import CursorNotFound, DatabaseError, SQLFileNotFound
 
 load_dotenv()
 
@@ -24,7 +24,7 @@ class DBManager:
 
         if self.connection.is_connected():
             print("Connected.")
-            self.cursor: MySQLCursor = cast(MySQLCursor, self.connection.cursor)
+            self.cursor: MySQLCursor = cast(MySQLCursor, self.connection.cursor())
     
     def disconnect(self) -> None:
         if self.connection and self.cursor:
