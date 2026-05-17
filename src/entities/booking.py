@@ -70,6 +70,14 @@ class BookingCreated:
         
         self._current_status_id = value
 
+    def to_dict(self) -> dict:
+        return {
+            "booking_reference": self.booking_reference,
+            "booking_datetime": self.booking_datetime,
+            "paid_amount_usd": self.paid_amount_usd,
+            "current_status_id": self.current_status_id
+        } 
+
 class BookingRetrieved:
 
     def __init__(self,

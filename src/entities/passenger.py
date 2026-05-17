@@ -90,6 +90,15 @@ class PassengerCreated:
         
         self._is_vip = value
 
+    def to_dict(self) -> dict:
+        return {
+            "full_name": self.full_name,
+            "email": self.email,
+            "phone_number": self.phone_number,
+            "is_blacklisted": self.is_blacklisted,
+            "is_vip": self.is_vip
+        }
+
 class PassengerRetrieved:
 
     def __init__(self,

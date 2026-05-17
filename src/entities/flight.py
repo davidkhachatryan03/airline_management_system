@@ -112,6 +112,17 @@ class FlightCreated:
         
         self._airplane_id = value
 
+    def to_dict(self) -> dict:
+        return {
+            "scheduled_departure_datetime": self.scheduled_departure_datetime,
+            "sceduled_arrival_datetime": self.scheduled_arrival_datetime,
+            "operating_cost_usd": self.operating_cost_usd,
+            "base_price_usd": self.base_price_usd,
+            "current_status_id": self.current_status_id,
+            "route_id": self.route_id,
+            "airplane_id": self.airplane_id
+        }
+
 class FlightRetrieved:
 
     def __init__(self,

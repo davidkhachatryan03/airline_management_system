@@ -103,6 +103,16 @@ class DocumentCreated:
         
         self._document_type_id = value
 
+    def to_dict(self) -> dict:
+        return {
+            "document_number": self.document_number,
+            "valid_from": self.valid_from,
+            "valid_until": self.valid_until,
+            "issue_country": self.issue_country,
+            "passenger_id": self.passenger_id,
+            "document_type_id": self.document_type_id
+        }
+
 class DocumentRetrieved:
 
     def __init__(self,

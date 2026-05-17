@@ -50,10 +50,10 @@ class AirplaneCreated:
         value = value.strip()
         
         if not value:
-            raise ValueError(f"The tail number can not be empty.")
+            raise ValueError(f"The manufacturer can not be empty.")
         
         if len(value) > 50:
-            raise ValueError("The tail number must be 50 characters or less.")
+            raise ValueError("The manufacturer must be 50 characters or less.")
         
         self._manufacturer = value
 
@@ -131,6 +131,17 @@ class AirplaneCreated:
             raise ValueError(f"The current status id can not be negative or zero.")
         
         self._current_status_id = value
+    
+    def to_dict(self) -> dict:
+        return {
+            "tail_number": self.tail_number,
+            "manufacturer": self.manufacturer,
+            "model": self.model,
+            "capacity": self.capacity,
+            "range_km": self.range_km,
+            "flight_hour_cost_usd": self.flight_hour_cost_usd,
+            "current_status_id": self.current_status_id
+        }
 
 class AirplaneRetrieved:
     def __init__(self,
@@ -150,4 +161,4 @@ class AirplaneRetrieved:
         self.capacity = capacity
         self.range_km = range_km
         self.flight_hour_cost_usd = flight_hour_cost_usd
-        self.current_status_usd = current_status_id
+        self.current_status_id = current_status_id

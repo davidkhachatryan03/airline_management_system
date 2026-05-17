@@ -92,6 +92,15 @@ class RouteCreated:
         
         self._duration_min = value
 
+    def to_dict(self) -> dict:
+        return {
+            "flight_number": self.flight_number,
+            "origin": self.origin,
+            "destination": self.destination,
+            "distance_km": self.distance_km,
+            "duration_min": self.duration_min
+        }
+
 class RouteRetrieved:
 
     def __init__(self,

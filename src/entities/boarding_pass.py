@@ -63,6 +63,14 @@ class BoardingPassCreated:
         
         self._ticket_id = value
 
+    def to_dict(self) -> dict:
+        return {
+            "issue_datetime": self.issue_datetime,
+            "boarding_datetime": self.boarding_datetime,
+            "current_status_id": self.current_status_id,
+            "ticket_id": self.ticket_id
+        }
+
 class BoardingPassRetrieved:
 
     def __init__(self,

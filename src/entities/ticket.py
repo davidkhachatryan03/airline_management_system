@@ -108,6 +108,16 @@ class TicketCreated:
             raise ValueError(f"The passenger id can not be negative or zero.")
         
         self._passenger_id = value
+    
+    def to_dict(self) -> dict:
+        return {
+            "ticket_number": self.ticket_number,
+            "paid_amount_usd": self.paid_amount_usd,
+            "current_status_id": self.current_status_id,
+            "booking_id": self.booking_id,
+            "flight_id": self.flight_id,
+            "passenger_id": self.passenger_id
+        }
 
 class TicketRetrieved:
 
