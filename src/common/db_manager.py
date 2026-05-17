@@ -64,3 +64,21 @@ class DBManager:
 
         except Exception as e:
             raise DatabaseError(f"SQL error: {e}") from e
+        
+    def insert_row(self, table_name: str, row: dict) -> None:
+        if self.cursor is None:
+            raise CursorNotFound("Cursor not found.")
+        
+        columns: str = "(" + ",".join(row.keys()) + ")"
+        columns_amount: str = "(" + ",".join(["%s"] * len(row)) + ")"
+
+        values: list = list(row.values())
+
+        query = "INSERT INTO {} {} VALUES {}".format(table_name, columns, columns_amount)
+
+        try:
+            self.cursor.execute(query, values)
+            self.conexion.commit()
+        
+        except Exception as e:
+            raise DatabaseError(f"SQL error: {e}") from e
