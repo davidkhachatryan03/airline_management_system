@@ -9,3 +9,6 @@ class CursorNotFound(DatabaseError):
 
 class SQLFileNotFound(DatabaseError):
     pass
+
+class NoConnection(DatabaseError):
+    pass

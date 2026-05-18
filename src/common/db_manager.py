@@ -3,7 +3,7 @@ import mysql.connector, os
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
 from dotenv import load_dotenv
-from src.common.exceptions import CursorNotFound, DatabaseError, SQLFileNotFound
+from src.common.exceptions import CursorNotFound, DatabaseError, SQLFileNotFound, NoConnection
 
 load_dotenv()
 
@@ -33,8 +33,8 @@ class DBManager:
             print("Disconnected.")
 
     def execute_sql_file(self, route: str) -> None:
-        if self.cursor is None:
-            raise CursorNotFound("Cursor not found.")
+        if not self.connection.is_connected():
+            raise NoConnection("Connection not found.")
 
         try:
             with open(route, "r", encoding="utf-8") as f:
@@ -54,8 +54,8 @@ class DBManager:
             raise DatabaseError(f"SQL error: {e} ") from e
     
     def retrieve(self, query: str, values: tuple | list | None = None) -> list[tuple]:
-        if self.cursor is None:
-            raise CursorNotFound("Cursor not found.")
+        if not self.connection.is_connected():
+            raise NoConnection("Connection not found.")
         
         try:
             self.cursor.execute(query, values)
@@ -66,8 +66,8 @@ class DBManager:
             raise DatabaseError(f"SQL error: {e}") from e
         
     def insert_row(self, table_name: str, entity) -> int:
-        if self.cursor is None:
-            raise CursorNotFound("Cursor not found.")
+        if not self.connection.is_connected():
+            raise NoConnection("Connection not found.")
         
         row: dict = entity.to_dict()
         
