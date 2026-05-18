@@ -31,6 +31,13 @@ class DBManager:
             self.connection.close()
             self.cursor.close()
             print("Disconnected.")
+    
+    def choose_database(self, database_name: str) -> None:
+        try:
+            self.cursor.execute("USE {}".format(database_name))
+        
+        except Exception as e:
+            raise DatabaseError(f"SQL error: {e}") from e
 
     def execute_sql_file(self, route: str) -> None:
         if not self.connection.is_connected():
@@ -53,14 +60,16 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(f"SQL error: {e} ") from e
     
-    def retrieve(self, query: str, values: tuple | list | None = None) -> list[tuple]:
+    def retrieve(self, query: str, values: tuple | list | None = None) -> list[tuple] | tuple:
         if not self.connection.is_connected():
             raise NoConnection("Connection not found.")
         
         try:
             self.cursor.execute(query, values)
             results: list[tuple] = cast(list[tuple], self.cursor.fetchall())
-            return results
+            if len(results) > 1:
+                return results
+            return results[0]
 
         except Exception as e:
             raise DatabaseError(f"SQL error: {e}") from e

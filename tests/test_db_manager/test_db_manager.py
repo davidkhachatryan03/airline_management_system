@@ -1,6 +1,6 @@
 import pytest, os
 from src.common import DBManager
-from src.common.exceptions import CursorNotFound, DatabaseError, SQLFileNotFound
+from src.common.exceptions import CursorNotFound, DatabaseError, SQLFileNotFound, NoConnection
 from typing import cast
 
 def test_connections(db_test: DBManager) -> None:
@@ -29,21 +29,36 @@ def test_execute_sql_file(db_test: DBManager) -> None:
 
     assert result == 1
 
-def test_execute_sql_file_invalid_route(db_test: DBManager) -> None:
+@pytest.mark.parametrize("route, expected_exception", [
+    ("", SQLFileNotFound),
+    (os.getcwd(), DatabaseError),
+    (os.path.join(os.getcwd(), "tests/test_db_manager/invalid_sql_file_test.sql"), Exception)
+])
+
+def test_execute_sql_file_invalid_route(db_test: DBManager, route: str, expected_exception) -> None:
     db_test.connect()
 
-    with pytest.raises(SQLFileNotFound):
+    with pytest.raises(expected_exception):
+        db_test.execute_sql_file(route)
+
+def test_execute_sql_file_no_connection(db_test: DBManager) -> None:
+    db_test.connect()
+
+    db_test.disconnect()
+
+    with pytest.raises(NoConnection):
         db_test.execute_sql_file("")
 
-def test_execute_sql_file_permission_denied(db_test: DBManager) -> None:
+def test_insert_row(db_test: DBManager, test_entity) -> None:
     db_test.connect()
 
-    with pytest.raises(DatabaseError):
-        db_test.execute_sql_file(os.getcwd())
+    db_test.execute_sql_file(os.path.join(os.getcwd(),"tests/test_db_manager/create_db_test.sql"))
+    db_test.choose_database("test")
+    db_test.insert_row("test_table", test_entity)
 
-def test_execute_sql_file_invalid_syntax(db_test: DBManager) -> None:
-    db_test.connect()
-    route = os.path.join(os.getcwd(), "tests/test_db_manager/invalid_sql_file_test.sql")
+    query = "SELECT * FROM test_table"
 
-    with pytest.raises(Exception):
-        db_test.execute_sql_file(route)
+    result: tuple = cast(tuple, db_test.retrieve(query))
+    expected_result = (1, "text")
+
+    assert result == expected_result
