@@ -45,7 +45,7 @@ def test_insert_row(test_entity) -> None:
         query = "SELECT * FROM test_table"
 
         result: tuple = cast(tuple, db.retrieve(query))
-        expected_result = (1, "text")
+        expected_result = [(1, "text")]
     
     assert result == expected_result
 
@@ -81,4 +81,21 @@ def test_choose_invalid_database() -> None:
     with DBManager() as db:
     
         with pytest.raises(DatabaseError):
-            db.choose_database("inexistent database")
+            db.choose_database("inexistent database.")
+
+@pytest.mark.parametrize("query, values, expected_result", [
+    ("SELECT 1;", (), [1]),
+    ("SELECT %s;", (1,), [1]),
+    ("SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3;", (), [1,2,3]),
+    ("SELECT 1, 'a' UNION ALL SELECT 2, 'b' UNION ALL SELECT 3, 'c';", (), [(1,"a"),(2,"b"),(3,"c")])
+])
+
+def test_retrieve(query: str, values: tuple | list, expected_result) -> None:
+    with DBManager() as db:
+        result = db.retrieve(query, values)
+
+    assert result == expected_result
+
+def test_retrieve_no_connection(db_disconnected: DBManager) -> None:
+    with pytest.raises(NoConnection):
+        db_disconnected.retrieve("SELECT 1;")
