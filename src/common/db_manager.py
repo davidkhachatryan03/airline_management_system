@@ -72,16 +72,21 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(f"SQL error: {e} ") from e
     
-    def retrieve(self, query: str, values: tuple | list | None = None) -> list[tuple] | tuple:
+    def retrieve(self, query: str, values: tuple | list = ()) -> list:
         if not self.connection.is_connected():
             raise NoConnection("Connection not found.")
         
         try:
             self.cursor.execute(query, values)
-            results: list[tuple] = cast(list[tuple], self.cursor.fetchall())
-            if len(results) > 1:
-                return results
-            return results[0]
+            rows: list[tuple] = cast(list[tuple], self.cursor.fetchall())
+
+            if not rows:
+                return []
+            
+            if len(rows[0]) == 1:
+                return [rows[i][0] for i in range(len(rows))]
+            
+            return rows
 
         except Exception as e:
             self.disconnect()
