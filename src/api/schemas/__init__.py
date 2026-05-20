@@ -1,0 +1,1 @@
+from src.api.schemas.booking_schema import BookingRequest, BookingResponse
