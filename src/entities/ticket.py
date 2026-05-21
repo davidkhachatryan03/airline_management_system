@@ -1,21 +1,35 @@
 from decimal import Decimal
+from uuid import UUID
 
-class TicketCreated:
+class Ticket:
 
     def __init__(self,
+                id: UUID,
                 ticket_number: str,
                 paid_amount_usd: Decimal,
                 current_status_id: int,
-                booking_id: int,
-                flight_id: int,
-                passenger_id: int) -> None:
+                booking_id: UUID,
+                flight_id: UUID,
+                passenger_id: UUID) -> None:
         
+        self.id = id
         self.ticket_number = ticket_number
         self.paid_amount_usd = paid_amount_usd
         self.current_status_id = current_status_id
         self.booking_id = booking_id
         self.flight_id = flight_id
         self.passenger_id = passenger_id
+    
+    @property
+    def id(self) -> UUID:
+        return self._id
+    
+    @id.setter
+    def id(self, value: UUID) -> None:
+        if not isinstance(value, UUID):
+            raise TypeError(f"The type of {value} is not UUID.")
+        
+        self._id = value
 
     @property
     def ticket_number(self) -> str:
@@ -68,49 +82,41 @@ class TicketCreated:
         self._current_status_id = value
 
     @property
-    def booking_id(self) -> int:
+    def booking_id(self) -> UUID:
         return self._booking_id
 
     @booking_id.setter
-    def booking_id(self, value: int) -> None:
-        if not isinstance(value, int):
-            raise TypeError(f"The type of {value} is not int.")
-        
-        if value <= 0:
-            raise ValueError(f"The booking id can not be negative or zero.")
+    def booking_id(self, value: UUID) -> None:
+        if not isinstance(value, UUID):
+            raise TypeError(f"The type of {value} is not UUID.")
         
         self._booking_id = value
 
     @property
-    def flight_id(self) -> int:
+    def flight_id(self) -> UUID:
         return self._flight_id
     
     @flight_id.setter
-    def flight_id(self, value: int) -> None:
-        if not isinstance(value, int):
-            raise TypeError(f"The type of {value} is not int.")
-        
-        if value <= 0:
-            raise ValueError(f"The flight id can not be negative or zero.")
+    def flight_id(self, value: UUID) -> None:
+        if not isinstance(value, UUID):
+            raise TypeError(f"The type of {value} is not UUID.")
         
         self._flight_id = value
 
     @property
-    def passenger_id(self) -> int:
+    def passenger_id(self) -> UUID:
         return self._passenger_id
     
     @passenger_id.setter
-    def passenger_id(self, value: int) -> None:
-        if not isinstance(value, int):
-            raise TypeError(f"The type of {value} is not int.")
-        
-        if value <= 0:
-            raise ValueError(f"The passenger id can not be negative or zero.")
+    def passenger_id(self, value: UUID) -> None:
+        if not isinstance(value, UUID):
+            raise TypeError(f"The type of {value} is not UUID.")
         
         self._passenger_id = value
     
     def to_dict(self) -> dict:
         return {
+            "id": self.id,
             "ticket_number": self.ticket_number,
             "paid_amount_usd": self.paid_amount_usd,
             "current_status_id": self.current_status_id,
@@ -118,22 +124,3 @@ class TicketCreated:
             "flight_id": self.flight_id,
             "passenger_id": self.passenger_id
         }
-
-class TicketRetrieved:
-
-    def __init__(self,
-                id: int,
-                ticket_number: str,
-                paid_amount_usd: Decimal,
-                current_status_id: int,
-                booking_id: int,
-                flight_id: int,
-                passenger_id: int) -> None:
-        
-        self.id = id
-        self.ticket_number = ticket_number
-        self.paid_amount_usd = paid_amount_usd
-        self.current_status_id = current_status_id
-        self.booking_id = booking_id
-        self.flight_id = flight_id
-        self.passenger_id = passenger_id

@@ -1,17 +1,32 @@
-class PassengerCreated:
+from uuid import UUID
+
+class Passenger:
 
     def __init__(self,
+                id: UUID,
                 full_name: str,
                 email: str,
                 phone_number: int,
                 is_blacklisted: bool,
                 is_vip: bool) -> None:
         
+        self.id = id
         self.full_name = full_name
         self.email = email
         self.phone_number = phone_number
         self.is_blacklisted = is_blacklisted
         self.is_vip = is_vip
+    
+    @property
+    def id(self) -> UUID:
+        return self._id
+    
+    @id.setter
+    def id(self, value: UUID) -> None:
+        if not isinstance(value, UUID):
+            raise TypeError(f"The type of {value} is not UUID.")
+        
+        self._id = value
 
     @property
     def full_name(self) -> str:
@@ -92,26 +107,10 @@ class PassengerCreated:
 
     def to_dict(self) -> dict:
         return {
+            "id": self.id,
             "full_name": self.full_name,
             "email": self.email,
             "phone_number": self.phone_number,
             "is_blacklisted": self.is_blacklisted,
             "is_vip": self.is_vip
         }
-
-class PassengerRetrieved:
-
-    def __init__(self,
-                id: int,
-                full_name: str,
-                email: str,
-                phone_number: int,
-                is_blacklisted: bool,
-                is_vip: bool) -> None:
-        
-        self.id = id
-        self.full_name = full_name
-        self.email = email
-        self.phone_number = phone_number
-        self.is_blacklisted = is_blacklisted
-        self.is_vip = is_vip

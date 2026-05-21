@@ -1,21 +1,35 @@
 from datetime import date
+from uuid import UUID
 
-class DocumentCreated:
+class Document:
 
     def __init__(self,
+                id: UUID,
                 document_number: str,
                 valid_from: date,
                 valid_until: date,
                 issue_country: str,
-                passenger_id: int,
+                passenger_id: UUID,
                 document_type_id: int) -> None:
         
+        self.id = id
         self.document_number = document_number
         self.valid_from = valid_from
         self.valid_until = valid_until
         self.issue_country = issue_country
         self.passenger_id = passenger_id
         self.document_type_id = document_type_id
+    
+    @property
+    def id(self) -> UUID:
+        return self._id
+    
+    @id.setter
+    def id(self, value: UUID) -> None:
+        if not isinstance(value, UUID):
+            raise TypeError(f"The type of {value} is not UUID.")
+        
+        self._id = value
 
     @property
     def document_number(self) -> str:
@@ -76,16 +90,13 @@ class DocumentCreated:
         self._issue_country = value
 
     @property
-    def passenger_id(self) -> int:
+    def passenger_id(self) -> UUID:
         return self._passenger_id
     
     @passenger_id.setter
-    def passenger_id(self, value: int) -> None:
-        if not isinstance(value, int):
-            raise TypeError(f"The type of {value} is not int.")
-        
-        if value <= 0:
-            raise ValueError("The passenger id can not be negative or zero.")
+    def passenger_id(self, value: UUID) -> None:
+        if not isinstance(value, UUID):
+            raise TypeError(f"The type of {value} is not UUID.")
         
         self._passenger_id = value
     
@@ -105,6 +116,7 @@ class DocumentCreated:
 
     def to_dict(self) -> dict:
         return {
+            "id": self.id,
             "document_number": self.document_number,
             "valid_from": self.valid_from,
             "valid_until": self.valid_until,
@@ -112,22 +124,3 @@ class DocumentCreated:
             "passenger_id": self.passenger_id,
             "document_type_id": self.document_type_id
         }
-
-class DocumentRetrieved:
-
-    def __init__(self,
-                id: int,
-                document_number: str,
-                valid_from: date,
-                valid_until: date,
-                issue_country: str,
-                passenger_id: int,
-                document_type_id: int) -> None:
-        
-        self.id = id
-        self.document_number = document_number
-        self.valid_from = valid_from
-        self.valid_until = valid_until
-        self.issue_country = issue_country
-        self.passenger_id = passenger_id
-        self.document_type_id = document_type_id

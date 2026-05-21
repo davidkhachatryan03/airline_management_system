@@ -143,7 +143,8 @@ class AirplaneCreated:
             "current_status_id": self.current_status_id
         }
 
-class AirplaneRetrieved:
+class AirplaneRetrieved(AirplaneCreated):
+    
     def __init__(self,
                 id: int, 
                 tail_number: str, 
@@ -154,11 +155,24 @@ class AirplaneRetrieved:
                 flight_hour_cost_usd: Decimal,
                 current_status_id: int) -> None:
         
+        super().__init__(tail_number, 
+                        manufacturer, 
+                        model, 
+                        capacity, 
+                        range_km, 
+                        flight_hour_cost_usd, 
+                        current_status_id)
+        
         self.id = id
-        self.tail_number = tail_number
-        self.manufacturer = manufacturer
-        self.model = model
-        self.capacity = capacity
-        self.range_km = range_km
-        self.flight_hour_cost_usd = flight_hour_cost_usd
-        self.current_status_id = current_status_id
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "tail_number": self.tail_number,
+            "manufacturer": self.manufacturer,
+            "model": self.model,
+            "capacity": self.capacity,
+            "range_km": self.range_km,
+            "flight_hour_cost_usd": self.flight_hour_cost_usd,
+            "current_status_id": self.current_status_id
+        }

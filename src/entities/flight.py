@@ -1,24 +1,42 @@
 from datetime import datetime
 from decimal import Decimal
+from uuid import UUID
 
-class FlightCreated:
+class Flight:
 
     def __init__(self,
+                id: UUID,
                 scheduled_departure_datetime: datetime,
                 scheduled_arrival_datetime: datetime,
+                actual_departure_datetime: datetime | None,
+                actual_arrival_datetime: datetime | None,
                 operating_cost_usd: Decimal,
                 base_price_usd: Decimal,
                 current_status_id: int,
                 route_id: int,
                 airplane_id: int) -> None:
         
+        self.id = id
         self.scheduled_departure_datetime = scheduled_departure_datetime
         self.scheduled_arrival_datetime = scheduled_arrival_datetime
+        self.actual_departure_datetime = actual_departure_datetime
+        self.actual_arrival_datetime = actual_arrival_datetime
         self.operating_cost_usd = operating_cost_usd
         self.base_price_usd = base_price_usd
         self.current_status_id = current_status_id
         self.route_id = route_id
         self.airplane_id = airplane_id
+    
+    @property
+    def id(self) -> UUID:
+        return self._id
+    
+    @id.setter
+    def id(self, value: UUID) -> None:
+        if not isinstance(value, UUID):
+            raise TypeError(f"The type of {value} is not UUID.")
+        
+        self._id = value
 
     @property
     def scheduled_departure_datetime(self) -> datetime:
@@ -26,8 +44,8 @@ class FlightCreated:
     
     @scheduled_departure_datetime.setter
     def scheduled_departure_datetime(self, value: datetime) -> None:
-        if not isinstance(value, datetime):
-            raise TypeError(f"The type of {value} is not datetime.")
+        if not isinstance(value, datetime) or value is not None:
+            raise TypeError(f"The type of {value} must be datetime or none.")
         
         self._scheduled_departure_datetime = value
 
@@ -37,10 +55,32 @@ class FlightCreated:
     
     @scheduled_arrival_datetime.setter
     def scheduled_arrival_datetime(self, value: datetime) -> None:
-        if not isinstance(value, datetime):
-            raise TypeError(f"The type of {value} is not datetime.")
+        if not isinstance(value, datetime) or value is not None:
+            raise TypeError(f"The type of {value} must be datetime or none.")
         
         self._scheduled_arrival_datetime = value
+
+    @property
+    def actual_departure_datetime(self) -> datetime:
+        return self._actual_departure_datetime
+    
+    @actual_departure_datetime.setter
+    def actual_departure_datetime(self, value: datetime | None) -> None:
+        if not isinstance(value, datetime) or value is not None:
+            raise TypeError(f"The type of {value} must be datetime or none.")
+        
+        self._actual_departure_datetime = value
+
+    @property
+    def actual_arrival_datetime(self) -> datetime:
+        return self._actual_arrival_datetime
+    
+    @actual_arrival_datetime.setter
+    def actual_arrival_datetime(self, value: datetime | None) -> None:
+        if not isinstance(value, datetime) or value is not None:
+            raise TypeError(f"The type of {value} must be datetime or none.")
+        
+        self._actual_arrival_datetime = value
 
     @property
     def operating_cost_usd(self) -> Decimal:
@@ -114,36 +154,14 @@ class FlightCreated:
 
     def to_dict(self) -> dict:
         return {
+            "id": self.id,
             "scheduled_departure_datetime": self.scheduled_departure_datetime,
             "scheduled_arrival_datetime": self.scheduled_arrival_datetime,
+            "actual_departure_datetime": self.actual_departure_datetime,
+            "actual_arrival_datetime": self.actual_arrival_datetime,
             "operating_cost_usd": self.operating_cost_usd,
             "base_price_usd": self.base_price_usd,
             "current_status_id": self.current_status_id,
             "route_id": self.route_id,
             "airplane_id": self.airplane_id
         }
-
-class FlightRetrieved:
-
-    def __init__(self,
-                id: int,
-                scheduled_departure_datetime: datetime,
-                scheduled_arrival_datetime: datetime,
-                actual_departure_datetime: datetime,
-                actual_arrival_datetime: datetime,
-                operating_cost_usd: Decimal,
-                base_price_usd: Decimal,
-                current_status_id: int,
-                route_id: int,
-                airplane_id: int) -> None:
-        
-        self.id = id
-        self.scheduled_departure_datetime = scheduled_departure_datetime
-        self.scheduled_arrival_datetime = scheduled_arrival_datetime
-        self.actual_departure_datetime = actual_departure_datetime
-        self.actual_arrival_datetime = actual_arrival_datetime
-        self.operating_cost_usd = operating_cost_usd
-        self.base_price_usd = base_price_usd
-        self.current_status_id = current_status_id
-        self.route_id = route_id
-        self.airplane_id = airplane_id

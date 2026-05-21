@@ -1,18 +1,32 @@
 from datetime import datetime
 from decimal import Decimal
+from uuid import UUID
 
-class BookingCreated:
+class Booking:
 
     def __init__(self,
+                id: UUID,
                 booking_reference: str,
                 booking_datetime: datetime,
                 paid_amount_usd: Decimal,
                 current_status_id: int) -> None:
         
+        self.id = id
         self.booking_reference = booking_reference
         self.booking_datetime = booking_datetime
         self.paid_amount_usd = paid_amount_usd
         self.current_status_id = current_status_id
+    
+    @property
+    def id(self) -> UUID:
+        return self._id
+    
+    @id.setter
+    def id(self, value: UUID) -> None:
+        if not isinstance(value, UUID):
+            raise TypeError(f"The type of {value} is not UUID.")
+        
+        self._id = value
 
     @property
     def booking_reference(self) -> str:
@@ -72,23 +86,9 @@ class BookingCreated:
 
     def to_dict(self) -> dict:
         return {
+            "id": self.id,
             "booking_reference": self.booking_reference,
             "booking_datetime": self.booking_datetime,
             "paid_amount_usd": self.paid_amount_usd,
             "current_status_id": self.current_status_id
         } 
-
-class BookingRetrieved:
-
-    def __init__(self,
-                id: int, 
-                booking_reference: str,
-                booking_datetime: datetime,
-                paid_amount_usd: Decimal,
-                current_status_id: int) -> None:
-        
-        self.id = id
-        self.booking_reference = booking_reference
-        self.booking_datetime = booking_datetime
-        self.paid_amount_usd = paid_amount_usd
-        self.current_status_id = current_status_id
