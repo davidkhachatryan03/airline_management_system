@@ -97,7 +97,7 @@ class TicketCreated:
 
     @property
     def passenger_id(self) -> int:
-        return self._flight_id
+        return self._passenger_id
     
     @passenger_id.setter
     def passenger_id(self, value: int) -> None:
