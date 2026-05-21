@@ -13,7 +13,7 @@ CREATE TABLE routes (
 );
 
 CREATE TABLE passengers (
-	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	id BINARY(16) PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     phone_number INT NOT NULL,
@@ -67,12 +67,12 @@ CREATE TABLE ticket_statuses (
 );
 
 CREATE TABLE documents (
-	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	id BINARY(16) PRIMARY KEY,
     document_number VARCHAR(20) NOT NULL,
     valid_from DATE NOT NULL,
     valid_until DATE NOT NULL,
     issue_country CHAR(3) NOT NULL,
-    passenger_id INT UNSIGNED NOT NULL,
+    passenger_id BINARY(16) NOT NULL,
     document_type_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (passenger_id) REFERENCES passengers(id),
     FOREIGN KEY (document_type_id) REFERENCES document_types(id),
@@ -92,7 +92,7 @@ CREATE TABLE airplanes (
 );
 
 CREATE TABLE flights (
-	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	id BINARY(16) PRIMARY KEY,
     scheduled_departure_datetime DATETIME NOT NULL,
     scheduled_arrival_datetime DATETIME NOT NULL,
     actual_departure_datetime DATETIME,
@@ -110,7 +110,7 @@ CREATE TABLE flights (
 
 CREATE TABLE staff (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
+    full_name VARCHAR(100) UNIQUE NOT NULL,
     current_status_id INT UNSIGNED NOT NULL,
     current_position_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (current_status_id) REFERENCES staff_statuses(id),
@@ -118,21 +118,20 @@ CREATE TABLE staff (
 );
 
 CREATE TABLE crew_assignments (
-	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
     role_id INT UNSIGNED NOT NULL,
-    flight_id INT UNSIGNED NOT NULL,
+    flight_id BINARY(16) NOT NULL,
     staff_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (role_id) REFERENCES roles(id),
     FOREIGN KEY (flight_id) REFERENCES flights(id),
     FOREIGN KEY (staff_id) REFERENCES staff(id),
-    UNIQUE (flight_id, staff_id),
+    PRIMARY KEY (flight_id, staff_id),
     UNIQUE (start_time, staff_id)
 );
 
 CREATE TABLE bookings (
-	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	id BINARY(16) PRIMARY KEY,
     booking_reference VARCHAR(6) UNIQUE NOT NULL,
     booking_datetime DATETIME NOT NULL,
     paid_amount_usd DECIMAL(10,2) NOT NULL,
@@ -141,13 +140,13 @@ CREATE TABLE bookings (
 );
 
 CREATE TABLE tickets (
-	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	id BINARY(16) PRIMARY KEY,
     ticket_number CHAR(13) UNIQUE NOT NULL,
     paid_amount_usd DECIMAL(10,2) NOT NULL,
     current_status_id INT UNSIGNED NOT NULL,
-    booking_id INT UNSIGNED NOT NULL,
-    flight_id INT UNSIGNED NOT NULL,
-    passenger_id INT UNSIGNED NOT NULL,
+    booking_id BINARY(16) NOT NULL,
+    flight_id BINARY(16) NOT NULL,
+    passenger_id BINARY(16) NOT NULL,
     FOREIGN KEY (current_status_id) REFERENCES ticket_statuses(id),
     FOREIGN KEY (booking_id) REFERENCES bookings(id),
     FOREIGN KEY (flight_id) REFERENCES flights(id),
@@ -155,27 +154,26 @@ CREATE TABLE tickets (
 );
 
 CREATE TABLE boarding_passes (
-	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	id BINARY(16) PRIMARY KEY,
     issue_datetime DATETIME,
     boarding_datetime DATETIME DEFAULT NULL,
     current_status_id INT UNSIGNED NOT NULL,
-    ticket_id INT UNSIGNED UNIQUE NOT NULL,
+    ticket_id BINARY(16) UNIQUE NOT NULL,
     FOREIGN KEY (current_status_id) REFERENCES boarding_pass_statuses(id),
 	FOREIGN KEY (ticket_id) REFERENCES tickets(id)
 );
 
 CREATE TABLE staff_certifications (
-	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     description VARCHAR(100) NOT NULL,
     valid_from DATE NOT NULL,
     valid_until DATE NOT NULL,
     staff_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (staff_id) REFERENCES staff(id),
-    UNIQUE (description, staff_id)
+    PRIMARY KEY (description, staff_id)
 );
 
 CREATE TABLE audit_logs (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id BINARY(16) PRIMARY KEY,
     table_name VARCHAR(100) NOT NULL,
     action VARCHAR(100) NOT NULL,
     record_id VARCHAR(100) NOT NULL,
