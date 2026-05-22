@@ -1,4 +1,5 @@
 from typing import cast
+from uuid import UUID
 import mysql.connector, os
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
@@ -13,12 +14,13 @@ class DBManager:
         self.host: str = os.environ["DB_HOST"]
         self.user: str = os.environ["DB_USER"]
         self.password: str = os.environ["DB_PASS"]
+        self.database: str = os.environ["DB_NAME"]
 
     def __enter__(self):
         self.connect()
         return self
 
-    def __exit__(self, exception_type, exception_value , exception_traceback):
+    def __exit__(self, exception_type, exception_value, exception_traceback):
         if self.connection and self.connection.is_connected():
             if exception_type is not None:
                 self.connection.rollback()
@@ -32,7 +34,8 @@ class DBManager:
             host = self.host,
             port = 3306,
             user = self.user,
-            password = self.password
+            password = self.password,
+            database = self.database
         ))
 
         if self.connection.is_connected():
@@ -103,10 +106,11 @@ class DBManager:
             columns_amount: str = "(" + ",".join(["%s"] * len(row)) + ")"
 
             values: list = list(row.values())
+            values_formatted: list = self.uuid_to_bytes(values)
 
             query = "INSERT INTO {} {} VALUES {}".format(table_name, columns, columns_amount)
 
-            self.cursor.execute(query, values)
+            self.cursor.execute(query, values_formatted)
             return cast(int, self.cursor.lastrowid)
         
         except AttributeError as e:
@@ -114,3 +118,14 @@ class DBManager:
         
         except Exception as e:
             raise DatabaseError(f"SQL error: {e}") from e
+    
+    def uuid_to_bytes(self, values: list) -> list:
+        values_formatted: list = []
+
+        for value in values:
+            if isinstance(value, UUID):
+                values_formatted.append(value.bytes)
+            else:
+                values_formatted.append(value)
+        
+        return values_formatted
