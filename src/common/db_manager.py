@@ -80,16 +80,18 @@ class DBManager:
             raise NoConnection("Connection not found.")
         
         try:
-            self.cursor.execute(query, values)
+            values_formatted: list = self.uuid_to_bytes(list(values))
+
+            self.cursor.execute(query, values_formatted)
             rows: list[tuple] = cast(list[tuple], self.cursor.fetchall())
 
             if not rows:
                 return []
-            
+
             if len(rows[0]) == 1:
-                return [rows[i][0] for i in range(len(rows))]
-            
-            return rows
+                result: list = [rows[i][0] for i in range(len(rows))]
+
+            return self.bytes_to_uuid(result)
 
         except Exception as e:
             self.disconnect()
@@ -119,13 +121,37 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(f"SQL error: {e}") from e
     
-    def uuid_to_bytes(self, values: list) -> list:
-        values_formatted: list = []
+    def uuid_to_bytes(self, rows: list) -> list:
+        rows_formatted: list = []
 
-        for value in values:
-            if isinstance(value, UUID):
-                values_formatted.append(value.bytes)
+        for row in rows:
+            if isinstance(row, UUID):
+                rows_formatted.append(row.bytes)
             else:
-                values_formatted.append(value)
+                rows_formatted.append(row)
         
-        return values_formatted
+        return rows_formatted
+    
+    def bytes_to_uuid(self, rows: list) -> list:
+        rows_formatted: list = []
+
+        if not isinstance(rows[0], tuple):
+            for row in rows:
+                if isinstance(row, bytes) and len(row) == 16:
+                    rows_formatted.append(UUID(bytes=row))
+                else:
+                    rows_formatted.append(row)
+        
+        else:
+            for row in rows:
+                row_formatted: list = []
+
+                for element in row:
+                    if isinstance(element, bytes) and len(element) == 16:
+                        row_formatted.append(UUID(bytes=element))
+                    else:
+                        row_formatted.append(element)
+                
+                rows_formatted.append(tuple(row_formatted))
+
+        return rows_formatted
