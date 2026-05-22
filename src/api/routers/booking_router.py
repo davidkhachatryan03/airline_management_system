@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException
-from decimal import Decimal
 from src.api.schemas.booking_schema import BookingRequest, BookingResponse
 from src.core.managers.booking_manager import BookingManager
 from src.core.validators.booking_validator import BookingValidator

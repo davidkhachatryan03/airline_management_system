@@ -1,5 +1,6 @@
-from repositories import BookingRepository
-from src.entities import BookingCreated
+from src.core.repositories import BookingRepository
+from src.entities import Booking
+from src.api.schemas import BookingResponse, BookingRequest
 
 class BookingValidator:
 
