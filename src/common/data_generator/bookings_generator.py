@@ -6,5 +6,3 @@ class BookingsGenerator(DataGenerator):
 
     def __init__(self) -> None:
         super().__init__()
-
-    def generate_booking(self, list[])
