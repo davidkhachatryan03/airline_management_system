@@ -1,6 +1,5 @@
 from src.core.repositories import BookingRepository
-from src.entities import Booking
-from src.api.schemas import BookingResponse, BookingRequest
+from src.api.schemas import BookingRequest
 from uuid import UUID
 from decimal import Decimal
 

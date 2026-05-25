@@ -1,4 +1,3 @@
-from typing import cast
 from src.common import DBManager
 from src.entities import Booking, Ticket
 from uuid import UUID
