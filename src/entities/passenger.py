@@ -89,10 +89,10 @@ class Passenger:
     
     @is_blacklisted.setter
     def is_blacklisted(self, value: bool) -> None:
-        if not isinstance(value, bool):
+        if value not in [True, False, 1, 0]:
             raise TypeError(f"The type of {value} is not bool.")
         
-        self._is_blacklisted = value
+        self._is_blacklisted = bool(value)
 
     @property
     def is_vip(self) -> bool:
@@ -100,7 +100,7 @@ class Passenger:
     
     @is_vip.setter
     def is_vip(self, value: bool) -> None:
-        if not isinstance(value, bool):
+        if value not in [True, False, 1, 0]:
             raise TypeError(f"The type of {value} is not bool.")
         
         self._is_vip = value
