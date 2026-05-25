@@ -1,11 +1,12 @@
 import random, string, uuid6
 from uuid import UUID
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime
 from src.core.repositories import BookingRepository
 from src.core.validators import BookingValidator
 from src.entities import Booking, Ticket
 from src.api.schemas import BookingResponse, BookingRequest
+from src.common.exceptions import InvalidData
 
 class BookingManager:
 
@@ -14,13 +15,13 @@ class BookingManager:
         self.booking_validator = booking_validator
     
     def process_booking(self, booking_request: BookingRequest) -> BookingResponse:
-        validation: bool = self.booking_validator.validate_booking_request(booking_request)
-
+        self.booking_validator.validate_booking_request(booking_request)
+        
         flights_id: list[UUID] = booking_request.flights_id
         passengers_id: list[UUID] = booking_request.passengers_id
 
         paid_amount_usd: Decimal = booking_request.paid_amount_usd
-        paid_amount_usd_per_passenger: Decimal = paid_amount_usd / len(passengers_id)
+        paid_amount_usd_per_passenger: Decimal = (paid_amount_usd / len(passengers_id)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
         booking_reference: str = self.generate_booking_reference()
         booking_id: UUID = uuid6.uuid7()
