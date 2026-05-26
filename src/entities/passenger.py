@@ -1,10 +1,12 @@
 from uuid import UUID
+from datetime import date
 
 class Passenger:
 
     def __init__(self,
                 id: UUID,
                 full_name: str,
+                birth_date: date,
                 email: str,
                 phone_number: int,
                 is_blacklisted: bool,
@@ -12,6 +14,7 @@ class Passenger:
         
         self.id = id
         self.full_name = full_name
+        self.birth_date = birth_date
         self.email = email
         self.phone_number = phone_number
         self.is_blacklisted = is_blacklisted
@@ -46,6 +49,17 @@ class Passenger:
             raise ValueError("The full name must be 100 characters long or less.")
         
         self._full_name = value
+    
+    @property
+    def birth_date(self) -> date:
+        return self._birth_date
+    
+    @birth_date.setter
+    def birth_date(self, value: date) -> None:
+        if not isinstance(value, date):
+            raise TypeError(f"The type of {value} is not date.")
+        
+        self._birth_date = value
 
     @property
     def email(self) -> str:
