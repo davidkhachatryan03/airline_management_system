@@ -1,2 +1,4 @@
 from src.core.repositories.booking_repository import BookingRepository
 from src.core.repositories.passenger_repository import PassengerRepository
+from src.core.repositories.document_repository import DocumentRepository
+from src.core.repositories.ticket_repository import TicketRepository
