@@ -6,6 +6,3 @@ class DocumentRepository:
 
     def __init__(self, db_manager: DBManager) -> None:
         self.db_manager = db_manager
-
-    def retrieve_existent_documents(self, passengers: list[PassengerRequest]) -> list[Document]:
-        query = "SELECT "

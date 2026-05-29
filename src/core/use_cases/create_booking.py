@@ -1,38 +1,22 @@
 from src.core.units_of_work import CreateBookingUoW
-from src.core.validators import BookingValidator, PassengerValidator, TicketValidator, DocumentValidator
+from src.core.managers import PassengerManager
+from src.entities import Document, Passenger
 from src.api.schemas import BookingRequest, PassengerRequest
+from src.common.exceptions import InsertionMissmatchError
+from uuid import UUID
+import uuid6
 
 class CreateBooking:
 
     def __init__(self,
                 uow: CreateBookingUoW,
-                booking_validator: BookingValidator,
-                passenger_validator: PassengerValidator,
-                ticket_validator: TicketValidator,
-                document_validator: DocumentValidator) -> None:
+                passenger_manager: PassengerManager,
+                flight_validator) -> None:
         
         self.uow = uow
-        self.booking_validator = booking_validator
-        self.passenger_validator = passenger_validator
-        self.ticket_validator = ticket_validator
-        self.document_validator = document_validator
+        self.passenger_manager = passenger_manager
+        self.flight_validator = flight_validator
     
     def process_booking(self, booking_request: BookingRequest) -> None:
-        with self.uow:
-
-            self.insert_passengers(booking_request.passengers)
-
-    def validate_passengers(self, passengers: list[PassengerRequest]) -> None:
-        pass
-
-    def validate_flights(self) -> None:
-        pass
-
-    def insert_booking(self) -> None:
-        pass
-
-    def insert_passengers(self) -> None:
-        pass
-
-    def insert_documents(self) -> None:
-        pass
+        with self.uow as uow:
+            self.flight_validator.check_flights_availability(booking_request.flights_id)q
