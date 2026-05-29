@@ -7,7 +7,6 @@ from src.api.schemas import PassengerRequest
 class BookingRequest(BaseModel):
     flights_id: list[UUID] = Field(min_length=1)
     passengers: list[PassengerRequest] = Field(min_length=1)
-    paid_amount_usd: Decimal = Field(gt=Decimal("0"))
 
     @field_validator("flights_id")
     @classmethod
