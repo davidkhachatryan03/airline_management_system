@@ -16,6 +16,9 @@ class SQLFileNotFound(DatabaseError):
 class NoConnection(DatabaseError):
     pass
 
+class InsertionMissmatchError(DatabaseError):
+    pass
+
 class InvalidPassengerId(InvalidData):
     pass
 
