@@ -1,5 +1,6 @@
 from datetime import date
 from uuid import UUID
+import uuid6
 
 class Document:
 
@@ -124,3 +125,15 @@ class Document:
             "passenger_id": self.passenger_id,
             "document_type_id": self.document_type_id
         }
+    
+    @classmethod
+    def new_document(cls, values: dict) -> "Document":
+        return cls(
+            id=uuid6.uuid7(), 
+            document_number=values["document_number"],
+            valid_from=values["valid_from"],
+            valid_until=values["valid_until"],
+            issue_country=values["issue_country"],
+            passenger_id=values["passenger_id"],
+            document_type_id=values["document_type_id"]
+        )

@@ -1,4 +1,5 @@
 from uuid import UUID
+import uuid6
 from datetime import date
 
 class Passenger:
@@ -128,3 +129,15 @@ class Passenger:
             "is_blacklisted": self.is_blacklisted,
             "is_vip": self.is_vip
         }
+    
+    @classmethod
+    def new_passenger(cls, values: dict) -> "Passenger":
+        return cls(
+            id=uuid6.uuid7(), 
+            full_name=values["full_name"],
+            birth_date=values["birth_date"],
+            email=values["email"],
+            phone_number=values["phone_number"],
+            is_blacklisted=values.get("is_blacklisted", False), 
+            is_vip=values.get("is_vip", False)
+        )
