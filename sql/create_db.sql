@@ -102,7 +102,7 @@ CREATE TABLE flights (
     base_price_usd DECIMAL(10,2) NOT NULL,
     current_status_id INT UNSIGNED NOT NULL,
     route_id INT UNSIGNED NOT NULL,
-    airplane_id INT UNSIGNED,
+    airplane_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (current_status_id) REFERENCES flight_statuses(id),
     FOREIGN KEY (route_id) REFERENCES routes(id),
     FOREIGN KEY (airplane_id) REFERENCES airplanes(id),
