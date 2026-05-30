@@ -1,4 +1,1 @@
-from src.core.validators.booking_validator import BookingValidator
-from src.core.validators.passenger_validator import PassengerValidator
-from src.core.validators.document_validator import DocumentValidator
-from src.core.validators.ticket_validator import TicketValidator
+from src.core.validators.flight_validator import FlightValidator

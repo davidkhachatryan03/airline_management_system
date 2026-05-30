@@ -1,2 +1,0 @@
-class BookingValidator:
-    pass
