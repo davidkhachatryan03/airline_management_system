@@ -4,7 +4,7 @@ import mysql.connector, os
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
 from dotenv import load_dotenv
-from src.common.exceptions import CursorNotFound, DatabaseError, SQLFileNotFound, NoConnection
+from src.common.exceptions import *
 
 load_dotenv()
 
@@ -47,17 +47,10 @@ class DBManager:
             self.connection.close()
             self.cursor.close()
             print("Disconnected.")
-    
-    def choose_database(self, database_name: str) -> None:
-        try:
-            self.cursor.execute("USE {}".format(database_name))
-        
-        except Exception as e:
-            raise DatabaseError(f"The selected database does not exist.") from e
 
     def execute_sql_file(self, route: str) -> None:
         if not self.connection.is_connected():
-            raise NoConnection("Connection not found.")
+            raise InexistentConnection
 
         try:
             with open(route, "r", encoding="utf-8") as f:
@@ -67,17 +60,14 @@ class DBManager:
                 self.cursor.execute(line)
 
         except FileNotFoundError as e:
-            raise SQLFileNotFound("SQL file not found.") from e
-        
-        except PermissionError as e:
-            raise DatabaseError("Access to file is not granted.") from e
+            raise InexistentSQLFile from e
 
         except Exception as e:
-            raise DatabaseError(f"SQL error: {e} ") from e
+            raise DatabaseError(e) from e
     
     def retrieve(self, query: str, values: tuple | list = ()) -> list:
         if not self.connection.is_connected():
-            raise NoConnection("Connection not found.")
+            raise InexistentConnection("Connection not found.")
         
         try:
             values_formatted: list = self.uuid_to_bytes(list(values))
@@ -94,12 +84,11 @@ class DBManager:
             return self.bytes_to_uuid(result)
 
         except Exception as e:
-            self.disconnect()
-            raise DatabaseError(f"SQL error: {e}") from e
+            raise DatabaseError(e) from e
         
     def insert_rows(self, table_name: str, entities: list) -> int:
         if not self.connection.is_connected():
-            raise NoConnection("Connection not found.")
+            raise InexistentConnection("Connection not found.")
         
         try:
             row: dict = entities[0].to_dict()
@@ -119,7 +108,7 @@ class DBManager:
             raise ValueError("The entity has not to_dict method.") from e
         
         except Exception as e:
-            raise DatabaseError(f"SQL error: {e}") from e
+            raise DatabaseError(e) from e
     
     def uuid_to_bytes(self, rows: list) -> list:
         rows_formatted: list = []
