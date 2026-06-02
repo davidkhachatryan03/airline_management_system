@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
+import uuid6
 
 class Flight:
 
@@ -44,7 +45,7 @@ class Flight:
     
     @scheduled_departure_datetime.setter
     def scheduled_departure_datetime(self, value: datetime) -> None:
-        if not isinstance(value, datetime) or value is not None:
+        if value is not None and not isinstance(value, datetime):
             raise TypeError(f"The type of {value} must be datetime or none.")
         
         self._scheduled_departure_datetime = value
@@ -55,29 +56,29 @@ class Flight:
     
     @scheduled_arrival_datetime.setter
     def scheduled_arrival_datetime(self, value: datetime) -> None:
-        if not isinstance(value, datetime) or value is not None:
+        if value is not None and not isinstance(value, datetime):
             raise TypeError(f"The type of {value} must be datetime or none.")
         
         self._scheduled_arrival_datetime = value
 
     @property
-    def actual_departure_datetime(self) -> datetime:
+    def actual_departure_datetime(self) -> datetime | None:
         return self._actual_departure_datetime
     
     @actual_departure_datetime.setter
     def actual_departure_datetime(self, value: datetime | None) -> None:
-        if not isinstance(value, datetime) or value is not None:
+        if value is not None and not isinstance(value, datetime):
             raise TypeError(f"The type of {value} must be datetime or none.")
         
         self._actual_departure_datetime = value
 
     @property
-    def actual_arrival_datetime(self) -> datetime:
+    def actual_arrival_datetime(self) -> datetime | None:
         return self._actual_arrival_datetime
     
     @actual_arrival_datetime.setter
     def actual_arrival_datetime(self, value: datetime | None) -> None:
-        if not isinstance(value, datetime) or value is not None:
+        if value is not None and not isinstance(value, datetime):
             raise TypeError(f"The type of {value} must be datetime or none.")
         
         self._actual_arrival_datetime = value
@@ -165,3 +166,25 @@ class Flight:
             "route_id": self.route_id,
             "airplane_id": self.airplane_id
         }
+    
+    @classmethod
+    def new_flight(cls, 
+                scheduled_departure_datetime: datetime, 
+                scheduled_arrival_datetime: datetime,
+                operating_cost_usd: Decimal,
+                base_price_usd: Decimal,
+                route_id: int,
+                airplane_id: int) -> 'Flight':
+        
+        return cls(
+            id=uuid6.uuid7(),
+            scheduled_departure_datetime=scheduled_departure_datetime,
+            scheduled_arrival_datetime=scheduled_arrival_datetime,
+            actual_departure_datetime=None,
+            actual_arrival_datetime=None,
+            operating_cost_usd=operating_cost_usd,
+            base_price_usd=base_price_usd,
+            current_status_id=1,
+            route_id=route_id,
+            airplane_id=airplane_id
+        )
