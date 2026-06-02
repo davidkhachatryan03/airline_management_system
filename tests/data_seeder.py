@@ -4,7 +4,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from uuid import UUID
 from src.common import DBManager
 from faker import Faker
-from src.entities import Passenger, Document, Flight, RouteRetrieved, AirplaneRetrieved
+from src.entities import Passenger, Document, Flight, RouteRetrieved, AirplaneRetrieved, Booking, Ticket
 
 class DataSeeder:
 
@@ -16,8 +16,26 @@ class DataSeeder:
         with self.db_manager as db_manager:
             db_manager.execute_sql_file(os.path.join(os.getcwd(), "sql", "delete_data.sql"))
             self.execute_sql_files(db_manager)
-            self.insert_passengers_and_documents(db_manager)
-            self.insert_flights(db_manager)
+
+            passengers: list[Passenger]
+            document: list[Document]
+            flights: list[Flight]
+
+            passengers, documents = self.insert_passengers_and_documents(db_manager)
+            flights = self.insert_flights(db_manager)
+
+            query = """
+                    SELECT  a.capacity
+                    FROM    flights f
+                    JOIN    airplanes a
+                    ON      f.airplane_id = a.id
+                    WHERE   f.id = %s
+                    """
+            
+            bookings: list[Booking] 
+            tickets: list[Ticket]
+            
+            bookings, tickets = self.insert_bookings_and_tickets(passengers, flights, db_manager)
 
     def execute_sql_files(self, db_manager: DBManager) -> None:
         cwd: str = os.getcwd()
@@ -28,7 +46,7 @@ class DataSeeder:
             file_route: str = os.path.join(sql_insert_files_route, file)
             db_manager.execute_sql_file(file_route)
 
-    def insert_passengers_and_documents(self, db_manager: DBManager, cant=100) -> None:
+    def insert_passengers_and_documents(self, db_manager: DBManager, cant=100) -> tuple[list[Passenger], list[Document]]:
         passengers: list[Passenger] = []
         documents: list[Document] = []
         
@@ -57,8 +75,10 @@ class DataSeeder:
         
         db_manager.insert_rows("passengers", passengers)
         db_manager.insert_rows("documents", documents)
+
+        return passengers, documents
     
-    def insert_flights(self, db_manager: DBManager, cant=100) -> None:
+    def insert_flights(self, db_manager: DBManager, cant=100) -> list[Flight]:
         flights: list[Flight] = []
         routes: list[RouteRetrieved] = [RouteRetrieved(*route) for route in db_manager.retrieve("SELECT * FROM routes")]
         airplanes: list[AirplaneRetrieved] = [AirplaneRetrieved(*airplane) for airplane in db_manager.retrieve("SELECT * FROM airplanes")]
@@ -70,7 +90,7 @@ class DataSeeder:
                 route: RouteRetrieved = random.choice(routes)
                 airplane: AirplaneRetrieved = random.choice(airplanes)
 
-                if route._distance_km < airplane.range_km:
+                if route.distance_km < airplane.range_km:
                     flag = False
 
             scheduled_departure_datetime: datetime = self.faker.date_time_between(start_date="+30d", end_date="+180d")
@@ -90,3 +110,39 @@ class DataSeeder:
             flights.append(flight)
         
         db_manager.insert_rows("flights", flights)
+
+        return flights
+
+    def insert_bookings_and_tickets(self, passengers: list[Passenger], flights: list[Flight], db_manager: DBManager) -> tuple[list[Booking], list[Ticket]]:
+        bookings: list[Booking] = []
+        tickets: list[Ticket] = []
+
+        query = """
+                SELECT  a.capacity
+                FROM    flights f
+                JOIN    airplanes a
+                ON      f.airplane_id = a.id
+                WHERE   f.id = %s
+                """
+        
+        capacity_per_flight: dict[UUID, int] = {flight.id: db_manager.retrieve(query, (flight.id,))[0] for flight in flights}
+        
+        for passenger in passengers:
+            flight: Flight = random.choice(flights)
+
+            if capacity_per_flight[flight.id] > 0:
+                booking = Booking.new_booking(paid_amount_usd=flight.base_price_usd)
+                ticket = Ticket.new_ticket(
+                    paid_amount_usd=flight.base_price_usd,
+                    booking_id=booking.id,
+                    flight_id=flight.id,
+                    passenger_id=passenger.id
+                )
+
+                bookings.append(booking)
+                tickets.append(ticket)
+        
+        db_manager.insert_rows("bookings", bookings)
+        db_manager.insert_rows("tickets", tickets)
+
+        return bookings, tickets
