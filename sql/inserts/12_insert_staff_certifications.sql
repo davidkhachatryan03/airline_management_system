@@ -1,9 +1,5 @@
 USE airline;
 
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE staff_certifications;
-SET FOREIGN_KEY_CHECKS = 1;
-
 INSERT INTO staff_certifications (description, valid_from, valid_until, staff_id) VALUES 
 ('Captain License', '2023-12-31', '2028-12-31', 1),
 ('Captain License', '2025-06-15', '2027-06-15', 2),

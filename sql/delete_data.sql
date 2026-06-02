@@ -1,11 +1,11 @@
 USE airline;
 
 SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE sale_stasuses;
+TRUNCATE TABLE booking_statuses;
 TRUNCATE TABLE documents;
 TRUNCATE TABLE document_types;
 TRUNCATE TABLE boarding_passes;
-TRUNCATE TABLE sales;
+TRUNCATE TABLE bookings;
 TRUNCATE TABLE passengers;
 TRUNCATE TABLE roles;
 TRUNCATE TABLE boarding_pass_statuses;
@@ -16,8 +16,10 @@ TRUNCATE TABLE airplanes;
 TRUNCATE TABLE flight_statuses;
 TRUNCATE TABLE staff;
 TRUNCATE TABLE staff_certifications;
-TRUNCATE TABLE ariplane_statuses;
-TRUNCATE TABLE estados_staff;
+TRUNCATE TABLE airplane_statuses;
+TRUNCATE TABLE staff_statuses;
 TRUNCATE TABLE positions;
 TRUNCATE TABLE audit_logs;
+TRUNCATE TABLE tickets;
+TRUNCATE TABLE ticket_statuses;
 SET FOREIGN_KEY_CHECKS = 1;

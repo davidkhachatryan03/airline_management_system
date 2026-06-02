@@ -6,6 +6,7 @@ SELECT * FROM document_types;
 SELECT * FROM boarding_passes;
 SELECT * FROM bookings;
 SELECT * FROM tickets;
+SELECT * FROM ticket_statuses;
 SELECT * FROM passengers;
 SELECT * FROM roles;
 SELECT * FROM boarding_pass_statuses;

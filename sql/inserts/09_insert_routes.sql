@@ -1,9 +1,5 @@
 USE airline;
 
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE routes;
-SET FOREIGN_KEY_CHECKS = 1;
-
 INSERT INTO routes (flight_number, origin, destination, distance_km, duration_min) VALUES 
     ('AR1240', 'AEP', 'COR', 646, 85),
     ('AR1241', 'COR', 'AEP', 646, 85),

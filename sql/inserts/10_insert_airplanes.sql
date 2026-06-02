@@ -1,9 +1,5 @@
 USE airline;
 
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE airplanes;
-SET FOREIGN_KEY_CHECKS = 1;
-
 INSERT INTO airplanes (tail_number, manufacturer, model, capacity, range_km, flight_hour_cost_usd, current_status_id) VALUES 
 ('LV-GLF', 'Gulfstream', 'G650ER', 18, 13890, 15500.00, 1),
 ('N-750GL', 'Bombardier', 'Global 7500', 19, 14260, 16200.00, 1),
