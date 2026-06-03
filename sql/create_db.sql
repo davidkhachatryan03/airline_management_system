@@ -119,6 +119,7 @@ CREATE TABLE staff (
 );
 
 CREATE TABLE crew_assignments (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
     role_id INT UNSIGNED NOT NULL,
@@ -127,7 +128,7 @@ CREATE TABLE crew_assignments (
     FOREIGN KEY (role_id) REFERENCES roles(id),
     FOREIGN KEY (flight_id) REFERENCES flights(id),
     FOREIGN KEY (staff_id) REFERENCES staff(id),
-    PRIMARY KEY (flight_id, staff_id),
+    UNIQUE (flight_id, staff_id),
     UNIQUE (start_time, staff_id)
 );
 
@@ -165,19 +166,20 @@ CREATE TABLE boarding_passes (
 );
 
 CREATE TABLE staff_certifications (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     description VARCHAR(100) NOT NULL,
     valid_from DATE NOT NULL,
     valid_until DATE NOT NULL,
     staff_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (staff_id) REFERENCES staff(id),
-    PRIMARY KEY (description, staff_id)
+    UNIQUE (description, staff_id)
 );
 
 CREATE TABLE audit_logs (
-    id BINARY(16) PRIMARY KEY,
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     table_name VARCHAR(100) NOT NULL,
     action VARCHAR(100) NOT NULL,
-    record_id VARCHAR(100) NOT NULL,
+    record_id BINARY(16),
     column_name VARCHAR(100),
     old_value VARCHAR(100),
     new_value VARCHAR(100),
