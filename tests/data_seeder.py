@@ -8,36 +8,35 @@ from src.entities import Passenger, Document, Flight, RouteRetrieved, AirplaneRe
 
 class DataSeeder:
 
-    def __init__(self, db_manager: DBManager) -> None:
-        self.db_manager = db_manager
+    def __init__(self) -> None:
         self.faker = Faker()
     
-    def execute(self) -> None:
-        with self.db_manager as db_manager:
-            db_manager.execute_sql_file(os.path.join(os.getcwd(), "sql", "delete_data.sql"))
-            self.execute_sql_files(db_manager)
+    def execute(self, db_manager: DBManager) -> None:
+        db_manager.cursor.execute("SET @user = 999")
+        db_manager.execute_sql_file(os.path.join(os.getcwd(), "sql", "delete_data.sql"))
+        self._execute_sql_files(db_manager)
 
-            passengers: list[Passenger]
-            document: list[Document]
-            flights: list[Flight]
+        passengers: list[Passenger]
+        document: list[Document]
+        flights: list[Flight]
 
-            passengers, documents = self.insert_passengers_and_documents(db_manager)
-            flights = self.insert_flights(db_manager)
+        passengers, documents = self._insert_passengers_and_documents(db_manager)
+        flights = self._insert_flights(db_manager)
 
-            query = """
-                    SELECT  a.capacity
-                    FROM    flights f
-                    JOIN    airplanes a
-                    ON      f.airplane_id = a.id
-                    WHERE   f.id = %s
-                    """
-            
-            bookings: list[Booking] 
-            tickets: list[Ticket]
-            
-            bookings, tickets = self.insert_bookings_and_tickets(passengers, flights, db_manager)
+        query = """
+                SELECT  a.capacity
+                FROM    flights f
+                JOIN    airplanes a
+                ON      f.airplane_id = a.id
+                WHERE   f.id = %s
+                """
+        
+        bookings: list[Booking] 
+        tickets: list[Ticket]
+        
+        bookings, tickets = self._insert_bookings_and_tickets(passengers, flights, db_manager)
 
-    def execute_sql_files(self, db_manager: DBManager) -> None:
+    def _execute_sql_files(self, db_manager: DBManager) -> None:
         cwd: str = os.getcwd()
         sql_insert_files_route: str = os.path.join(cwd, "sql", "inserts")
         sql_insert_files: list[str] = sorted(os.listdir(sql_insert_files_route))
@@ -46,7 +45,7 @@ class DataSeeder:
             file_route: str = os.path.join(sql_insert_files_route, file)
             db_manager.execute_sql_file(file_route)
 
-    def insert_passengers_and_documents(self, db_manager: DBManager, cant=100) -> tuple[list[Passenger], list[Document]]:
+    def _insert_passengers_and_documents(self, db_manager: DBManager, cant=100) -> tuple[list[Passenger], list[Document]]:
         passengers: list[Passenger] = []
         documents: list[Document] = []
         
@@ -78,7 +77,7 @@ class DataSeeder:
 
         return passengers, documents
     
-    def insert_flights(self, db_manager: DBManager, cant=100) -> list[Flight]:
+    def _insert_flights(self, db_manager: DBManager, cant=100) -> list[Flight]:
         flights: list[Flight] = []
         routes: list[RouteRetrieved] = [RouteRetrieved(*route) for route in db_manager.retrieve("SELECT * FROM routes")]
         airplanes: list[AirplaneRetrieved] = [AirplaneRetrieved(*airplane) for airplane in db_manager.retrieve("SELECT * FROM airplanes")]
@@ -113,7 +112,7 @@ class DataSeeder:
 
         return flights
 
-    def insert_bookings_and_tickets(self, passengers: list[Passenger], flights: list[Flight], db_manager: DBManager) -> tuple[list[Booking], list[Ticket]]:
+    def _insert_bookings_and_tickets(self, passengers: list[Passenger], flights: list[Flight], db_manager: DBManager) -> tuple[list[Booking], list[Ticket]]:
         bookings: list[Booking] = []
         tickets: list[Ticket] = []
 
