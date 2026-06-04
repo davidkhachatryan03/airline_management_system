@@ -68,8 +68,12 @@ class CreateBooking:
             documents_retrieved: list[Document] = uow.document_repository.retrieve_documents(documents_requested)
 
             passengers_not_in_db, documents_not_in_db, all_passengers_id = self.passenger_processor.process(passengers_requested, documents_retrieved)
-            uow.passenger_repository.insert_passengers(passengers_not_in_db)
-            uow.document_repository.insert_documents(documents_not_in_db)
+
+            if passengers_not_in_db:
+                uow.passenger_repository.insert_passengers(passengers_not_in_db)
+
+            if documents_not_in_db:
+                uow.document_repository.insert_documents(documents_not_in_db)
 
             all_passengers: list[Passenger] = uow.passenger_repository.retrieve_passengers(all_passengers_id)
             self.passenger_validator.check_blacklisted(all_passengers)
