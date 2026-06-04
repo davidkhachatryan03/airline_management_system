@@ -28,15 +28,15 @@ class AirplaneCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        value = value.strip()
+        value_formatted: str = value.strip()
         
-        if not value:
+        if not value_formatted:
             raise ValueError(f"The tail number can not be empty.")
         
-        if len(value) > 10:
+        if len(value_formatted) > 10:
             raise ValueError("The tail number must be 10 characters or less.")
         
-        self._tail_number = value
+        self._tail_number = value_formatted
 
     @property
     def manufacturer(self) -> str:
@@ -47,15 +47,15 @@ class AirplaneCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        value = value.strip()
+        value_formatted: str = value.strip()
         
-        if not value:
+        if not value_formatted:
             raise ValueError(f"The manufacturer can not be empty.")
         
-        if len(value) > 50:
+        if len(value_formatted) > 50:
             raise ValueError("The manufacturer must be 50 characters or less.")
         
-        self._manufacturer = value
+        self._manufacturer = value_formatted
 
     @property
     def model(self) -> str:
@@ -66,15 +66,15 @@ class AirplaneCreated:
         if not isinstance(value, str):
             raise TypeError(f"The type of {value} is not str.")
         
-        value = value.strip()
+        value_formatted: str = value.strip()
         
-        if not value:
+        if not value_formatted:
             raise ValueError(f"The tail number can not be empty.")
         
-        if len(value) > 50:
+        if len(value_formatted) > 50:
             raise ValueError("The tail number must be 50 characters or less.")
         
-        self._model = value
+        self._model = value_formatted
 
     @property
     def capacity(self) -> int:
@@ -164,6 +164,22 @@ class AirplaneRetrieved(AirplaneCreated):
                         current_status_id)
         
         self.id = id
+
+    @property
+    def id(self) -> int:
+        return self._id
+    
+    @id.setter
+    def id(self, value: int) -> None:
+        if not isinstance(value, int):
+            raise TypeError(f"The type the id is not int.")
+        
+        if value <= 0:
+            raise ValueError(f"The id can not be negative or zero.")
+        
+        self._current_status_id = value
+        
+        self._id = value
 
     def to_dict(self) -> dict:
         return {
