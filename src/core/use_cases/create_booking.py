@@ -78,38 +78,15 @@ class CreateBooking:
             all_passengers: list[Passenger] = uow.passenger_repository.retrieve_passengers(all_passengers_id)
             self.passenger_validator.check_blacklisted(all_passengers)
 
-            paid_amount_usd: Decimal = self._calculate_paid_amount_usd(flights_retrieved, len(all_passengers_id))
-
-            booking_created = Booking.new_booking(paid_amount_usd)
+            booking_created = Booking.new_booking(flights_retrieved, len(all_passengers))
             self.uow.booking_repository.insert_booking(booking_created)
 
-            tickets_created: list[Ticket] = self._generate_tickets(all_passengers_id, flights_retrieved, booking_created.id)
+            tickets_created: list[Ticket] = booking_created.generate_tickets(all_passengers_id, flights_retrieved, booking_created.id)
 
             self.uow.ticket_repository.insert_tickets(tickets_created)
 
             return BookingResponse(
                 booking_reference=booking_created.booking_reference,
                 tickets=[ticket.ticket_number for ticket in tickets_created],
-                paid_amount_usd=paid_amount_usd
+                paid_amount_usd=booking_created.paid_amount_usd
             )
-
-    def _calculate_paid_amount_usd(self, flights: list[Flight], number_of_passengers: int) -> Decimal:
-        paid_amount_usd: Decimal = sum((flight.base_price_usd for flight in flights), Decimal("0")) * number_of_passengers
-
-        return paid_amount_usd
-    
-    def _generate_tickets(self, passengers_id: list[UUID], flights: list[Flight], booking_id: UUID) -> list[Ticket]:
-        tickets_created: list[Ticket] = []
-        
-        for passenger_id in passengers_id:
-            for flight in flights: 
-                ticket_created = Ticket.new_ticket(
-                    paid_amount_usd=flight.base_price_usd,
-                    booking_id=booking_id,
-                    flight_id=flight.id,
-                    passenger_id=passenger_id
-                )
-                
-                tickets_created.append(ticket_created)
-        
-        return tickets_created
