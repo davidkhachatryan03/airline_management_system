@@ -28,7 +28,7 @@ class Ticket:
     @id.setter
     def id(self, value: UUID) -> None:
         if not isinstance(value, UUID):
-            raise TypeError(f"The type of {value} is not UUID.")
+            raise TypeError("The type of the id is not UUID.")
         
         self._id = value
 
@@ -39,17 +39,17 @@ class Ticket:
     @ticket_number.setter
     def ticket_number(self, value: str) -> None:
         if not isinstance(value, str):
-            raise TypeError(f"The type of {value} is not str.")
+            raise TypeError("The type of the ticket number is not str.")
         
-        value = value.strip()
+        value_formatted: str = value.strip()
         
-        if not value:
+        if not value_formatted:
             raise ValueError("The ticket number can not be empty.")
         
-        if len(value) != 13:
+        if len(value_formatted) != 13:
             raise ValueError("The ticket number must be exactly 13 characters long.")
         
-        if not value.isnumeric():
+        if not value_formatted.isnumeric():
             raise ValueError("The ticket number must only contain digits.")
         
         self._ticket_number = value
@@ -61,7 +61,7 @@ class Ticket:
     @paid_amount_usd.setter
     def paid_amount_usd(self, value: Decimal) -> None:
         if not isinstance(value, Decimal):
-            raise TypeError(f"The type of {value} is not decimal.")
+            raise TypeError(f"The type of the paid amount is not decimal.")
         
         if value <= 0:
             raise ValueError("The paid amount can not be negative or zero.")
@@ -75,10 +75,10 @@ class Ticket:
     @current_status_id.setter
     def current_status_id(self, value: int) -> None:
         if not isinstance(value, int):
-            raise TypeError(f"The type of {value} is not int.")
+            raise TypeError("The type of the current status id is not int.")
         
         if value <= 0:
-            raise ValueError(f"The current status id can not be negative or zero.")
+            raise ValueError("The current status id can not be negative or zero.")
         
         self._current_status_id = value
 
@@ -89,7 +89,7 @@ class Ticket:
     @booking_id.setter
     def booking_id(self, value: UUID) -> None:
         if not isinstance(value, UUID):
-            raise TypeError(f"The type of {value} is not UUID.")
+            raise TypeError("The type of the booking id is not UUID.")
         
         self._booking_id = value
 
@@ -100,7 +100,7 @@ class Ticket:
     @flight_id.setter
     def flight_id(self, value: UUID) -> None:
         if not isinstance(value, UUID):
-            raise TypeError(f"The type of {value} is not UUID.")
+            raise TypeError("The type of the flight id is not UUID.")
         
         self._flight_id = value
 
@@ -111,7 +111,7 @@ class Ticket:
     @passenger_id.setter
     def passenger_id(self, value: UUID) -> None:
         if not isinstance(value, UUID):
-            raise TypeError(f"The type of {value} is not UUID.")
+            raise TypeError("The type of the passenger id is not UUID.")
         
         self._passenger_id = value
     

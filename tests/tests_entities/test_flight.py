@@ -90,7 +90,7 @@ def test_to_dict_method(flight: Flight) -> None:
 )
 
 def test_invalid_flight(flight: Flight, field, value, exception, message) -> None:
-    test_data = flight.to_dict()
+    test_data: dict = flight.to_dict()
     test_data[field] = value
 
     with pytest.raises(exception, match=message):
