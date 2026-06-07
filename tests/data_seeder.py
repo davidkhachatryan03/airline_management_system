@@ -1,4 +1,4 @@
-import os, uuid6, random
+import os, random
 from datetime import date, datetime, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 from uuid import UUID
@@ -101,7 +101,6 @@ class DataSeeder:
                 scheduled_departure_datetime=scheduled_departure_datetime,
                 scheduled_arrival_datetime=scheduled_arrival_datetime,
                 operating_cost_usd=operating_cost_usd,
-                base_price_usd=(operating_cost_usd * Decimal("1.3")).quantize(Decimal("0.01"), ROUND_HALF_UP),
                 route_id=route.id,
                 airplane_id=airplane.id
             )
@@ -130,7 +129,7 @@ class DataSeeder:
             flight: Flight = random.choice(flights)
 
             if capacity_per_flight[flight.id] > 0:
-                booking = Booking.new_booking(paid_amount_usd=flight.base_price_usd)
+                booking = Booking.new_booking(flights, len(passengers))
                 ticket = Ticket.new_ticket(
                     paid_amount_usd=flight.base_price_usd,
                     booking_id=booking.id,
