@@ -1,1 +1,1 @@
-from src.core.units_of_work.create_booking_unit_of_work import CreateBookingUoW
+from src.core.units_of_work.create_booking_uow import CreateBookingUoW
