@@ -1,6 +1,8 @@
 import pytest
+from typing import cast
 from src.entities import Flight, Document, Passenger
 from src.core.use_cases import CreateBooking, PassengerProcessor
+from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import FlightValidator, PassengerValidator
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
 from tests.fakes.fake_db_manager import FakeDBManager
@@ -34,7 +36,7 @@ def assert_booking_response(
 
 def make_create_booking(fake_uow: FakeCreateBookingUoW) -> CreateBooking:
     return CreateBooking(
-        uow=fake_uow,
+        uow=cast(CreateBookingUoW, fake_uow),
         passenger_processor=PassengerProcessor(),
         flight_validator=FlightValidator(),
         passenger_validator=PassengerValidator(),
