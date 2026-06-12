@@ -27,6 +27,15 @@ class Flight:
         self.current_status_id = current_status_id
         self.route_id = route_id
         self.airplane_id = airplane_id
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, Flight):
+            return self.id == other.id
+        
+        return False
+    
+    def __hash__(self) -> int:
+        return hash(self.id)
     
     @property
     def id(self) -> UUID:
