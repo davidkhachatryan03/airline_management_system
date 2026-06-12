@@ -53,6 +53,8 @@ class CreateBooking:
             seats_available_per_flight: dict[UUID, int] = uow.flight_repository.retrieve_seats_available_per_flight(flights_retrieved)
             self.flight_validator.check_seats_available_per_flight(seats_available_per_flight, len(booking_request.passengers))
 
+            self.flight_validator.check_flights_statuses(flights_retrieved)
+
             passengers_requested: list[PassengerRequest] = booking_request.passengers
             passengers_requested_documents: list[tuple] = [passenger.identity_key for passenger in passengers_requested]
 
