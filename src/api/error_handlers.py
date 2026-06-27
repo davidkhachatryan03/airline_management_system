@@ -62,7 +62,7 @@ def setup_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=500,
             content={
-                "error": "InternalServerError",
-                "message": "We are experiencing technical difficulties. Please try again later."
+                "error": exc.__class__.__name__,
+                "message": str(exc)
             }
         )
