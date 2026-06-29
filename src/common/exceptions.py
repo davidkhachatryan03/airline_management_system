@@ -33,8 +33,21 @@ class InvalidFlightId(InvalidFlight):
 class InvalidPassenger(InvalidData):
     pass
 
+class InexistentPassenger(InvalidPassenger):
+    def __init__(self, message = "The passenger is not registered.") -> None:
+        super().__init__(message)
+
 class BlacklistedPassenger(InvalidPassenger):
     def __init__(self, message = "A passenger is blacklisted.") -> None:
+        super().__init__(message)
+
+# DOCUMENT EXCEPTIONS
+
+class InvalidDocument(InvalidData):
+    pass
+
+class DuplicatedDocument(InvalidData):
+    def __init__(self, message = "The document is already registered.") -> None:
         super().__init__(message)
 
 # DATABASE EXCEPTIONS

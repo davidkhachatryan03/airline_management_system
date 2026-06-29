@@ -16,7 +16,7 @@ class DocumentRepository:
         query = """
                 SELECT  *
                 FROM    documents
-                WHERE   (document_number, valid_from, valid_until, issue_country, document_type_id)
+                WHERE   (document_number, issue_country)
                 IN      ({})
                 """.format(placeholders)
         
@@ -30,4 +30,4 @@ class DocumentRepository:
         return []
     
     def insert_documents(self, documents: list[Document]) -> None:
-        self.db_manager.insert_rows("documents" ,documents)
+        self.db_manager.insert_rows("documents", documents)
