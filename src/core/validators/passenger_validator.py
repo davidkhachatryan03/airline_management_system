@@ -10,6 +10,5 @@ class PassengerValidator:
                 raise BlacklistedPassenger
             
     def check_existence(self, passengers_requested: list[UUID], passengers_retrieved: list[Passenger]) -> None:
-        for passenger in passengers_retrieved:
-            if passenger.id not in passengers_requested:
-                raise InvalidPassenger
+        if len(passengers_retrieved) != len(passengers_requested):
+            raise InvalidPassenger
