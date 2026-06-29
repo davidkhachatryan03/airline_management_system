@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-from uuid import UUID
 from datetime import date
+from uuid import UUID
+
+from pydantic import BaseModel, Field
 
 class DocumentRequest(BaseModel):
     document_number: str = Field(min_length=5)

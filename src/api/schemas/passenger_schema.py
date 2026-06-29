@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, model_validator, EmailStr
 from datetime import date
+
+from pydantic import BaseModel, Field, model_validator, EmailStr
 
 class PassengerRequest(BaseModel):
     full_name: str = Field(min_length=2, max_length=100)

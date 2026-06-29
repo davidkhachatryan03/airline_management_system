@@ -1,7 +1,7 @@
+from src.api.schemas import DocumentRequest, DocumentResponse
+from src.entities import Document, Passenger
 from src.core.units_of_work import RegisterDocumentUoW
 from src.core.validators import PassengerValidator, DocumentValidator
-from src.api.schemas import DocumentRequest, DocumentResponse
-from src.entities import Passenger, Document
 
 class RegisterDocument:
 

@@ -1,6 +1,7 @@
+from uuid import UUID
+
 from src.common.exceptions import BlacklistedPassenger, InvalidPassenger
 from src.entities import Passenger
-from uuid import UUID
 
 class PassengerValidator:
 

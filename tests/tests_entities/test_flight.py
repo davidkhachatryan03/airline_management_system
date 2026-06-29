@@ -1,8 +1,9 @@
-import pytest
-from src.entities import Flight
-from decimal import Decimal
-from uuid import UUID
 from datetime import datetime
+from decimal import Decimal
+import pytest
+from uuid import UUID
+
+from src.entities import Flight
 
 def test_flight_completed_valid_input(flight: Flight) -> None:
 

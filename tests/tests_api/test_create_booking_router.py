@@ -1,10 +1,11 @@
-from fastapi.testclient import TestClient
-import pytest
 from datetime import datetime
 from decimal import Decimal
+from fastapi.testclient import TestClient
+import pytest
+
 from src.api.main import app
 from src.api.routers.create_booking_router import get_booking_creator
-from src.api.schemas import BookingRequest, BookingResponse
+from src.api.schemas import BookingResponse
 from src.common.exceptions import *
 
 client = TestClient(app)

@@ -1,5 +1,6 @@
-from src.common.exceptions import InexistentFlight, FullFlight, NotScheduledFlight
 from uuid import UUID
+
+from src.common.exceptions import FullFlight, InexistentFlight, NotScheduledFlight
 from src.entities import Flight
 
 class FlightValidator:

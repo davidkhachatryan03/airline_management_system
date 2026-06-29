@@ -1,5 +1,6 @@
-from src.entities import Passenger
 from uuid import UUID
+
+from src.entities import Passenger
 
 class FakePassengerRepository:
 

@@ -1,7 +1,8 @@
-import pytest
-from src.entities import Document
-from uuid import UUID
 from datetime import date
+import pytest
+from uuid import UUID
+
+from src.entities import Document
 
 def test_document_valid_input(document: Document) -> None:
     assert document.id == UUID("019e92b3-e0db-7244-a9a2-43322a076e75")

@@ -1,7 +1,7 @@
+from uuid import UUID
+
 from src.common import DBManager
 from src.entities import Passenger
-from src.api.schemas import PassengerRequest
-from uuid import UUID
 
 class PassengerRepository:
 

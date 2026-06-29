@@ -1,9 +1,10 @@
+import uuid6, string, random
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from uuid import UUID
+
 from src.entities.flight import Flight
 from src.entities.ticket import Ticket
-import uuid6, string, random
 
 class Booking:
 

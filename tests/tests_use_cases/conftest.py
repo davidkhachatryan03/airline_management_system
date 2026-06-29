@@ -1,9 +1,10 @@
-import pytest
-from uuid import UUID
-from src.entities import Passenger, Document, Flight
-from src.api.schemas import BookingRequest, PassengerRequest
 from datetime import datetime, date
 from decimal import Decimal
+import pytest
+from uuid import UUID
+
+from src.api.schemas import BookingRequest, PassengerRequest
+from src.entities import Passenger, Flight
 
 @pytest.fixture
 def booking_request() -> BookingRequest:

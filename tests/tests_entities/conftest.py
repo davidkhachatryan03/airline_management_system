@@ -1,8 +1,9 @@
 import pytest
-from src.entities import Booking, Flight, Ticket, Passenger, Document
+from datetime import datetime, date
 from decimal import Decimal
 from uuid import UUID
-from datetime import datetime, date
+
+from src.entities import Booking, Document, Flight, Passenger, Ticket
 
 @pytest.fixture
 def booking() -> Booking:

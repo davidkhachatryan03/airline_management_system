@@ -1,8 +1,9 @@
+from uuid import UUID
+
+from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
+from src.entities import Booking, Flight, Passenger, Ticket
 from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import FlightValidator, PassengerValidator
-from src.entities import Flight, Document, Passenger, Booking, Ticket
-from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
-from uuid import UUID
 
 class PassengerProcessor:
     

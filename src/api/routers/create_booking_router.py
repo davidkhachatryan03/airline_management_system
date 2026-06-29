@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
+
 from src.api.schemas import BookingRequest, BookingResponse
-from src.core.validators import FlightValidator, PassengerValidator
 from src.common import DBManager
+from src.core.validators import FlightValidator, PassengerValidator
 from src.core.use_cases import CreateBooking, PassengerProcessor
 from src.core.units_of_work import CreateBookingUoW
 

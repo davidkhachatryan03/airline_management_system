@@ -1,6 +1,6 @@
+import uuid6, random, string
 from decimal import Decimal
 from uuid import UUID
-import uuid6, random, string
 
 class Ticket:
 

@@ -1,7 +1,9 @@
+import logging
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+
 from src.common.exceptions import *
-import logging
 
 def setup_exception_handlers(app: FastAPI) -> None:
 

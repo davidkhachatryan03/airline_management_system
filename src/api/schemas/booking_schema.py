@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field, field_validator
-from uuid import UUID
-from decimal import Decimal
 from datetime import datetime
+from decimal import Decimal
+from uuid import UUID
+
+from pydantic import BaseModel, Field, field_validator
+
 from src.api.schemas.passenger_schema import PassengerRequest
 
 class BookingRequest(BaseModel):

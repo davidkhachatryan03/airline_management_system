@@ -1,6 +1,7 @@
-from src.entities import Flight
 from collections.abc import KeysView
 from uuid import UUID
+
+from src.entities import Flight
 
 class FakeFlightRepository:
 

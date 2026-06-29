@@ -1,6 +1,5 @@
 from src.common import DBManager
 from src.entities import Document
-from src.api.schemas import PassengerRequest
 
 class DocumentRepository:
 

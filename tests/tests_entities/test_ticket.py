@@ -1,7 +1,8 @@
 import pytest
-from src.entities import Ticket
 from decimal import Decimal
 from uuid import UUID
+
+from src.entities import Ticket
 
 def test_ticket_valid_input(ticket: Ticket) -> None:
 

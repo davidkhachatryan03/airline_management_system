@@ -1,7 +1,7 @@
+from uuid import UUID
+
 from src.common import DBManager
 from src.entities import Flight
-from uuid import UUID
-from decimal import Decimal
 
 class FlightRepository:
 

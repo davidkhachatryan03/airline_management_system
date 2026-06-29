@@ -1,9 +1,11 @@
+import mysql.connector, os
+from dotenv import load_dotenv
 from typing import cast
 from uuid import UUID
-import mysql.connector, os
+
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
-from dotenv import load_dotenv
+
 from src.common.exceptions import *
 
 load_dotenv()

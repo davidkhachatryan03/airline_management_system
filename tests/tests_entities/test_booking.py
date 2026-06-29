@@ -1,8 +1,9 @@
-import pytest
-from src.entities import Booking, Flight
-from decimal import Decimal, ROUND_HALF_UP
-from uuid import UUID
 from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
+import pytest
+from uuid import UUID
+
+from src.entities import Booking, Flight
 
 def test_booking_valid_input(booking: Booking) -> None:
 

@@ -1,10 +1,12 @@
 import os, random
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 from uuid import UUID
-from src.common import DBManager
+
 from faker import Faker
-from src.entities import Passenger, Document, Flight, RouteRetrieved, AirplaneRetrieved, Booking, Ticket
+
+from src.common import DBManager
+from src.entities import AirplaneRetrieved, Booking, Document, Flight, Passenger, RouteRetrieved, Ticket
 
 class DataSeeder:
 

@@ -1,6 +1,6 @@
+from datetime import date
 from uuid import UUID
 import uuid6
-from datetime import date
 
 class Passenger:
 

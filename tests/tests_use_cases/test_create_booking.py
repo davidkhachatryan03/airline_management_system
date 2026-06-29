@@ -1,16 +1,17 @@
+from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
 import pytest
 from typing import cast
-from src.entities import Flight, Document, Passenger
+
+from src.api.schemas import BookingRequest, BookingResponse
+from src.common.exceptions import BlacklistedPassenger, FullFlight, InexistentFlight, NotScheduledFlight
 from src.core.use_cases import CreateBooking, PassengerProcessor
 from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import FlightValidator, PassengerValidator
-from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
+from src.entities import Flight, Passenger
 from tests.fakes.fake_db_manager import FakeDBManager
 from tests.fakes.fake_repositories import FakeFlightRepository
 from tests.fakes.fake_uows.fake_create_booking_uow import FakeCreateBookingUoW
-from datetime import datetime
-from decimal import Decimal, ROUND_HALF_UP
-from src.common.exceptions import *
 
 def assert_booking_response(
     booking_response: BookingResponse, 

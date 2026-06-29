@@ -1,5 +1,5 @@
-from src.core.repositories import PassengerRepository, DocumentRepository, FlightRepository, BookingRepository, TicketRepository
 from src.common import DBManager
+from src.core.repositories import BookingRepository, DocumentRepository, FlightRepository, PassengerRepository, TicketRepository
 
 class CreateBookingUoW:
 
