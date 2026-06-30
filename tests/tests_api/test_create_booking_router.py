@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 import pytest
 
 from src.api.main import app
-from src.api.routers.create_booking_router import get_booking_creator
+from src.api.routers.booking_router import get_booking_creator
 from src.api.schemas import BookingResponse
 from src.common.exceptions import *
 

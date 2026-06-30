@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from src.api.error_handlers import setup_exception_handlers
-from src.api.routers import create_booking_router
+from src.api.routers import booking_router
 
 app = FastAPI(
     title=" Booking API",
@@ -11,7 +11,7 @@ app = FastAPI(
 
 setup_exception_handlers(app)
 
-app.include_router(create_booking_router.router)
+app.include_router(booking_router.router)
 
 @app.get("/health")
 def health_check():
