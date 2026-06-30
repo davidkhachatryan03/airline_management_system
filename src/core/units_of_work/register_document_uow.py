@@ -1,5 +1,5 @@
-from src.core.repositories import DocumentRepository, PassengerRepository
 from src.common import DBManager
+from src.core.repositories import DocumentRepository, PassengerRepository
 
 class RegisterDocumentUoW:
 
