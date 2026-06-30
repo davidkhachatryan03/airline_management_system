@@ -35,7 +35,7 @@ def assert_booking_response(
     assert isinstance(booking_response.booking_datetime, datetime)
     assert booking_response.paid_amount_usd == paid_amount_usd
 
-def make_create_booking(fake_uow: FakeCreateBookingUoW) -> CreateBooking:
+def make_booking_creator(fake_uow: FakeCreateBookingUoW) -> CreateBooking:
     return CreateBooking(
         uow=cast(CreateBookingUoW, fake_uow),
         passenger_processor=PassengerProcessor(),
@@ -55,7 +55,7 @@ def generate_not_scheduled_flight(flight: Flight, fake_flight_repository: FakeFl
     fake_flight_repository.flights[flight] = value
 
 @pytest.mark.usefixtures("fixed_booking_identifiers")
-def test_create_booking_use_case_valid_input_passengers_registered(
+def test_booking_creator_use_case_valid_input_passengers_registered(
     booking_request: BookingRequest, 
     flights_generated: list[Flight], 
     passengers_generated: list[Passenger],
@@ -71,14 +71,14 @@ def test_create_booking_use_case_valid_input_passengers_registered(
     assert len(fake_uow.flight_repository.flights) > 0
     assert len(fake_uow.passenger_repository.passengers) == len(passengers_generated)
 
-    create_booking: CreateBooking = make_create_booking(fake_uow)
+    booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
-    booking_response: BookingResponse = create_booking.execute(booking_request)
+    booking_response: BookingResponse = booking_creator.execute(booking_request)
 
     assert_booking_response(booking_response, passengers_generated, flights_generated, fake_uow, expected_booking_reference, expected_ticket_number)
 
 @pytest.mark.usefixtures("fixed_booking_identifiers")
-def test_create_booking_use_case_valid_input_passengers_not_registered(
+def test_booking_creator_use_case_valid_input_passengers_not_registered(
     booking_request: BookingRequest, 
     flights_generated: list[Flight], 
     passengers_generated: list[Passenger],
@@ -93,14 +93,14 @@ def test_create_booking_use_case_valid_input_passengers_not_registered(
     assert len(fake_uow.flight_repository.flights) > 0
     assert len(fake_uow.passenger_repository.passengers) == 0
 
-    create_booking: CreateBooking = make_create_booking(fake_uow)
+    booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
-    booking_response: BookingResponse = create_booking.execute(booking_request)
+    booking_response: BookingResponse = booking_creator.execute(booking_request)
 
     assert_booking_response(booking_response, passengers_generated, flights_generated, fake_uow, expected_booking_reference, expected_ticket_number)
 
 @pytest.mark.usefixtures("fixed_booking_identifiers")
-def test_create_booking_use_case_valid_input_passengers_registered_and_not_registered(
+def test_booking_creator_use_case_valid_input_passengers_registered_and_not_registered(
     booking_request: BookingRequest, 
     flights_generated: list[Flight], 
     passengers_generated: list[Passenger],
@@ -116,13 +116,13 @@ def test_create_booking_use_case_valid_input_passengers_registered_and_not_regis
     assert len(fake_uow.flight_repository.flights) > 0
     assert len(fake_uow.passenger_repository.passengers) == 1
 
-    create_booking: CreateBooking = make_create_booking(fake_uow)
+    booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
-    booking_response: BookingResponse = create_booking.execute(booking_request)
+    booking_response: BookingResponse = booking_creator.execute(booking_request)
 
     assert_booking_response(booking_response, passengers_generated, flights_generated, fake_uow, expected_booking_reference, expected_ticket_number)
 
-def test_create_booking_blacklisted_passenger(
+def test_booking_creator_blacklisted_passenger(
     booking_request: BookingRequest, 
     flights_generated: list[Flight], 
     passengers_generated: list[Passenger]
@@ -135,12 +135,12 @@ def test_create_booking_blacklisted_passenger(
     fake_uow.flight_repository.insert_flights(flights_generated)
     fake_uow.passenger_repository.insert_passengers(passengers_generated)
 
-    create_booking: CreateBooking = make_create_booking(fake_uow)
+    booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
     with pytest.raises(BlacklistedPassenger):
-        create_booking.execute(booking_request)
+        booking_creator.execute(booking_request)
 
-def test_create_booking_full_flight(
+def test_booking_creator_full_flight(
     booking_request: BookingRequest, 
     flights_generated: list[Flight], 
     passengers_generated: list[Passenger]
@@ -157,12 +157,12 @@ def test_create_booking_full_flight(
     flights: list[Flight] = list(fake_uow.flight_repository.flights.keys())
     generate_full_flight(flights[0], fake_uow.flight_repository)
 
-    create_booking: CreateBooking = make_create_booking(fake_uow)
+    booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
     with pytest.raises(FullFlight):
-        create_booking.execute(booking_request)
+        booking_creator.execute(booking_request)
 
-def test_create_booking_inexistent_flight(
+def test_booking_creator_inexistent_flight(
     booking_request: BookingRequest, 
     passengers_generated: list[Passenger]
     ) -> None:
@@ -174,10 +174,10 @@ def test_create_booking_inexistent_flight(
     assert len(fake_uow.flight_repository.flights) == 0
     assert len(fake_uow.passenger_repository.passengers) == len(passengers_generated)
 
-    create_booking: CreateBooking = make_create_booking(fake_uow)
+    booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
     with pytest.raises(InexistentFlight):
-        create_booking.execute(booking_request)
+        booking_creator.execute(booking_request)
 
 def test_create_not_scheduled_flight(
     booking_request: BookingRequest,
@@ -196,8 +196,8 @@ def test_create_not_scheduled_flight(
     flights: list[Flight] = list(fake_uow.flight_repository.flights.keys())
     generate_not_scheduled_flight(flights[0], fake_uow.flight_repository)
 
-    create_booking: CreateBooking = make_create_booking(fake_uow)
+    booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
     with pytest.raises(NotScheduledFlight):
-        create_booking.execute(booking_request)
+        booking_creator.execute(booking_request)
 

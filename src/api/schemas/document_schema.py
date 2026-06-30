@@ -9,7 +9,7 @@ class DocumentRequest(BaseModel):
     valid_until: date
     issue_country: str = Field(min_length=3, max_length=3)
     passenger_id: UUID
-    document_type_id: int = Field(min_length=1, max_length=1, gt=0)
+    document_type_id: int = Field(gt=0)
 
     @property
     def identity_key(self) -> tuple:
@@ -17,4 +17,4 @@ class DocumentRequest(BaseModel):
 
 class DocumentResponse(BaseModel):
     document_number: str = Field(min_length=5)
-    document_type_id: int = Field(min_length=1, max_length=1, gt=0)
+    document_type_id: int = Field(gt=0)
