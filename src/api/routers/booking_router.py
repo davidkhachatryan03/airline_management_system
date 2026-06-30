@@ -17,7 +17,7 @@ def get_booking_creator() -> CreateBooking:
     return CreateBooking(CreateBookingUoW(db_manager), passenger_processor, flight_validator, passenger_validator)
 
 @router.post("/", response_model=BookingResponse)
-def create_booking(booking_request: BookingRequest, booking_creator = Depends(get_booking_creator)):
+def create_booking(booking_request: BookingRequest, booking_creator: CreateBooking = Depends(get_booking_creator)):
     booking_response: BookingResponse = booking_creator.execute(booking_request)
 
     return booking_response
