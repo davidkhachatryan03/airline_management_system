@@ -119,7 +119,7 @@ class Document:
 
     @property
     def identity_key(self) -> tuple:
-        return (self.document_number, self.valid_from, self.valid_until, self.issue_country, self.document_type_id)
+        return (self.document_number, self.issue_country)
 
     def to_dict(self) -> dict:
         return {
