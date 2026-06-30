@@ -46,6 +46,26 @@ def setup_exception_handlers(app: FastAPI) -> None:
                 "message": str(exc) 
             }
         )
+    
+    @app.exception_handler(DuplicatedDocument)
+    async def duplicated_document_handler(request: Request, exc: DuplicatedDocument):
+        return JSONResponse(
+            status_code=409,
+            content={
+                "error": exc.__class__.__name__,
+                "message": str(exc)
+            }
+        )
+    
+    @app.exception_handler(InexistentPassenger)
+    async def inexistent_passenger_handler(request: Request, exc: InexistentPassenger):
+        return JSONResponse(
+            status_code=404,
+            content={
+                "error": exc.__class__.__name__,
+                "message": str(exc)
+            }
+        )
 
     @app.exception_handler(InvalidData)
     async def invalid_data_handler(request: Request, exc: InvalidData):
