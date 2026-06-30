@@ -6,6 +6,9 @@ from src.entities import Flight
 class FlightValidator:
 
     def check_flights_existence(self, flights_requested: list[UUID], flights_retrieved: list[Flight]) -> None:
+        if not flights_retrieved:
+            raise InexistentFlight
+
         flights_requested_set = set(flights_requested)
         for flight in flights_retrieved:
             if flight.id not in flights_requested_set:
