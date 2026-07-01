@@ -52,3 +52,10 @@ class PassengerRepository:
             return [Passenger(*row) for row in result]
         
         return []
+    
+    def retrieve_passengers(self, limit: int = 5) -> list[Passenger]:
+        query = "SELECT * FROM passengers ORDER BY id DESC LIMIT %s"
+
+        results: list[tuple] = self.db_manager.retrieve(query, (limit,))
+
+        return [Passenger(*result) for result in results]
