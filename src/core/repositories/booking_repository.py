@@ -13,5 +13,8 @@ class BookingRepository:
         query = "SELECT * FROM bookings ORDER BY id DESC LIMIT %s"
 
         results: list[tuple] = self.db_manager.retrieve(query, (limit,))
-
-        return [Booking(*result) for result in results]
+        
+        if results:
+            return [Booking(*result) for result in results]
+        
+        return []

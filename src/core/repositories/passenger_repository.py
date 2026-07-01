@@ -57,5 +57,8 @@ class PassengerRepository:
         query = "SELECT * FROM passengers ORDER BY id DESC LIMIT %s"
 
         results: list[tuple] = self.db_manager.retrieve(query, (limit,))
-
-        return [Passenger(*result) for result in results]
+        
+        if results:
+            return [Passenger(*result) for result in results]
+        
+        return []
