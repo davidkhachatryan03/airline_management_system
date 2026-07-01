@@ -80,7 +80,7 @@ CREATE TABLE documents (
     document_type_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (passenger_id) REFERENCES passengers(id),
     FOREIGN KEY (document_type_id) REFERENCES document_types(id),
-    UNIQUE (document_number, issue_country, document_type_id)
+    UNIQUE (document_number, issue_country)
 );
 
 CREATE TABLE airplanes (
