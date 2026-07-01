@@ -1,3 +1,24 @@
-from src.entities import Document
-from src.core.repositories import DocumentRepository
+from src.entities import Document, Passenger
+from src.core.repositories import DocumentRepository, PassengerRepository
 
+def test_insert_document(document_repository: DocumentRepository, passenger_repository: PassengerRepository, document: Document, passenger: Passenger) -> None:
+    passenger_repository.insert_passengers([passenger])
+    document_repository.insert_documents([document])
+
+    last_inserted_document: Document = document_repository.retrieve_documents(limit=1)[0]
+
+    assert last_inserted_document.id == document.id
+    assert last_inserted_document.document_number == document.document_number
+    assert last_inserted_document.valid_from == document.valid_from
+    assert last_inserted_document.valid_until == document.valid_until
+    assert last_inserted_document.issue_country == document.issue_country
+    assert last_inserted_document.passenger_id == document.passenger_id
+    assert last_inserted_document.document_type_id == document.document_type_id
+
+def test_retrieve_all_documents(document_repository: DocumentRepository, passenger_repository: PassengerRepository, documents: list[Document], passengers: list[Passenger]) -> None:
+    passenger_repository.insert_passengers(passengers)
+    document_repository.insert_documents(documents)
+
+    all_inserted_documents: list[Document] = document_repository.retrieve_documents(limit=3)
+
+    assert len(all_inserted_documents) == len(documents)
