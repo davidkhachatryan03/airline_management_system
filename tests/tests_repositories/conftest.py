@@ -6,8 +6,8 @@ from uuid6 import uuid7
 from uuid import UUID
 
 from src.common import DBManager
-from src.core.repositories import BookingRepository, DocumentRepository, PassengerRepository
-from src.entities import Booking, Document, Passenger
+from src.core.repositories import BookingRepository, DocumentRepository, FlightRepository, PassengerRepository, TicketRepository
+from src.entities import Booking, Document, Flight, Passenger, Ticket
 
 @pytest.fixture(scope="session", autouse=True)
 def db_connected():
@@ -91,3 +91,47 @@ def document(passenger: Passenger) -> Document:
 @pytest.fixture
 def documents(passengers: list[Passenger]) -> list[Document]:
     return [get_document(passenger.id) for passenger in passengers]
+
+@pytest.fixture
+def flight_repository(db_connected: DBManager) -> FlightRepository:
+    return FlightRepository(db_connected)
+
+def get_flight(route_id: int = 1) -> Flight:
+    flight = Flight.new_flight(
+        scheduled_departure_datetime=datetime(2026,1,1,13,10),
+        scheduled_arrival_datetime=datetime(2026,1,1,17,42),
+        operating_cost_usd=Decimal("8700"),
+        route_id=route_id,
+        airplane_id=1
+    )
+    flight.id = uuid7()
+
+    return flight
+
+@pytest.fixture
+def flight() -> Flight:
+    return get_flight()
+
+@pytest.fixture
+def flights() -> list[Flight]:
+    return [get_flight(route_id=2), get_flight(route_id=3), get_flight(route_id=4)]
+
+@pytest.fixture
+def ticket_repository(db_connected: DBManager) -> TicketRepository:
+    return TicketRepository(db_connected)
+
+def get_ticket(booking_id: UUID, flight_id: UUID, passenger_id: UUID) -> Ticket:
+    return Ticket.new_ticket(
+        paid_amount_usd=Decimal(10000),
+        booking_id=booking_id,
+        flight_id=flight_id,
+        passenger_id=passenger_id
+    )
+
+@pytest.fixture
+def ticket(booking: Booking, flight: Flight, passenger: Flight) -> Ticket:
+    return get_ticket(booking.id, flight.id, passenger.id)
+
+@pytest.fixture
+def tickets(booking: Booking, flight: Flight, passengers: list[Passenger]) -> list[Ticket]:
+    return [get_ticket(booking.id, flight.id, passenger.id) for passenger in passengers]

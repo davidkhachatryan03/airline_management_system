@@ -10,7 +10,7 @@ class TicketRepository:
         self.db_manager.insert_rows("tickets", tickets)
         
     def retrieve_tickets(self, limit: int = 5) -> list[Ticket]:
-        query = "SELECT * FROM passengers ORDER BY id DESC LIMIT %s"
+        query = "SELECT * FROM tickets ORDER BY id DESC LIMIT %s"
 
         results: list[tuple] = self.db_manager.retrieve(query, (limit,))
         
