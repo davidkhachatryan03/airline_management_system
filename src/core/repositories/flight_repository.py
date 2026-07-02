@@ -8,6 +8,9 @@ class FlightRepository:
     def __init__(self, db_manager: DBManager) -> None:
         self.db_manager = db_manager
     
+    def insert_flights(self, flights: list[Flight]) -> None:
+        self.db_manager.insert_rows("flights", flights)
+    
     def retrieve_flights(self, limit: int = 5) -> list[Flight]:
         query = "SELECT * FROM flights ORDER BY id DESC LIMIT %s"
 

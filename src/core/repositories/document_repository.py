@@ -5,6 +5,9 @@ class DocumentRepository:
 
     def __init__(self, db_manager: DBManager) -> None:
         self.db_manager = db_manager
+    
+    def insert_documents(self, documents: list[Document]) -> None:
+        self.db_manager.insert_rows("documents", documents)
 
     def retrieve_documents(self, limit: int = 5) -> list[Document]:
         query = "SELECT * FROM documents ORDER BY id DESC LIMIT %s"
@@ -37,6 +40,3 @@ class DocumentRepository:
             return [Document(*row) for row in result]
         
         return []
-    
-    def insert_documents(self, documents: list[Document]) -> None:
-        self.db_manager.insert_rows("documents", documents)
