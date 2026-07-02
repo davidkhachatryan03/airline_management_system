@@ -155,3 +155,15 @@ def uuid_list(cant: int = 10) -> list[UUID]:
 @pytest.fixture
 def uuid_bytes_list(uuid_list: list[UUID]) -> list[bytes]:
     return [uuid.bytes for uuid in uuid_list]
+
+@pytest.fixture
+def invalid_uuid_bytes_list(cant: int = 10) -> list:
+    return [(uuid7(), b"1234567890123456", uuid7()) for _ in range(cant)]
+
+@pytest.fixture
+def random_rows_retrieved() -> list[tuple]:
+    return [(uuid7().bytes, 1, "ABC", 12), (uuid7().bytes, 99, "CDE", 90)]
+
+@pytest.fixture
+def random_rows_retrieved_invalid_bytes() -> list[tuple]:
+    return [(uuid7().bytes, 1, "ABC", 12), (uuid7().bytes, 99, "CDE", 90, b"1234567890123456")]
