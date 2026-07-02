@@ -9,6 +9,10 @@ from src.common import DBManager
 from src.core.repositories import BookingRepository, DocumentRepository, FlightRepository, PassengerRepository, TicketRepository
 from src.entities import Booking, Document, Flight, Passenger, Ticket
 
+@pytest.fixture
+def db() -> DBManager:
+    return DBManager()
+
 @pytest.fixture(scope="session", autouse=True)
 def db_connected():
     db = DBManager()
@@ -16,7 +20,11 @@ def db_connected():
     with db:
         yield db
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture
+def airline_test() -> str:
+    return "airline_test"
+
+@pytest.fixture(autouse=True)
 def revert_changes(db_connected: DBManager):
     db_connected.connection.start_transaction()
 
@@ -24,7 +32,7 @@ def revert_changes(db_connected: DBManager):
 
     db_connected.connection.rollback()
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def booking_repository(db_connected: DBManager) -> BookingRepository:
     return BookingRepository(db_connected)
 
@@ -135,3 +143,15 @@ def ticket(booking: Booking, flight: Flight, passenger: Flight) -> Ticket:
 @pytest.fixture
 def tickets(booking: Booking, flight: Flight, passengers: list[Passenger]) -> list[Ticket]:
     return [get_ticket(booking.id, flight.id, passenger.id) for passenger in passengers]
+
+@pytest.fixture
+def sql_file_route() -> str:
+    return "tests/fakes/fake_sql_file.sql"
+
+@pytest.fixture
+def uuid_list(cant: int = 10) -> list[UUID]:
+    return [uuid7() for _ in range(cant)]
+
+@pytest.fixture
+def uuid_bytes_list(uuid_list: list[UUID]) -> list[bytes]:
+    return [uuid.bytes for uuid in uuid_list]
