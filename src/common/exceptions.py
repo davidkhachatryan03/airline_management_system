@@ -62,3 +62,7 @@ class InexistentSQLFile(DatabaseError):
 class InexistentConnection(DatabaseError):
     def __init__(self, message = "Connection not found") -> None:
         super().__init__(message)
+
+class InvalidBytes(DatabaseError):
+    def __init__(self, message = "Bytes received not relates to UUID.") -> None:
+        super().__init__(message)

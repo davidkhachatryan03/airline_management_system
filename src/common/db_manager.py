@@ -6,7 +6,7 @@ from uuid import UUID
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
 
-from src.common.exceptions import DatabaseError, InexistentConnection, InexistentSQLFile
+from src.common.exceptions import DatabaseError, InexistentConnection, InexistentSQLFile, InvalidBytes
 
 load_dotenv()
 
@@ -115,8 +115,8 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(e) from e
     
-    def uuid_to_bytes(self, rows: list) -> list:
-        rows_formatted: list = []
+    def uuid_to_bytes(self, rows: list) -> list[bytes]:
+        rows_formatted: list[bytes] = []
 
         for row in rows:
             if isinstance(row, UUID):
@@ -132,7 +132,10 @@ class DBManager:
         if not isinstance(rows[0], tuple):
             for row in rows:
                 if isinstance(row, bytes) and len(row) == 16:
-                    rows_formatted.append(UUID(bytes=row))
+                    bytes_to_uuid: UUID = UUID(bytes=row)
+                    if bytes_to_uuid.version != 7:
+                        raise InvalidBytes
+                    rows_formatted.append(bytes_to_uuid)
                 else:
                     rows_formatted.append(row)
         
@@ -142,10 +145,13 @@ class DBManager:
 
                 for element in row:
                     if isinstance(element, bytes) and len(element) == 16:
-                        row_formatted.append(UUID(bytes=element))
+                        bytes_to_uuid: UUID = UUID(bytes=element)
+                        if bytes_to_uuid.version != 7:
+                            raise InvalidBytes
+                        row_formatted.append(bytes_to_uuid)
                     else:
                         row_formatted.append(element)
                 
                 rows_formatted.append(tuple(row_formatted))
-
+                
         return rows_formatted
