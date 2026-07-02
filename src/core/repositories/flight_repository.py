@@ -7,7 +7,16 @@ class FlightRepository:
 
     def __init__(self, db_manager: DBManager) -> None:
         self.db_manager = db_manager
+    
+    def retrieve_flights(self, limit: int = 5) -> list[Flight]:
+        query = "SELECT * FROM flights ORDER BY id DESC LIMIT %s"
+
+        results: list[tuple] = self.db_manager.retrieve(query, (limit,))
+
+        if results:
+            return [Flight(*result) for result in results]
         
+        return []
 
     def retrieve_flights_by_id(self, flights_id: list[UUID]) -> list[Flight]:
         if not flights_id:
