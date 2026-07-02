@@ -1,7 +1,5 @@
 from datetime import date
-from decimal import Decimal
 import pytest, random
-from uuid6 import uuid7
 from uuid import UUID
 
 from src.common import DBManager
