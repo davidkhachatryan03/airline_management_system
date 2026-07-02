@@ -6,7 +6,7 @@ from uuid import UUID
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
 
-from src.common.exceptions import *
+from src.common.exceptions import DatabaseError, InexistentConnection, InexistentSQLFile
 
 load_dotenv()
 
