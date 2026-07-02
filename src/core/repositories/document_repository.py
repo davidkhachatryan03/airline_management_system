@@ -6,7 +6,17 @@ class DocumentRepository:
     def __init__(self, db_manager: DBManager) -> None:
         self.db_manager = db_manager
 
-    def retrieve_documents(self, documents_requested: list[tuple]) -> list[Document]:
+    def retrieve_documents(self, limit: int = 5) -> list[Document]:
+        query = "SELECT * FROM documents ORDER BY id DESC LIMIT %s"
+
+        results: list[tuple] = self.db_manager.retrieve(query, (limit,))
+
+        if results:
+            return [Document(*result) for result in results]
+        
+        return []
+
+    def retrieve_documents_by_identity_key(self, documents_requested: list[tuple]) -> list[Document]:
         if not documents_requested:
             return []
         

@@ -21,7 +21,7 @@ CREATE TABLE passengers (
     email VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     is_blacklisted BOOLEAN NOT NULL,
-    is_vip BOOLEAN NOT NULL
+    is_vip BOOLEAN NOT NULL,
     UNIQUE(national_identity_number, issue_country)
 ); 
 
@@ -80,7 +80,7 @@ CREATE TABLE documents (
     document_type_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (passenger_id) REFERENCES passengers(id),
     FOREIGN KEY (document_type_id) REFERENCES document_types(id),
-    UNIQUE (document_number, issue_country, document_type_id)
+    UNIQUE (document_number, issue_country)
 );
 
 CREATE TABLE airplanes (

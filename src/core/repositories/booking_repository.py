@@ -8,3 +8,13 @@ class BookingRepository:
 
     def insert_booking(self, booking: Booking) -> None:
         self.db_manager.insert_rows("bookings", [booking])
+    
+    def retrieve_bookings(self, limit: int = 5) -> list[Booking]:
+        query = "SELECT * FROM bookings ORDER BY id DESC LIMIT %s"
+
+        results: list[tuple] = self.db_manager.retrieve(query, (limit,))
+        
+        if results:
+            return [Booking(*result) for result in results]
+        
+        return []

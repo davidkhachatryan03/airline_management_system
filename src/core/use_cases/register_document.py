@@ -15,7 +15,7 @@ class RegisterDocument:
             passenger_retrieved: list[Passenger] = uow.passenger_repository.retrieve_passengers_by_id([document_request.passenger_id])
             self.passenger_validator.check_existence([document_request.passenger_id], passenger_retrieved)
 
-            document_retrieved: list[Document] = uow.document_repository.retrieve_documents([document_request.identity_key])
+            document_retrieved: list[Document] = uow.document_repository.retrieve_documents_by_identity_key([document_request.identity_key])
             self.document_validator.check_existence([document_request.identity_key], document_retrieved)
 
             document_created = Document.new_document(
