@@ -95,6 +95,17 @@ CREATE TABLE airplanes (
     FOREIGN KEY (current_status_id) REFERENCES airplane_statuses(id)
 );
 
+CREATE TABLE scheduled_maintenances (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100) NOT NULL,
+    scheduled_start_datetime DATETIME NOT NULL,
+    scheduled_end_datetime DATETIME NOT NULL,
+    actual_start_datetime DATETIME NOT NULL,
+    actual_end_datetime DATETIME NOT NULL,
+    airplane_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (airplane_id) REFERENCES airplanes(id)
+);
+
 CREATE TABLE flights (
 	id BINARY(16) PRIMARY KEY,
     scheduled_departure_datetime DATETIME NOT NULL,
@@ -119,6 +130,14 @@ CREATE TABLE staff (
     current_position_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (current_status_id) REFERENCES staff_statuses(id),
     FOREIGN KEY (current_position_id) REFERENCES positions(id)
+);
+
+CREATE TABLE maintenance_assignments (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    staff_id INT UNSIGNED NOT NULL,
+    maintenance_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (staff_id) REFERENCES staff(id),
+    FOREIGN KEY (maintenance_id) REFERENCES maintenance_assignments(id)
 );
 
 CREATE TABLE crew_assignments (
@@ -182,7 +201,7 @@ CREATE TABLE audit_logs (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     table_name VARCHAR(100) NOT NULL,
     action VARCHAR(100) NOT NULL,
-    record_id BINARY(16),
+    record_id VARCHAR(50),
     column_name VARCHAR(100),
     old_value VARCHAR(100),
     new_value VARCHAR(100),
