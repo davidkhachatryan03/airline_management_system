@@ -161,6 +161,10 @@ class Flight:
             raise ValueError("The airplane id can not be negative or zero.")
         
         self._airplane_id = value
+    
+    @property
+    def identity_key(self) -> tuple[datetime, int]:
+        return (self.scheduled_departure_datetime, self.route_id)
 
     def to_dict(self) -> dict:
         return {
