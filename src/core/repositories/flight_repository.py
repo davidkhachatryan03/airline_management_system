@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from src.common import DBManager
@@ -15,6 +16,28 @@ class FlightRepository:
         query = "SELECT * FROM flights ORDER BY id DESC LIMIT %s"
 
         results: list[tuple] = self.db_manager.retrieve(query, (limit,))
+
+        if results:
+            return [Flight(*result) for result in results]
+        
+        return []
+    
+    def retrieve_flights_by_identity_key(self, identity_key: tuple[datetime, int]) -> list[Flight]:
+        scheduled_departure_datetime: datetime = identity_key[0]
+        route_id: int = identity_key[1]
+
+        query = """
+                SELECT  *
+                FROM    flights f
+                JOIN    routes r
+                ON      f.route_id = r.id
+                WHERE   f.scheduled_departure_time = %s
+                AND     r.id = %s
+                """
+        
+        values = (scheduled_departure_datetime, route_id)
+
+        results: list[tuple] = self.db_manager.retrieve(query, values)
 
         if results:
             return [Flight(*result) for result in results]

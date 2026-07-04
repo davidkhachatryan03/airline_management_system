@@ -28,6 +28,10 @@ class InvalidFlightId(InvalidFlight):
     def __init__(self, message = "A flight's id is invalid.") -> None:
         super().__init__(message)
 
+class DuplicatedFlight(InvalidFlight):
+    def __init__(self, message = "The flight is already registered.") -> None:
+        super().__init__(message)
+
 # PASSENGER EXCEPTIONS
 
 class InvalidPassenger(InvalidData):
@@ -48,6 +52,15 @@ class InvalidDocument(InvalidData):
 
 class DuplicatedDocument(InvalidData):
     def __init__(self, message = "The document is already registered.") -> None:
+        super().__init__(message)
+
+# AIRPLANE EXCEPTIONS
+
+class InvalidAirplane(InvalidData):
+    pass
+
+class UnavailableAirplane(InvalidAirplane):
+    def __init__(self, message = "There selected airplane is unavailable.") -> None:
         super().__init__(message)
 
 # DATABASE EXCEPTIONS

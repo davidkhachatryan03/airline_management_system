@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from src.common.exceptions import FullFlight, InexistentFlight, NotScheduledFlight
+from src.common.exceptions import FullFlight, InexistentFlight, NotScheduledFlight, DuplicatedFlight
 from src.entities import Flight
 
 class FlightValidator:
@@ -13,6 +13,10 @@ class FlightValidator:
         for flight in flights_retrieved:
             if flight.id not in flights_requested_set:
                 raise InexistentFlight
+        
+    def check_flight_not_existence(self, flight_retrieved: Flight) -> None:
+        if flight_retrieved:
+            raise DuplicatedFlight
     
     def check_seats_available_per_flight(self, seats_available_per_flight: dict[UUID, int], number_of_passengers: int) -> None:
         for flight in seats_available_per_flight:
@@ -23,3 +27,6 @@ class FlightValidator:
         for flight in flights_retrieved:
             if flight.current_status_id != 1: 
                 raise NotScheduledFlight
+    
+    def check_flight_to_register(self) -> None:
+        pass
