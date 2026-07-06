@@ -31,18 +31,18 @@ def test_db_manager_execute_sql_file(db_connected: DBManager, sql_file_route: st
 def test_db_manager_retrieve(db_connected: DBManager) -> None:
     query = "SELECT 1"
 
-    result: int = db_connected.retrieve(query)[0]
+    result: int = db_connected.retrieve_single_column(query)[0]
 
     assert result == 1
 
 def test_db_manager_insert_rows(db_connected: DBManager, passengers: list[Passenger]) -> None:
-    rows_count: int = db_connected.retrieve("SELECT COUNT(*) FROM passengers")[0]
+    rows_count: int = db_connected.retrieve_single_column("SELECT COUNT(*) FROM passengers")[0]
 
     assert rows_count == 0
 
     db_connected.insert_rows("passengers", passengers)
 
-    rows_count: int = db_connected.retrieve("SELECT COUNT(*) FROM passengers")[0]
+    rows_count: int = db_connected.retrieve_single_column("SELECT COUNT(*) FROM passengers")[0]
 
     assert rows_count == len(passengers)
 
