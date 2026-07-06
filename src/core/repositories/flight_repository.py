@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from src.common import DBManager
 from src.common.types import FlightRow, FlightId
 from src.entities import Flight
@@ -29,7 +27,7 @@ class FlightRepository:
                         LIMIT %s
                 """
 
-        results: list[tuple] = self.db_manager.retrieve(query, (limit,))
+        results: list[FlightRow] = self.db_manager.retrieve_many_columns(query, (limit,))
 
         if results:
             return [Flight(*result) for result in results]
