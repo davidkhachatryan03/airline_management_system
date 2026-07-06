@@ -2,6 +2,7 @@ from uuid import UUID
 
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
 from src.entities import Booking, Flight, Passenger, Ticket
+from src.common.types import PassengerIdentityKey
 from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import FlightValidator, PassengerValidator
 
@@ -11,7 +12,7 @@ class PassengerProcessor:
         passengers_not_in_db: list[Passenger] = []
         all_passengers_id: list[UUID] = []
         
-        dict_passengers_retrieved_identity_keys: dict[tuple, UUID] = {passenger.identity_key: passenger.id for passenger in passengers_retrieved}
+        dict_passengers_retrieved_identity_keys: dict[PassengerIdentityKey, UUID] = {passenger.identity_key: passenger.id for passenger in passengers_retrieved}
         for passenger in passengers_requested:
             if passenger.identity_key not in dict_passengers_retrieved_identity_keys:
 
@@ -57,7 +58,7 @@ class CreateBooking:
             self.flight_validator.check_flights_statuses(flights_retrieved)
 
             passengers_requested: list[PassengerRequest] = booking_request.passengers
-            passengers_requested_documents: list[tuple] = [passenger.identity_key for passenger in passengers_requested]
+            passengers_requested_documents: list[PassengerIdentityKey] = [passenger.identity_key for passenger in passengers_requested]
 
             passengers_retrieved: list[Passenger] = uow.passenger_repository.retrieve_passengers_by_document(passengers_requested_documents)
 
