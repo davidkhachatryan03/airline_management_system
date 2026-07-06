@@ -1,6 +1,6 @@
 import mysql.connector, os
 from dotenv import load_dotenv
-from typing import cast
+from typing import Any, cast
 from uuid import UUID
 
 from mysql.connector.connection import MySQLConnection
@@ -69,7 +69,7 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(e) from e
     
-    def retrieve(self, query: str, values: tuple | list = ()) -> list:
+    def retrieve_many_columns(self, query: str, values: tuple[Any, ...] | list[Any] = ()) -> list[tuple[Any, ...]]:
         if not self.connection.is_connected():
             raise InexistentConnection("Connection not found.")
         
@@ -82,11 +82,27 @@ class DBManager:
             if not rows:
                 return []
 
-            if len(rows[0]) == 1:
-                result: list = [rows[i][0] for i in range(len(rows))]
-                return self.bytes_to_uuid(result)
-
             return self.bytes_to_uuid(rows)
+
+        except Exception as e:
+            raise DatabaseError(e) from e
+        
+    def retrieve_single_column(self, query: str, values: tuple[Any, ...] | list[Any] = ()) -> list[Any]:
+        if not self.connection.is_connected():
+            raise InexistentConnection("Connection not found.")
+        
+        try:
+            values_formatted: list = self.uuid_to_bytes(list(values))
+
+            self.cursor.execute(query, values_formatted)
+            rows: list[tuple] = cast(list[tuple], self.cursor.fetchall())
+
+            if not rows:
+                return []
+
+            result: list = [rows[i][0] for i in range(len(rows))]
+
+            return self.bytes_to_uuid(result)
 
         except Exception as e:
             raise DatabaseError(e) from e
