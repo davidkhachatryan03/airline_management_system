@@ -59,8 +59,22 @@ class DuplicatedDocument(InvalidData):
 class InvalidAirplane(InvalidData):
     pass
 
+class InexistentAirplane(InvalidAirplane):
+    def __init__(self, message = "The selected airplane is not registered.") -> None:
+        super().__init__(message)
+
+
 class UnavailableAirplane(InvalidAirplane):
-    def __init__(self, message = "There selected airplane is unavailable.") -> None:
+    def __init__(self, message = "The selected airplane is unavailable.") -> None:
+        super().__init__(message)
+
+# ROUTE EXCEPTIONS
+
+class InvalidRoute(InvalidData):
+    pass
+
+class InexistentRoute(InvalidRoute):
+    def __init__(self, message = "The selected route is not registered.") -> None:
         super().__init__(message)
 
 # DATABASE EXCEPTIONS
