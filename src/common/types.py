@@ -42,6 +42,7 @@ type ActualArrivalDatetime = datetime | None
 type OperatingCostUsd = Decimal
 type BasePriceUsd = Decimal
 type FlightRow = tuple[FlightId, ScheduledDepartureDatetime,  ScheduledArrivalDatetime,  ActualDepartureDatetime,  ActualArrivalDatetime,  OperatingCostUsd, BasePriceUsd, CurrentStatusId, RouteId, AirplaneId]
+type FlightIdentityKey = tuple[ScheduledDepartureDatetime, RouteId]
 
 # PASSENGER TYPES
 
@@ -59,3 +60,12 @@ type PassengerIdentityKey = tuple[NationalIdentityNumber, IssueCountry]
 
 type TicketNumber = str
 type TicketRow = tuple[TicketId, TicketNumber, PaidAmountUsd, CurrentStatusId, BookingId, FlightId, PassengerId]
+
+# ROUTE TYPES
+
+type FlightNumber = str
+type Origin = str
+type Destination = str
+type DistanceKm = int
+type DurationMin = int
+type RouteRow = tuple[RouteId, FlightNumber, Origin, Destination, DistanceKm, DurationMin]
