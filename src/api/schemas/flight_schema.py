@@ -9,5 +9,9 @@ class FlightRequest(BaseModel):
     route_id: int = Field(gt=0)
     airplane_id: int = Field(gt=0)
 
+    @property
+    def identity_key(self) -> tuple[datetime, int]:
+        return (self.scheduled_departure_datetime, self.route_id)
+
 class FlightResponse(BaseModel):
     id: UUID
