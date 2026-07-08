@@ -1,5 +1,7 @@
+from decimal import Decimal, ROUND_HALF_UP
+
 from src.common import DBManager
-from src.common.types import FlightRow, FlightId
+from src.common.types import FlightRow, FlightId, FlightIdentityKey, DurationMin
 from src.entities import Flight
 
 class FlightRepository:
@@ -93,3 +95,34 @@ class FlightRepository:
             result_dict[row[0]] = row[1]
         
         return result_dict
+    
+    def retrieve_flights_by_identity_key(self, flights_requested: list[FlightIdentityKey]) -> list[Flight]:
+        if not flights_requested:
+            return []
+        
+        placeholders = ",".join(["(" + ",".join(["%s"] * len(flights_requested[0])) + ")"] * len(flights_requested))
+
+        query = """
+                SELECT  id, 
+                        scheduled_departure_datetime, 
+                        scheduled_arrival_datetime,
+                        actual_departure_datetime,
+                        actual_arrival_datetime,
+                        operating_cost_usd,
+                        base_price_usd,
+                        current_status_id,
+                        route_id,
+                        airplane_id
+                FROM    flights
+                WHERE   (scheduled_departure_datetime, route_id) 
+                IN      ({})
+                """.format(placeholders)
+
+        values = [value for flight in flights_requested for value in flight]
+
+        result: list[FlightRow] = self.db_manager.retrieve_many_columns(query, values)
+
+        if result:
+            return [Flight(*row) for row in result]
+        
+        return []
