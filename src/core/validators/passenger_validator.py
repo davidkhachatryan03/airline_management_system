@@ -1,20 +1,22 @@
-from uuid import UUID
-
-from src.common.exceptions import BlacklistedPassenger, InexistentPassenger
+from src.common.types import PassengerId, IsBlacklisted
 from src.entities import Passenger
 
 class PassengerValidator:
-
-    def check_blacklisted(self, passengers: list[Passenger]) -> None:
-        for passenger in passengers:
-            if passenger.is_blacklisted:
-                raise BlacklistedPassenger
             
-    def check_existence(self, passengers_requested: list[UUID], passengers_retrieved: list[Passenger]) -> None:
-        if not passengers_retrieved:
-            raise InexistentPassenger
+    def check_existence(self, passengers_requested: list[PassengerId], passengers_retrieved: list[Passenger]) -> bool:
+        requested_ids = set(passengers_requested)
+        retrieved_ids = {passenger.id for passenger in passengers_retrieved}
         
-        passengers_requested_set = set(passengers_requested)
-        for passenger in passengers_retrieved:
-            if passenger.id not in passengers_requested_set:
-                raise InexistentPassenger
+        missing_ids = requested_ids - retrieved_ids
+        
+        if missing_ids:
+            return False
+            
+        return True
+
+    def check_blacklisted(self, passengers_statuses: list[IsBlacklisted]) -> bool:
+        for status in passengers_statuses:
+            if status is True:
+                return True
+            
+        return False

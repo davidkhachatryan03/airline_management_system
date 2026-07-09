@@ -2,7 +2,8 @@ from uuid import UUID
 
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
 from src.entities import Booking, Flight, Passenger, Ticket
-from src.common.types import PassengerIdentityKey
+from src.common.exceptions import InexistentFlight, FullFlight, NotScheduledFlight, BlacklistedPassenger, MultipleExceptionsError
+from src.common.types import PassengerIdentityKey, FlightId, IsBlacklisted
 from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import FlightValidator, PassengerValidator
 
@@ -34,28 +35,50 @@ class PassengerProcessor:
 
         return passengers_not_in_db, all_passengers_id
     
+class CreateBookingValidator:
+    
+    def __init__(self, flight_validator: FlightValidator, passenger_validator: PassengerValidator, uow: CreateBookingUoW) -> None:
+        self.uow = uow
+        self.flight_validator = flight_validator
+        self.passenger_validator = passenger_validator
+
+    def validate_data_logic(self, flights_requested: list[FlightId], flights_retrieved: list[Flight]) -> None:
+        if not self.flight_validator.check_existence(flights_requested, flights_retrieved):
+            raise InexistentFlight
+
+    def validate_business_logic(self, passengers_statuses: list[IsBlacklisted], flights_retrieved: list[Flight], seats_available_per_flight: dict[FlightId, int]) -> list[Exception]:
+        exceptions: list[Exception] = []
+
+        if not self.flight_validator.check_seats_available(seats_available_per_flight, len(passengers_statuses)):
+            exceptions.append(FullFlight())
+        
+        if not self.flight_validator.check_statuses(flights_retrieved):
+            exceptions.append(NotScheduledFlight())
+        
+        if self.passenger_validator.check_blacklisted(passengers_statuses):
+            exceptions.append(BlacklistedPassenger())
+        
+        return exceptions
+        
 class CreateBooking:
 
     def __init__(self,
                 uow: CreateBookingUoW,
                 passenger_processor: PassengerProcessor,
-                flight_validator: FlightValidator,
-                passenger_validator: PassengerValidator) -> None:
+                create_booking_validator: CreateBookingValidator) -> None:
         
         self.uow = uow
         self.passenger_processor = passenger_processor
-        self.flight_validator = flight_validator
-        self.passenger_validator = passenger_validator
+        self.create_booking_validator = create_booking_validator
     
     def execute(self, booking_request: BookingRequest) -> BookingResponse:
         with self.uow as uow:
+            flights_requested: list[FlightId] = booking_request.flights_id
             flights_retrieved: list[Flight] = uow.flight_repository.retrieve_flights_by_id(booking_request.flights_id)
-            self.flight_validator.check_flights_existence(booking_request.flights_id, flights_retrieved)
 
-            seats_available_per_flight: dict[UUID, int] = uow.flight_repository.retrieve_seats_available_per_flight(flights_retrieved)
-            self.flight_validator.check_seats_available_per_flight(seats_available_per_flight, len(booking_request.passengers))
+            self.create_booking_validator.validate_data_logic(flights_requested, flights_retrieved)
 
-            self.flight_validator.check_flights_statuses(flights_retrieved)
+            seats_available_per_flight: dict[FlightId, int] = uow.flight_repository.retrieve_seats_available_per_flight(flights_retrieved)
 
             passengers_requested: list[PassengerRequest] = booking_request.passengers
             passengers_requested_documents: list[PassengerIdentityKey] = [passenger.identity_key for passenger in passengers_requested]
@@ -68,9 +91,14 @@ class CreateBooking:
                 uow.passenger_repository.insert_passengers(passengers_not_in_db)
 
             all_passengers: list[Passenger] = uow.passenger_repository.retrieve_passengers_by_id(all_passengers_id)
-            self.passenger_validator.check_blacklisted(all_passengers)
+            all_passengers_statuses: list[IsBlacklisted] = [passenger.is_blacklisted for passenger in all_passengers]
 
-            booking_created = Booking.new_booking(flights_retrieved, len(all_passengers))
+            exceptions: list[Exception] = self.create_booking_validator.validate_business_logic(all_passengers_statuses, flights_retrieved, seats_available_per_flight)
+
+            if exceptions:
+                raise MultipleExceptionsError(exceptions)
+
+            booking_created = Booking.new_booking(flights_retrieved, len(all_passengers_id))
             uow.booking_repository.insert_booking(booking_created)
 
             tickets_created: list[Ticket] = booking_created.generate_tickets(all_passengers_id, flights_retrieved, booking_created.id)
