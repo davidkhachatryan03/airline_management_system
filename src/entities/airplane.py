@@ -1,8 +1,9 @@
 from decimal import Decimal
 
-class AirplaneCreated:
+class Airplane:
 
-    def __init__(self, 
+    def __init__(self,
+                id: int, 
                 tail_number: str, 
                 manufacturer: str, 
                 model: str,
@@ -18,6 +19,22 @@ class AirplaneCreated:
         self.range_km = range_km
         self.flight_hour_cost_usd = flight_hour_cost_usd
         self.current_status_id = current_status_id
+
+    @property
+    def id(self) -> int:
+        return self._id
+    
+    @id.setter
+    def id(self, value: int) -> None:
+        if not isinstance(value, int):
+            raise TypeError(f"The type the id is not int.")
+        
+        if value <= 0:
+            raise ValueError(f"The id can not be negative or zero.")
+        
+        self._current_status_id = value
+        
+        self._id = value
     
     @property
     def tail_number(self) -> str:
@@ -134,56 +151,6 @@ class AirplaneCreated:
     
     def to_dict(self) -> dict:
         return {
-            "tail_number": self.tail_number,
-            "manufacturer": self.manufacturer,
-            "model": self.model,
-            "capacity": self.capacity,
-            "range_km": self.range_km,
-            "flight_hour_cost_usd": self.flight_hour_cost_usd,
-            "current_status_id": self.current_status_id
-        }
-
-class AirplaneRetrieved(AirplaneCreated):
-    
-    def __init__(self,
-                id: int, 
-                tail_number: str, 
-                manufacturer: str, 
-                model: str,
-                capacity: int,
-                range_km: int,
-                flight_hour_cost_usd: Decimal,
-                current_status_id: int) -> None:
-        
-        super().__init__(tail_number, 
-                        manufacturer, 
-                        model, 
-                        capacity, 
-                        range_km, 
-                        flight_hour_cost_usd, 
-                        current_status_id)
-        
-        self.id = id
-
-    @property
-    def id(self) -> int:
-        return self._id
-    
-    @id.setter
-    def id(self, value: int) -> None:
-        if not isinstance(value, int):
-            raise TypeError(f"The type the id is not int.")
-        
-        if value <= 0:
-            raise ValueError(f"The id can not be negative or zero.")
-        
-        self._current_status_id = value
-        
-        self._id = value
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
             "tail_number": self.tail_number,
             "manufacturer": self.manufacturer,
             "model": self.model,

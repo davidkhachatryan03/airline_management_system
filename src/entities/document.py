@@ -2,6 +2,8 @@ from datetime import date
 from uuid import UUID
 import uuid6
 
+from src.common.types import DocumentIdentityKey
+
 class Document:
 
     def __init__(self,
@@ -118,7 +120,7 @@ class Document:
         self._document_type_id = value
 
     @property
-    def identity_key(self) -> tuple:
+    def identity_key(self) -> DocumentIdentityKey:
         return (self.document_number, self.issue_country)
 
     def to_dict(self) -> dict:

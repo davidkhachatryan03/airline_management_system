@@ -2,6 +2,8 @@ from datetime import date
 from uuid import UUID
 import uuid6
 
+from src.common.types import PassengerIdentityKey
+
 class Passenger:
 
     def __init__(self,
@@ -165,7 +167,7 @@ class Passenger:
         self._is_vip = value
 
     @property
-    def identity_key(self) -> tuple:
+    def identity_key(self) -> PassengerIdentityKey:
         return (self.national_identity_number, self.issue_country)
 
     def to_dict(self) -> dict:

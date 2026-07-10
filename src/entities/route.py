@@ -1,6 +1,7 @@
-class RouteCreated:
+class Route:
 
     def __init__(self,
+                id: int,
                 flight_number: str,
                 origin: str,
                 destination: str,
@@ -12,6 +13,22 @@ class RouteCreated:
         self.destination = destination
         self.distance_km = distance_km
         self.duration_min = duration_min
+
+    @property
+    def id(self) -> int:
+        return self._id
+    
+    @id.setter
+    def id(self, value: int) -> None:
+        if not isinstance(value, int):
+            raise TypeError(f"The type the id is not int.")
+        
+        if value <= 0:
+            raise ValueError(f"The id can not be negative or zero.")
+        
+        self._current_status_id = value
+        
+        self._id = value
 
     @property
     def flight_number(self) -> str:
@@ -94,34 +111,6 @@ class RouteCreated:
 
     def to_dict(self) -> dict:
         return {
-            "flight_number": self.flight_number,
-            "origin": self.origin,
-            "destination": self.destination,
-            "distance_km": self.distance_km,
-            "duration_min": self.duration_min
-        }
-
-class RouteRetrieved(RouteCreated):
-
-    def __init__(self,
-                id: int,
-                flight_number: str,
-                origin: str,
-                destination: str,
-                distance_km: int,
-                duration_min: int) -> None:
-        
-        super().__init__(flight_number,
-                        origin,
-                        destination,
-                        distance_km,
-                        duration_min)
-        
-        self.id = id
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
             "flight_number": self.flight_number,
             "origin": self.origin,
             "destination": self.destination,
