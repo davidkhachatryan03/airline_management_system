@@ -3,9 +3,9 @@ from src.entities import Route
 
 class RouteValidator:
 
-    def check_existence(self, routes_requested: list[RouteId], routes_retrieved: list[Route]) -> bool:
+    def check_existence(self, routes_requested: list[RouteId], routes_retrieved: list[RouteId]) -> bool:
         requested_ids = set(routes_requested)
-        retrieved_ids = {route.id for route in routes_retrieved}
+        retrieved_ids = {route for route in routes_retrieved}
         
         missing_ids = requested_ids - retrieved_ids
         

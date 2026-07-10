@@ -1,19 +1,17 @@
-from uuid import UUID
-
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
 from src.entities import Booking, Flight, Passenger, Ticket
 from src.common.exceptions import InexistentFlight, FullFlight, NotScheduledFlight, BlacklistedPassenger, MultipleExceptionsError
-from src.common.types import PassengerIdentityKey, FlightId, IsBlacklisted
+from src.common.types import PassengerId, PassengerIdentityKey, FlightId, IsBlacklisted
 from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import FlightValidator, PassengerValidator
 
 class PassengerProcessor:
     
-    def get_or_create_passengers(self, passengers_requested: list[PassengerRequest], passengers_retrieved: list[Passenger]) -> tuple[list[Passenger], list[UUID]]:
+    def get_or_create_passengers(self, passengers_requested: list[PassengerRequest], passengers_retrieved: list[Passenger]) -> tuple[list[Passenger], list[PassengerId]]:
         passengers_not_in_db: list[Passenger] = []
-        all_passengers_id: list[UUID] = []
+        all_passengers_id: list[PassengerId] = []
         
-        dict_passengers_retrieved_identity_keys: dict[PassengerIdentityKey, UUID] = {passenger.identity_key: passenger.id for passenger in passengers_retrieved}
+        dict_passengers_retrieved_identity_keys: dict[PassengerIdentityKey, PassengerId] = {passenger.identity_key: passenger.id for passenger in passengers_retrieved}
         for passenger in passengers_requested:
             if passenger.identity_key not in dict_passengers_retrieved_identity_keys:
 
@@ -37,8 +35,7 @@ class PassengerProcessor:
     
 class CreateBookingValidator:
     
-    def __init__(self, flight_validator: FlightValidator, passenger_validator: PassengerValidator, uow: CreateBookingUoW) -> None:
-        self.uow = uow
+    def __init__(self, flight_validator: FlightValidator, passenger_validator: PassengerValidator) -> None:
         self.flight_validator = flight_validator
         self.passenger_validator = passenger_validator
 

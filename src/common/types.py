@@ -69,3 +69,13 @@ type Destination = str
 type DistanceKm = int
 type DurationMin = int
 type RouteRow = tuple[RouteId, FlightNumber, Origin, Destination, DistanceKm, DurationMin]
+
+# AIRPLANE TYPES
+
+type TailNumber = str
+type Manufacturer = str
+type Model = str
+type Capacity = int
+type RangeKm = int
+type FlightHourCostUsd = Decimal
+type AirplaneRow = tuple[AirplaneId, TailNumber, Manufacturer, Model, Capacity, RangeKm, FlightHourCostUsd, CurrentStatusId]

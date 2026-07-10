@@ -6,12 +6,12 @@ from src.core.validators import FlightValidator, PassengerValidator
 from src.core.use_cases import CreateBooking, PassengerProcessor, CreateBookingValidator
 from src.core.units_of_work import CreateBookingUoW
 
-router = APIRouter(prefix="/api/bookings", tags=["Bookings"])
+router = APIRouter(prefix="/api/flights", tags=["Flights"])
 
 def get_booking_creator() -> CreateBooking:
     db_manager = DBManager()
     passenger_processor = PassengerProcessor()
-    create_booking_validator = CreateBookingValidator(FlightValidator(), PassengerValidator(), CreateBookingUoW(db_manager))
+    create_booking_validator = CreateBookingValidator(FlightValidator(), PassengerValidator())
 
     return CreateBooking(CreateBookingUoW(db_manager), passenger_processor, create_booking_validator)
 

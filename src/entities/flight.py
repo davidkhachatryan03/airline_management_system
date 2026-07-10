@@ -3,6 +3,8 @@ from decimal import Decimal, ROUND_HALF_UP
 from uuid import UUID
 import uuid6
 
+from src.common.types import DurationMin
+
 class Flight:
 
     def __init__(self,
@@ -204,3 +206,7 @@ class Flight:
     @staticmethod
     def _calculate_base_price_usd(operating_cost_usd: Decimal) -> Decimal:
         return (operating_cost_usd * Decimal("1.30")).quantize(Decimal("0.01"), ROUND_HALF_UP)
+    
+    @staticmethod
+    def _calculate_operating_cost_usd(flight_hour_cost_usd: Decimal, duration_min: DurationMin) -> Decimal:
+        return (flight_hour_cost_usd * (duration_min / Decimal("60"))).quantize(Decimal("0.01"), ROUND_HALF_UP)

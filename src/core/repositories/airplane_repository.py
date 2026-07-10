@@ -1,8 +1,7 @@
 from datetime import datetime
-from uuid import UUID
 
 from src.common import DBManager
-from src.common.exceptions import UnavailableAirplane
+from src.common.types import RangeKm, AirplaneId, AirplaneRow, FlightHourCostUsd
 from src.entities import Airplane
 
 class AirplaneRepository:
@@ -11,23 +10,46 @@ class AirplaneRepository:
         self.db_manager = db_manager
 
     def retrieve_airplanes(self, limit: int = 5) -> list[Airplane]:
-        query = "SELECT * FROM airplanes ORDER BY id DESC LIMIT %s"
+        query = "SELECT id, tail_number, manufacturer, model, capacity, range_km, flight_hour_cost_usd, current_status_id FROM airplanes ORDER BY id DESC LIMIT %s"
 
-        results: list[tuple] = self.db_manager.retrieve(query, (limit,))
+        results: list[AirplaneRow] = self.db_manager.retrieve_many_columns(query, (limit,))
         
         if results:
             return [Airplane(*result) for result in results]
         
         return []
     
-    def retrieve_airplane_range_km_by_id(self, airplane_id: UUID) -> int:
-        query = "SELECT range_km from airplanes WHERE id = %s"
+    def retrieve_airplanes_by_id(self, airplane_id: AirplaneId) -> list[AirplaneId]:
+        query = "SELECT id FROM airplanes WHERE id = %s"
 
-        values = (airplane_id,)
+        results: list[AirplaneId] = self.db_manager.retrieve_single_column(query, (airplane_id,))
 
+        if results:
+            return results
         
+        return []
     
-    def retrieve_available_airplanes_id(self, scheduled_departure_datetime: datetime, scheduled_arrival_datetime: datetime) -> list[UUID]:
+    def retrieve_range_km_by_id(self, airplane_id: AirplaneId) -> list[RangeKm]:
+        query = "SELECT range_km FROM airplanes WHERE id = %s"
+
+        results: list[RangeKm] = self.db_manager.retrieve_single_column(query, (airplane_id,))
+
+        if results:
+            return results
+        
+        return []
+    
+    def retrieve_flight_hour_cost_usd_by_id(self, airplane_id: AirplaneId) -> list[FlightHourCostUsd]:
+        query = "SELECT flight_hour_cost_usd FROM airplanes WHERE id = %s"
+
+        results: list[FlightHourCostUsd] = self.db_manager.retrieve_single_column(query, (airplane_id,))
+
+        if results:
+            return results
+        
+        return []
+    
+    def retrieve_available_airplanes_id(self, scheduled_departure_datetime: datetime, scheduled_arrival_datetime: datetime) -> list[AirplaneId]:
         query = """
                 SELECT  a.id
                 FROM    airplanes a
@@ -53,11 +75,11 @@ class AirplaneRepository:
                     WHERE   sm.airplane_id = a.id
                     AND     %s < sm.scheduled_end_datetime
                     AND     %s > sm.scheduled_start_datetime
-                );
+                )
                 """
         
         values = (scheduled_departure_datetime, scheduled_arrival_datetime)
 
-        results: list[UUID] = self.db_manager.retrieve(query, values)
+        results: list[AirplaneId] = self.db_manager.retrieve_single_column(query, values)
 
         return results

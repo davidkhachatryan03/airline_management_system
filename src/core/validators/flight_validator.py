@@ -1,4 +1,4 @@
-from src.common.types import FlightId
+from src.common.types import FlightId, FlightIdentityKey
 from src.entities import Flight
 
 class FlightValidator:
@@ -6,6 +6,17 @@ class FlightValidator:
     def check_existence(self, flights_requested: list[FlightId], flights_retrieved: list[Flight]) -> bool:
         requested_ids = set(flights_requested)
         retrieved_ids = {flight.id for flight in flights_retrieved}
+        
+        missing_ids = requested_ids - retrieved_ids
+        
+        if missing_ids:
+            return False
+            
+        return True
+    
+    def check_existente_by_identity_key(self, flights_requested: list[FlightIdentityKey], flights_retrieved: list[FlightIdentityKey]) -> bool:
+        requested_ids = set(flights_requested)
+        retrieved_ids = {flight for flight in flights_retrieved}
         
         missing_ids = requested_ids - retrieved_ids
         
