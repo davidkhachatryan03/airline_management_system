@@ -1,5 +1,4 @@
 from src.common.types import FlightId, FlightIdentityKey, CurrentStatusId
-from src.entities import Flight
 
 class FlightValidator:
 
