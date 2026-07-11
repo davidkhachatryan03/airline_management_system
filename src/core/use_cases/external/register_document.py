@@ -2,7 +2,7 @@ from src.api.schemas import DocumentRequest, DocumentResponse
 from src.core.units_of_work import RegisterDocumentUoW
 from src.core.validators import PassengerValidator, DocumentValidator
 from src.common.exceptions import InexistentPassenger, DuplicatedDocument
-from src.common.types import PassengerId, DocumentIdentityKey, PassengerIdentityKey
+from src.common.types import PassengerId, DocumentIdentityKey
 from src.entities import Document, Passenger
 
 class RegisterDocumentValidator:
