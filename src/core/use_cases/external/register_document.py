@@ -2,7 +2,7 @@ from src.api.schemas import DocumentRequest, DocumentResponse
 from src.core.units_of_work import RegisterDocumentUoW
 from src.core.validators import PassengerValidator, DocumentValidator
 from src.common.exceptions import InexistentPassenger, DuplicatedDocument
-from src.common.types import PassengerId, DocumentIdentityKey
+from src.common.types import PassengerId, DocumentIdentityKey, PassengerIdentityKey
 from src.entities import Document, Passenger
 
 class RegisterDocumentValidator:
@@ -13,13 +13,13 @@ class RegisterDocumentValidator:
 
     def validate_data_logic(self, 
                             passengers_id: list[PassengerId], 
-                            documents_identity_keys: list[DocumentIdentityKey], 
-                            passengers_retrieved: list[Passenger], 
-                            documents_retrieved: list[Document]) -> None:
-        if not self.passenger_validator.check_existence(passengers_id, passengers_retrieved):
+                            documents_requested_identity_keys: list[DocumentIdentityKey], 
+                            passengers_retrieved_id: list[PassengerId], 
+                            documents_retrieved: list[DocumentIdentityKey]) -> None:
+        if not self.passenger_validator.check_existence(passengers_id, passengers_retrieved_id):
             raise InexistentPassenger
 
-        if self.document_validator.check_existence(documents_identity_keys, documents_retrieved):
+        if self.document_validator.check_existence(documents_requested_identity_keys, documents_retrieved):
             raise DuplicatedDocument
 
 class RegisterDocument:
@@ -31,9 +31,12 @@ class RegisterDocument:
     def execute(self, document_request: DocumentRequest) -> DocumentResponse:
         with self.uow as uow:
             passengers_retrieved: list[Passenger] = uow.passenger_repository.retrieve_passengers_by_id([document_request.passenger_id])
-            documents_retrieved: list[Document] = uow.document_repository.retrieve_documents_by_identity_key([document_request.identity_key])
+            passengers_retrieved_id: list[PassengerId] = [passenger.id for passenger in passengers_retrieved]
 
-            self.register_document_validator.validate_data_logic([document_request.passenger_id], [document_request.identity_key], passengers_retrieved, documents_retrieved)
+            documents_retrieved: list[Document] = uow.document_repository.retrieve_documents_by_identity_key([document_request.identity_key])
+            documents_retrieved_identity_keys: list[DocumentIdentityKey] = [document.identity_key for document in documents_retrieved]
+
+            self.register_document_validator.validate_data_logic([document_request.passenger_id], [document_request.identity_key], passengers_retrieved_id, documents_retrieved_identity_keys)
 
             document_created = Document.new_document(
                 document_number=document_request.document_number,

@@ -1,13 +1,10 @@
-from src.common.types import FlightId, FlightIdentityKey
+from src.common.types import FlightId, FlightIdentityKey, CurrentStatusId
 from src.entities import Flight
 
 class FlightValidator:
 
-    def check_existence(self, flights_requested: list[FlightId], flights_retrieved: list[Flight]) -> bool:
-        requested_ids = set(flights_requested)
-        retrieved_ids = {flight.id for flight in flights_retrieved}
-        
-        missing_ids = requested_ids - retrieved_ids
+    def check_existence(self, flights_requested: list[FlightId], flights_retrieved: list[FlightId]) -> bool:
+        missing_ids = set(flights_requested) - set(flights_retrieved)
         
         if missing_ids:
             return False
@@ -32,9 +29,9 @@ class FlightValidator:
         
         return True
             
-    def check_statuses(self, flights_retrieved: list[Flight]) -> bool:
-        for flight in flights_retrieved:
-            if flight.current_status_id != 1: 
+    def check_statuses(self, flights_retrieved_statuses: list[CurrentStatusId]) -> bool:
+        for status in flights_retrieved_statuses:
+            if status != 1: 
                 return False
         
         return True

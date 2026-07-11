@@ -17,13 +17,18 @@ class RouteRepository:
         
         return []
     
-    def retrieve_routes_by_id(self, route_id: RouteId) -> list[RouteId]:
-        query = "SELECT id FROM routes WHERE id = %s"
+    def retrieve_routes_by_id(self, routes_id: list[RouteId]) -> list[Route]:
+        if not routes_id:
+            return []
+        
+        placeholders = ",".join(["%s" * len(routes_id)])
 
-        results: list[RouteId] = self.db_manager.retrieve_single_column(query, (route_id,))
+        query = "SELECT id, flight_number, origin, destination, distance_km, duration_min FROM routes WHERE id IN ({})".format(placeholders)
+
+        results: list[RouteRow] = self.db_manager.retrieve_single_column(query, routes_id)
 
         if results:
-            return results
+            return [Route(*result) for result in results]
         
         return []
     

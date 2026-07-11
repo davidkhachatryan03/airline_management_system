@@ -5,7 +5,7 @@ from src.common.exceptions import DuplicatedFlight, InexistentAirplane, Inexiste
 from src.common.types import AirplaneId, DistanceKm, FlightIdentityKey, RouteId
 from src.core.units_of_work import RegisterFlightUoW
 from src.core.validators import AirplaneValidator, FlightValidator, RouteValidator
-from src.entities import Flight
+from src.entities import Flight, Route
 
 class RegisterFlightValidator:
     
@@ -48,17 +48,20 @@ class RegisterFlight:
     def execute(self, flight_request: FlightRequest) -> FlightResponse:
         with self.uow as uow:
             flights_requested_identity_keys: list[FlightIdentityKey] = [flight_request.identity_key]
+            routes_requested_id: list[RouteId] = [flight_request.route_id]
             
             flights_retrieved: list[Flight] = uow.flight_repository.retrieve_flights_by_identity_key(flights_requested_identity_keys)
             flights_retrieved_identity_keys: list[FlightIdentityKey] = [flight.identity_key for flight in flights_retrieved]
 
-            airplanes_id_retrieved: list[AirplaneId] = uow.airplane_repository.retrieve_airplanes_by_id(flight_request.airplane_id)
-            routes_id_retrieved: list[RouteId] = uow.route_repository.retrieve_routes_by_id(flight_request.route_id)
+            airplanes_retrieved_id: list[AirplaneId] = uow.airplane_repository.retrieve_airplanes_by_id(flight_request.airplane_id)
+
+            routes_retrieved: list[Route] = uow.route_repository.retrieve_routes_by_id(routes_requested_id)
+            routes_retrieved_id: list[RouteId] = [route.id for route in routes_retrieved]
             
             self.register_flight_validator.validate_data_logic(flights_requested_identity_keys, 
                                                             flights_retrieved_identity_keys, 
-                                                            airplanes_id_retrieved, 
-                                                            routes_id_retrieved, 
+                                                            airplanes_retrieved_id, 
+                                                            routes_retrieved_id, 
                                                             flight_request.airplane_id, 
                                                             flight_request.route_id)
 

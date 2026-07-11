@@ -1,7 +1,5 @@
-from decimal import Decimal, ROUND_HALF_UP
-
 from src.common import DBManager
-from src.common.types import FlightRow, FlightId, FlightIdentityKey, DurationMin
+from src.common.types import FlightRow, FlightId, FlightIdentityKey
 from src.entities import Flight
 
 class FlightRepository:
@@ -65,11 +63,11 @@ class FlightRepository:
         
         return []
     
-    def retrieve_seats_available_per_flight(self, flights: list[Flight]) -> dict[FlightId, int]:
-        if not flights:
+    def retrieve_seats_available_per_flight(self, flights_id: list[FlightId]) -> dict[FlightId, int]:
+        if not flights_id:
             return {}
         
-        placeholders = "".join(["%s" * len(flights)])
+        placeholders = "".join(["%s" * len(flights_id)])
 
         query = """
                 SELECT      f.id, 
@@ -86,7 +84,7 @@ class FlightRepository:
                             a.capacity;
                 """.format(placeholders)
         
-        values: list[FlightId] = [flight.id for flight in flights]
+        values: list[FlightId] = [id for id in flights_id]
 
         result: list[tuple[FlightId, int]] = self.db_manager.retrieve_many_columns(query, values)
 

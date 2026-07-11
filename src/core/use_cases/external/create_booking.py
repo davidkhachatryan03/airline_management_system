@@ -1,7 +1,7 @@
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
 from src.entities import Booking, Flight, Passenger, Ticket
 from src.common.exceptions import InexistentFlight, FullFlight, NotScheduledFlight, BlacklistedPassenger, MultipleExceptionsError
-from src.common.types import PassengerId, PassengerIdentityKey, FlightId, IsBlacklisted
+from src.common.types import PassengerId, PassengerIdentityKey, FlightId, IsBlacklisted, CurrentStatusId
 from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import FlightValidator, PassengerValidator
 
@@ -39,17 +39,17 @@ class CreateBookingValidator:
         self.flight_validator = flight_validator
         self.passenger_validator = passenger_validator
 
-    def validate_data_logic(self, flights_requested: list[FlightId], flights_retrieved: list[Flight]) -> None:
-        if not self.flight_validator.check_existence(flights_requested, flights_retrieved):
+    def validate_data_logic(self, flights_requested_id: list[FlightId], flights_retrieved_id: list[FlightId]) -> None:
+        if not self.flight_validator.check_existence(flights_requested_id, flights_retrieved_id):
             raise InexistentFlight
 
-    def validate_business_logic(self, passengers_statuses: list[IsBlacklisted], flights_retrieved: list[Flight], seats_available_per_flight: dict[FlightId, int]) -> list[Exception]:
+    def validate_business_logic(self, passengers_statuses: list[IsBlacklisted], flights_retrieved_statuses: list[CurrentStatusId], seats_available_per_flight: dict[FlightId, int]) -> list[Exception]:
         exceptions: list[Exception] = []
 
         if not self.flight_validator.check_seats_available(seats_available_per_flight, len(passengers_statuses)):
             exceptions.append(FullFlight())
         
-        if not self.flight_validator.check_statuses(flights_retrieved):
+        if not self.flight_validator.check_statuses(flights_retrieved_statuses):
             exceptions.append(NotScheduledFlight())
         
         if self.passenger_validator.check_blacklisted(passengers_statuses):
@@ -70,12 +70,13 @@ class CreateBooking:
     
     def execute(self, booking_request: BookingRequest) -> BookingResponse:
         with self.uow as uow:
-            flights_requested: list[FlightId] = booking_request.flights_id
+            flights_requested_id: list[FlightId] = booking_request.flights_id
             flights_retrieved: list[Flight] = uow.flight_repository.retrieve_flights_by_id(booking_request.flights_id)
+            flights_retrieved_id: list[FlightId] = [flight.id for flight in flights_retrieved]
 
-            self.create_booking_validator.validate_data_logic(flights_requested, flights_retrieved)
+            self.create_booking_validator.validate_data_logic(flights_requested_id, flights_retrieved_id)
 
-            seats_available_per_flight: dict[FlightId, int] = uow.flight_repository.retrieve_seats_available_per_flight(flights_retrieved)
+            seats_available_per_flight: dict[FlightId, int] = uow.flight_repository.retrieve_seats_available_per_flight(flights_retrieved_id)
 
             passengers_requested: list[PassengerRequest] = booking_request.passengers
             passengers_requested_documents: list[PassengerIdentityKey] = [passenger.identity_key for passenger in passengers_requested]
@@ -90,7 +91,9 @@ class CreateBooking:
             all_passengers: list[Passenger] = uow.passenger_repository.retrieve_passengers_by_id(all_passengers_id)
             all_passengers_statuses: list[IsBlacklisted] = [passenger.is_blacklisted for passenger in all_passengers]
 
-            exceptions: list[Exception] = self.create_booking_validator.validate_business_logic(all_passengers_statuses, flights_retrieved, seats_available_per_flight)
+            flights_retrieved_statuses: list[CurrentStatusId] = [flight.current_status_id for flight in flights_retrieved]
+
+            exceptions: list[Exception] = self.create_booking_validator.validate_business_logic(all_passengers_statuses, flights_retrieved_statuses, seats_available_per_flight)
 
             if exceptions:
                 raise MultipleExceptionsError(exceptions)

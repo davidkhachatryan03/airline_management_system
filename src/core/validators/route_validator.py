@@ -1,13 +1,9 @@
 from src.common.types import RouteId
-from src.entities import Route
 
 class RouteValidator:
 
-    def check_existence(self, routes_requested: list[RouteId], routes_retrieved: list[RouteId]) -> bool:
-        requested_ids = set(routes_requested)
-        retrieved_ids = {route for route in routes_retrieved}
-        
-        missing_ids = requested_ids - retrieved_ids
+    def check_existence(self, routes_requested_id: list[RouteId], routes_retrieved_id: list[RouteId]) -> bool:
+        missing_ids = set(routes_requested_id) - set(routes_retrieved_id)
         
         if missing_ids:
             return False
