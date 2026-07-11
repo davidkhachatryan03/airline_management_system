@@ -43,7 +43,7 @@ class CreateBookingValidator:
         if not self.flight_validator.check_existence(flights_requested_id, flights_retrieved_id):
             raise InexistentFlight
 
-    def validate_business_logic(self, passengers_statuses: list[IsBlacklisted], flights_retrieved_statuses: list[CurrentStatusId], seats_available_per_flight: dict[FlightId, int]) -> list[Exception]:
+    def validate_business_logic(self, passengers_statuses: list[IsBlacklisted], flights_retrieved_statuses: list[CurrentStatusId], seats_available_per_flight: dict[FlightId, int]) -> None:
         exceptions: list[Exception] = []
 
         if not self.flight_validator.check_seats_available(seats_available_per_flight, len(passengers_statuses)):
@@ -55,7 +55,8 @@ class CreateBookingValidator:
         if self.passenger_validator.check_blacklisted(passengers_statuses):
             exceptions.append(BlacklistedPassenger())
         
-        return exceptions
+        if exceptions:
+            raise MultipleExceptionsError(exceptions)
         
 class CreateBooking:
 
@@ -93,10 +94,7 @@ class CreateBooking:
 
             flights_retrieved_statuses: list[CurrentStatusId] = [flight.current_status_id for flight in flights_retrieved]
 
-            exceptions: list[Exception] = self.create_booking_validator.validate_business_logic(all_passengers_statuses, flights_retrieved_statuses, seats_available_per_flight)
-
-            if exceptions:
-                raise MultipleExceptionsError(exceptions)
+            self.create_booking_validator.validate_business_logic(all_passengers_statuses, flights_retrieved_statuses, seats_available_per_flight)
 
             booking_created = Booking.new_booking(flights_retrieved, len(all_passengers_id))
             uow.booking_repository.insert_booking(booking_created)

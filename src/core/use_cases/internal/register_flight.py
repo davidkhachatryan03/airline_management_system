@@ -31,13 +31,14 @@ class RegisterFlightValidator:
         if not self.route_validator.check_existence([route_id], routes_id_retrieved):
             raise InexistentRoute
     
-    def validate_business_logic(self, airplane_id: AirplaneId, available_airplanes_id: list[AirplaneId]) -> list[Exception]:
+    def validate_business_logic(self, airplane_id: AirplaneId, available_airplanes_id: list[AirplaneId]) -> None:
         exceptions: list[Exception] = []
 
         if not self.airplane_validator.check_availability(airplane_id, available_airplanes_id):
             exceptions.append(UnavailableAirplane())
         
-        return exceptions
+        if exceptions:
+            raise MultipleExceptionsError(exceptions)
 
 class RegisterFlight:
 
@@ -67,9 +68,7 @@ class RegisterFlight:
 
             available_airplanes_id: list[AirplaneId] = uow.airplane_repository.retrieve_available_airplanes_id(flight_request.scheduled_departure_datetime, flight_request.scheduled_arrival_datetime)
 
-            exceptions: list[Exception] = self.register_flight_validator.validate_business_logic(flight_request.airplane_id, available_airplanes_id)
-            if exceptions:
-                raise MultipleExceptionsError(exceptions)
+            self.register_flight_validator.validate_business_logic(flight_request.airplane_id, available_airplanes_id)
 
             flight_hour_cost_usd: Decimal = uow.airplane_repository.retrieve_flight_hour_cost_usd_by_id(flight_request.airplane_id)[0]
             duration_min: DistanceKm = uow.route_repository.retrieve_distance_km_by_id(flight_request.route_id)[0]

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from src.common.exceptions import MultipleExceptionsError, InexistentFlight, InexistentPassenger
+from src.common.exceptions import MultipleExceptionsError, InexistentData
 
 def setup_exception_handlers(app: FastAPI) -> None:
 
@@ -21,26 +21,16 @@ def setup_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=422,
             content={
-                "message": "La solicitud no pudo ser procesada debido a conflictos en las reglas de negocio.",
+                "message": "Request can not be processed due to business logic problems.",
                 "total_errors": len(details),
                 "details": details
             }
         )
     
-    @app.exception_handler(InexistentFlight)
-    async def inexistent_flight_handler(request: Request, exc: InexistentFlight):
+    @app.exception_handler(InexistentData)
+    async def inexistent_flight_handler(request: Request, exc: InexistentData):
         return JSONResponse(
-            status_code=404, 
-            content={
-                "error": exc.__class__.__name__,
-                "message": str(exc)
-            }
-        )
-    
-    @app.exception_handler(InexistentPassenger)
-    async def inexistent_passenger_handler(request: Request, exc: InexistentPassenger):
-        return JSONResponse(
-            status_code=404,
+            status_code=exc.status_code, 
             content={
                 "error": exc.__class__.__name__,
                 "message": str(exc)

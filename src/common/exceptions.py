@@ -7,15 +7,19 @@ class DatabaseError(Exception):
 
 class InvalidData(Exception):
     status_code = 400
-    pass
+
+class InexistentData(InvalidData):
+    status_code = 404
+
+class DuplicatedData(InvalidData):
+    status_code = 409
 
 # FLIGHT EXCEPTIONS
 
 class InvalidFlight(InvalidData):
     pass 
 
-class InexistentFlight(InvalidFlight):
-    status_code = 404
+class InexistentFlight(InvalidFlight, InexistentData):
     def __init__(self, message = "A flight is not available.") -> None:
         super().__init__(message)
 
@@ -30,12 +34,10 @@ class NotScheduledFlight(InvalidFlight):
         super().__init__(message)
 
 class InvalidFlightId(InvalidFlight):
-    pass  
     def __init__(self, message = "A flight's id is invalid.") -> None:
         super().__init__(message)
 
-class DuplicatedFlight(InvalidFlight):
-    status_code = 409
+class DuplicatedFlight(InvalidFlight, DuplicatedData):
     def __init__(self, message = "The flight is already registered.") -> None:
         super().__init__(message)
 
@@ -44,8 +46,7 @@ class DuplicatedFlight(InvalidFlight):
 class InvalidPassenger(InvalidData):
     pass  
 
-class InexistentPassenger(InvalidPassenger):
-    status_code = 404
+class InexistentPassenger(InvalidPassenger, InexistentData):
     def __init__(self, message = "The passenger is not registered.") -> None:
         super().__init__(message)
 
@@ -59,8 +60,7 @@ class BlacklistedPassenger(InvalidPassenger):
 class InvalidDocument(InvalidData):
     pass  
 
-class DuplicatedDocument(InvalidData):
-    status_code = 409
+class DuplicatedDocument(InvalidDocument, DuplicatedData):
     def __init__(self, message = "The document is already registered.") -> None:
         super().__init__(message)
 
@@ -69,8 +69,7 @@ class DuplicatedDocument(InvalidData):
 class InvalidAirplane(InvalidData):
     pass  
 
-class InexistentAirplane(InvalidAirplane):
-    status_code = 404
+class InexistentAirplane(InvalidAirplane, InexistentData):
     def __init__(self, message = "The selected airplane is not registered.") -> None:
         super().__init__(message)
 
@@ -84,8 +83,7 @@ class UnavailableAirplane(InvalidAirplane):
 class InvalidRoute(InvalidData):
     pass 
 
-class InexistentRoute(InvalidRoute):
-    status_code = 404
+class InexistentRoute(InvalidRoute, InexistentData):
     def __init__(self, message = "The selected route is not registered.") -> None:
         super().__init__(message)
 
