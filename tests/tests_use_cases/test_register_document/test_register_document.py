@@ -1,22 +1,19 @@
-from datetime import date
 import pytest
 from typing import cast
 
 from src.api.schemas import DocumentRequest, DocumentResponse
-from src.common.exceptions import *
-from src.core.use_cases import RegisterDocument
+from src.common.exceptions import DuplicatedDocument, InexistentPassenger, MultipleExceptionsError
+from src.core.use_cases import RegisterDocument, RegisterDocumentValidator
 from src.core.units_of_work import RegisterDocumentUoW
-from src.core.validators import DocumentValidator, PassengerValidator
+from src.core.validators import BaseValidator
 from src.entities import Document, Passenger
 from tests.fakes.fake_db_manager import FakeDBManager
-from tests.fakes.fake_repositories import FakeDocumentRepository, FakePassengerRepository
 from tests.fakes.fake_uows.fake_register_document_uow import FakeRegisterDocumentUoW
 
 def make_document_registrar(fake_uow: FakeRegisterDocumentUoW) -> RegisterDocument:
     return RegisterDocument(
         uow=cast(RegisterDocumentUoW, fake_uow),
-        passenger_validator=PassengerValidator(),
-        document_validator=DocumentValidator()
+        register_document_validator=RegisterDocumentValidator(BaseValidator())
     )
 
 def test_register_document_use_case_valid_input(document_request: DocumentRequest, passenger_generated: list[Passenger]) -> None:
@@ -48,7 +45,7 @@ def test_register_document_use_case_invalid_input_duplicated_document(document_r
 
     document_registrar: RegisterDocument = make_document_registrar(fake_uow)
 
-    with pytest.raises(DuplicatedDocument):
+    with pytest.raises(MultipleExceptionsError):
         document_registrar.execute(document_request)
 
 def test_register_document_use_case_invalid_input_inexistent_passenger(document_request: DocumentRequest) -> None:

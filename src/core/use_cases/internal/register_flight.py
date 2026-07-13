@@ -4,15 +4,14 @@ from src.api.schemas import FlightRequest, FlightResponse
 from src.common.exceptions import DuplicatedFlight, InexistentAirplane, InexistentRoute, MultipleExceptionsError, UnavailableAirplane
 from src.common.types import AirplaneId, DistanceKm, FlightIdentityKey, RouteId
 from src.core.units_of_work import RegisterFlightUoW
-from src.core.validators import AirplaneValidator, FlightValidator, RouteValidator
+from src.core.validators import BaseValidator, FlightValidator
 from src.entities import Flight, Route
 
 class RegisterFlightValidator:
     
-    def __init__(self, flight_validator: FlightValidator, airplane_validator: AirplaneValidator, route_validator: RouteValidator) -> None:
+    def __init__(self, base_validator: BaseValidator, flight_validator: FlightValidator) -> None:
+        self.base_validator = base_validator
         self.flight_validator = flight_validator
-        self.airplane_validator = airplane_validator
-        self.route_validator = route_validator
 
     def validate_data_logic(self, 
                             flights_requested: list[FlightIdentityKey], 
@@ -22,19 +21,19 @@ class RegisterFlightValidator:
                             airplane_id: AirplaneId, 
                             route_id: RouteId) -> None:
 
-        if self.flight_validator.check_existente_by_identity_key(flights_requested, flights_retrieved):
+        if self.base_validator.check_existence(flights_requested, flights_retrieved):
             raise DuplicatedFlight
 
-        if not self.airplane_validator.check_existence([airplane_id], airplanes_id_retrieved):
+        if not self.base_validator.check_existence([airplane_id], airplanes_id_retrieved):
             raise InexistentAirplane
         
-        if not self.route_validator.check_existence([route_id], routes_id_retrieved):
+        if not self.base_validator.check_existence([route_id], routes_id_retrieved):
             raise InexistentRoute
     
     def validate_business_logic(self, airplane_id: AirplaneId, available_airplanes_id: list[AirplaneId]) -> None:
         exceptions: list[Exception] = []
 
-        if not self.airplane_validator.check_availability(airplane_id, available_airplanes_id):
+        if not self.base_validator.check_existence([airplane_id], available_airplanes_id):
             exceptions.append(UnavailableAirplane())
         
         if exceptions:

@@ -1,4 +1,4 @@
-from src.common.types import FlightId
+from src.common.types import FlightId, CurrentStatusId
 
 class FlightValidator:
     
@@ -7,4 +7,11 @@ class FlightValidator:
             if seats_available_per_flight[flight] < number_of_passengers:
                 return False
         
+        return True
+    
+    def check_statuses(self, flights_statuses: list[CurrentStatusId]) -> bool:
+        for status in flights_statuses:
+            if status != 1:
+                return False
+            
         return True

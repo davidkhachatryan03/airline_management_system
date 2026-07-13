@@ -3,7 +3,7 @@ from src.entities import Booking, Flight, Passenger, Ticket
 from src.common.exceptions import InexistentFlight, FullFlight, NotScheduledFlight, BlacklistedPassenger, MultipleExceptionsError
 from src.common.types import PassengerId, PassengerIdentityKey, FlightId, IsBlacklisted, CurrentStatusId, BasePriceUsd
 from src.core.units_of_work import CreateBookingUoW
-from src.core.validators import FlightValidator, PassengerValidator
+from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
 
 class PassengerProcessor:
     
@@ -35,12 +35,13 @@ class PassengerProcessor:
     
 class CreateBookingValidator:
     
-    def __init__(self, flight_validator: FlightValidator, passenger_validator: PassengerValidator) -> None:
+    def __init__(self, base_validator: BaseValidator, flight_validator: FlightValidator, passenger_validator: PassengerValidator) -> None:
+        self.base_validator = base_validator
         self.flight_validator = flight_validator
         self.passenger_validator = passenger_validator
 
     def validate_data_logic(self, flights_requested_id: list[FlightId], flights_retrieved_id: list[FlightId]) -> None:
-        if not self.flight_validator.check_existence(flights_requested_id, flights_retrieved_id):
+        if not self.base_validator.check_existence(flights_requested_id, flights_retrieved_id):
             raise InexistentFlight
 
     def validate_business_logic(self, passengers_statuses: list[IsBlacklisted], flights_retrieved_statuses: list[CurrentStatusId], seats_available_per_flight: dict[FlightId, int]) -> None:
@@ -52,7 +53,7 @@ class CreateBookingValidator:
         if not self.flight_validator.check_statuses(flights_retrieved_statuses):
             exceptions.append(NotScheduledFlight())
         
-        if self.passenger_validator.check_blacklisted(passengers_statuses):
+        if  self.passenger_validator.is_blacklisted(passengers_statuses):
             exceptions.append(BlacklistedPassenger())
         
         if exceptions:

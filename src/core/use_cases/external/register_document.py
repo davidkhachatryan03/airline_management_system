@@ -1,26 +1,25 @@
 from src.api.schemas import DocumentRequest, DocumentResponse
 from src.core.units_of_work import RegisterDocumentUoW
-from src.core.validators import PassengerValidator, DocumentValidator
+from src.core.validators import BaseValidator
 from src.common.exceptions import InexistentPassenger, DuplicatedDocument, MultipleExceptionsError
 from src.common.types import PassengerId, DocumentIdentityKey
 from src.entities import Document, Passenger
 
 class RegisterDocumentValidator:
 
-    def __init__(self, passenger_validator: PassengerValidator, document_validator: DocumentValidator) -> None:
-        self.passenger_validator = passenger_validator
-        self.document_validator = document_validator
+    def __init__(self, base_validator: BaseValidator) -> None:
+        self.base_validator = base_validator
 
     def validate_data_logic(self, 
                             passengers_id: list[PassengerId], 
                             passengers_retrieved_id: list[PassengerId]) -> None:
-        if not self.passenger_validator.check_existence(passengers_id, passengers_retrieved_id):
+        if not self.base_validator.check_existence(passengers_id, passengers_retrieved_id):
             raise InexistentPassenger
     
     def validate_business_logic(self, documents_requested_identity_keys: list[DocumentIdentityKey], documents_retrieved_identity_keys: list[DocumentIdentityKey]) -> None:
         exceptions: list[Exception] = []
 
-        if self.document_validator.check_existence(documents_requested_identity_keys, documents_retrieved_identity_keys):
+        if self.base_validator.check_existence(documents_requested_identity_keys, documents_retrieved_identity_keys):
             exceptions.append(DuplicatedDocument())
         
         if exceptions:

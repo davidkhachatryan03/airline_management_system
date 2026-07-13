@@ -4,10 +4,10 @@ import pytest
 from typing import cast
 
 from src.api.schemas import BookingRequest, BookingResponse
-from src.common.exceptions import BlacklistedPassenger, FullFlight, InexistentFlight, NotScheduledFlight
-from src.core.use_cases import CreateBooking, PassengerProcessor
+from src.common.exceptions import InexistentFlight, MultipleExceptionsError
+from src.core.use_cases import CreateBooking, CreateBookingValidator, PassengerProcessor
 from src.core.units_of_work import CreateBookingUoW
-from src.core.validators import FlightValidator, PassengerValidator
+from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
 from src.entities import Flight, Passenger
 from tests.fakes.fake_db_manager import FakeDBManager
 from tests.fakes.fake_repositories import FakeFlightRepository
@@ -39,8 +39,7 @@ def make_booking_creator(fake_uow: FakeCreateBookingUoW) -> CreateBooking:
     return CreateBooking(
         uow=cast(CreateBookingUoW, fake_uow),
         passenger_processor=PassengerProcessor(),
-        flight_validator=FlightValidator(),
-        passenger_validator=PassengerValidator(),
+        create_booking_validator=CreateBookingValidator(BaseValidator(), FlightValidator(), PassengerValidator())
     )
 
 def calculate_paid_amount_usd(flights_created: list[Flight], passengers_created: list[Passenger]) -> Decimal:
@@ -137,7 +136,7 @@ def test_booking_creator_blacklisted_passenger(
 
     booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
-    with pytest.raises(BlacklistedPassenger):
+    with pytest.raises(MultipleExceptionsError):
         booking_creator.execute(booking_request)
 
 def test_booking_creator_full_flight(
@@ -159,7 +158,7 @@ def test_booking_creator_full_flight(
 
     booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
-    with pytest.raises(FullFlight):
+    with pytest.raises(MultipleExceptionsError):
         booking_creator.execute(booking_request)
 
 def test_booking_creator_inexistent_flight(
@@ -198,6 +197,6 @@ def test_create_not_scheduled_flight(
 
     booking_creator: CreateBooking = make_booking_creator(fake_uow)
 
-    with pytest.raises(NotScheduledFlight):
+    with pytest.raises(MultipleExceptionsError):
         booking_creator.execute(booking_request)
 
