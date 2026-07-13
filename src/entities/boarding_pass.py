@@ -1,7 +1,9 @@
 from datetime import datetime
 from uuid import UUID
 
-class BoardingPass:
+from src.entities.base_entity import BaseEntity
+
+class BoardingPass(BaseEntity):
 
     def __init__(self,
                 id: UUID,
@@ -73,12 +75,3 @@ class BoardingPass:
             raise TypeError(f"The type of {value} is not UUID.")
         
         self._ticket_id = value
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "issue_datetime": self.issue_datetime,
-            "boarding_datetime": self.boarding_datetime,
-            "current_status_id": self.current_status_id,
-            "ticket_id": self.ticket_id
-        }

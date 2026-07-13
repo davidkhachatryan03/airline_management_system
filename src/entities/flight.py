@@ -4,8 +4,9 @@ from uuid import UUID
 import uuid6
 
 from src.common.types import DurationMin
+from src.entities.base_entity import BaseEntity
 
-class Flight:
+class Flight(BaseEntity):
 
     def __init__(self,
                 id: UUID,
@@ -30,15 +31,6 @@ class Flight:
         self.route_id = route_id
         self.airplane_id = airplane_id
 
-    def __eq__(self, other) -> bool:
-        if isinstance(other, Flight):
-            return self.id == other.id
-        
-        return False
-    
-    def __hash__(self) -> int:
-        return hash(self.id)
-    
     @property
     def id(self) -> UUID:
         return self._id
@@ -167,20 +159,6 @@ class Flight:
     @property
     def identity_key(self) -> tuple[datetime, int]:
         return (self.scheduled_departure_datetime, self.route_id)
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "scheduled_departure_datetime": self.scheduled_departure_datetime,
-            "scheduled_arrival_datetime": self.scheduled_arrival_datetime,
-            "actual_departure_datetime": self.actual_departure_datetime,
-            "actual_arrival_datetime": self.actual_arrival_datetime,
-            "operating_cost_usd": self.operating_cost_usd,
-            "base_price_usd": self.base_price_usd,
-            "current_status_id": self.current_status_id,
-            "route_id": self.route_id,
-            "airplane_id": self.airplane_id
-        }
     
     @classmethod
     def new_flight(cls, 

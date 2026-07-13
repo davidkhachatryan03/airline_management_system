@@ -3,8 +3,9 @@ from uuid import UUID
 import uuid6
 
 from src.common.types import DocumentIdentityKey
+from src.entities.base_entity import BaseEntity
 
-class Document:
+class Document(BaseEntity):
 
     def __init__(self,
                 id: UUID,
@@ -112,7 +113,7 @@ class Document:
     @document_type_id.setter
     def document_type_id(self, value: int) -> None:
         if not isinstance(value, int):
-            raise TypeError(f"The type of the document type id is not int.")
+            raise TypeError("The type of the document type id is not int.")
         
         if value <= 0:
             raise ValueError("The document type id can not be negative or zero.")
@@ -122,17 +123,6 @@ class Document:
     @property
     def identity_key(self) -> DocumentIdentityKey:
         return (self.document_number, self.issue_country)
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "document_number": self.document_number,
-            "valid_from": self.valid_from,
-            "valid_until": self.valid_until,
-            "issue_country": self.issue_country,
-            "passenger_id": self.passenger_id,
-            "document_type_id": self.document_type_id
-        }
     
     @classmethod
     def new_document(cls, document_number: str, valid_from: date, valid_until: date, issue_country: str, passenger_id: UUID, document_type_id: int) -> "Document":

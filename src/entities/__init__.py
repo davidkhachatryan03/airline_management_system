@@ -6,3 +6,4 @@ from src.entities.flight import Flight
 from src.entities.passenger import Passenger
 from src.entities.route import Route
 from src.entities.ticket import Ticket
+from src.entities.base_entity import BaseEntity

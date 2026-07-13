@@ -3,8 +3,9 @@ from uuid import UUID
 import uuid6
 
 from src.common.types import PassengerIdentityKey
+from src.entities.base_entity import BaseEntity
 
-class Passenger:
+class Passenger(BaseEntity):
 
     def __init__(self,
                 id: UUID,
@@ -169,19 +170,6 @@ class Passenger:
     @property
     def identity_key(self) -> PassengerIdentityKey:
         return (self.national_identity_number, self.issue_country)
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "full_name": self.full_name,
-            "national_identity_number": self.national_identity_number,
-            "issue_country": self.issue_country,
-            "birth_date": self.birth_date,
-            "email": self.email,
-            "phone_number": self.phone_number,
-            "is_blacklisted": self.is_blacklisted,
-            "is_vip": self.is_vip
-        }
     
     @classmethod
     def new_passenger(cls, full_name: str, national_identity_number: str, issue_country: str, birth_date: date, email: str, phone_number: str) -> "Passenger":

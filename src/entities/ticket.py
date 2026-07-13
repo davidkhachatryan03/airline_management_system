@@ -2,7 +2,9 @@ import uuid6, random, string
 from decimal import Decimal
 from uuid import UUID
 
-class Ticket:
+from src.entities.base_entity import BaseEntity
+
+class Ticket(BaseEntity):
 
     def __init__(self,
                 id: UUID,
@@ -114,17 +116,6 @@ class Ticket:
             raise TypeError("The type of the passenger id is not UUID.")
         
         self._passenger_id = value
-    
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "ticket_number": self.ticket_number,
-            "paid_amount_usd": self.paid_amount_usd,
-            "current_status_id": self.current_status_id,
-            "booking_id": self.booking_id,
-            "flight_id": self.flight_id,
-            "passenger_id": self.passenger_id
-        }
     
     @classmethod
     def new_ticket(cls, paid_amount_usd: Decimal, booking_id: UUID, flight_id: UUID, passenger_id: UUID) -> 'Ticket':

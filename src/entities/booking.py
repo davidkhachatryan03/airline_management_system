@@ -5,8 +5,11 @@ from uuid import UUID
 
 from src.entities.flight import Flight
 from src.entities.ticket import Ticket
+from src.entities.base_entity import BaseEntity
+from src.common.types import BasePriceUsd
 
-class Booking:
+
+class Booking(BaseEntity):
 
     def __init__(self,
                 id: UUID,
@@ -105,23 +108,14 @@ class Booking:
                 tickets_created.append(ticket_created)
         
         return tickets_created
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "booking_reference": self.booking_reference,
-            "booking_datetime": self.booking_datetime,
-            "paid_amount_usd": self.paid_amount_usd,
-            "current_status_id": self.current_status_id
-        }
     
     @classmethod
-    def new_booking(cls, flights: list[Flight], number_of_passengers: int) -> 'Booking':
+    def new_booking(cls, flights_base_prices: list[BasePriceUsd], number_of_passengers: int) -> 'Booking':
         return cls(
             id=uuid6.uuid7(),
             booking_reference=cls._generate_reference(),
             booking_datetime=datetime.now(),
-            paid_amount_usd=cls._calculate_paid_amount_usd(flights, number_of_passengers),
+            paid_amount_usd=cls._calculate_paid_amount_usd(flights_base_prices, number_of_passengers),
             current_status_id=1 
         )
     
@@ -131,7 +125,7 @@ class Booking:
         return ''.join(random.choices(chars, k=6))
 
     @staticmethod
-    def _calculate_paid_amount_usd(flights: list[Flight], number_of_passengers: int) -> Decimal:
-        paid_amount_usd: Decimal = (sum((flight.base_price_usd for flight in flights), Decimal("0")) * number_of_passengers).quantize(Decimal("0.01"), ROUND_HALF_UP)
+    def _calculate_paid_amount_usd(flights_base_prices: list[BasePriceUsd], number_of_passengers: int) -> Decimal:
+        paid_amount_usd: Decimal = (sum((base_price_usd for base_price_usd in flights_base_prices), Decimal("0")) * number_of_passengers).quantize(Decimal("0.01"), ROUND_HALF_UP)
 
         return paid_amount_usd

@@ -1,9 +1,11 @@
 from decimal import Decimal
 
-class Airplane:
+from src.entities.base_entity import BaseEntity
+
+class Airplane(BaseEntity):
 
     def __init__(self,
-                id: int, 
+                id: int | None, 
                 tail_number: str, 
                 manufacturer: str, 
                 model: str,
@@ -12,6 +14,7 @@ class Airplane:
                 flight_hour_cost_usd: Decimal,
                 current_status_id: int) -> None:
         
+        self.id = id
         self.tail_number = tail_number
         self.manufacturer = manufacturer
         self.model = model
@@ -21,11 +24,11 @@ class Airplane:
         self.current_status_id = current_status_id
 
     @property
-    def id(self) -> int:
+    def id(self) -> int | None:
         return self._id
     
     @id.setter
-    def id(self, value: int) -> None:
+    def id(self, value: int | None) -> None:
         if not isinstance(value, int):
             raise TypeError(f"The type the id is not int.")
         
@@ -148,14 +151,3 @@ class Airplane:
             raise ValueError(f"The current status id can not be negative or zero.")
         
         self._current_status_id = value
-    
-    def to_dict(self) -> dict:
-        return {
-            "tail_number": self.tail_number,
-            "manufacturer": self.manufacturer,
-            "model": self.model,
-            "capacity": self.capacity,
-            "range_km": self.range_km,
-            "flight_hour_cost_usd": self.flight_hour_cost_usd,
-            "current_status_id": self.current_status_id
-        }

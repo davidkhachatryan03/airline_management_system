@@ -1,4 +1,6 @@
-class Route:
+from src.entities.base_entity import BaseEntity
+
+class Route(BaseEntity):
 
     def __init__(self,
                 id: int,
@@ -8,6 +10,7 @@ class Route:
                 distance_km: int,
                 duration_min: int) -> None:
         
+        self.id = id
         self.flight_number = flight_number
         self.origin = origin
         self.destination = destination
@@ -108,12 +111,3 @@ class Route:
             raise ValueError("The duration min can not be negative or zero.")
         
         self._duration_min = value
-
-    def to_dict(self) -> dict:
-        return {
-            "flight_number": self.flight_number,
-            "origin": self.origin,
-            "destination": self.destination,
-            "distance_km": self.distance_km,
-            "duration_min": self.duration_min
-        }
