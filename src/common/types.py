@@ -18,6 +18,11 @@ type TicketId = UUID
 type PaidAmountUsd = Decimal
 type IssueCountry = str
 
+# GENERIC TYPES
+
+type RowId = AirplaneId | BookingId | CurrentStatusId | DocumentId | FlightId | PassengerId | RouteId | TicketId
+type RowIdentityKey = DocumentIdentityKey | FlightIdentityKey | PassengerIdentityKey 
+
 # BOOKING TYPES
 
 type BookingReference = str
