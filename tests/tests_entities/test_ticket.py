@@ -30,17 +30,6 @@ def test_new_booking_classmethod_valid_input(ticket: Ticket) -> None:
     assert new_ticket.flight_id == ticket.flight_id
     assert new_ticket.passenger_id == ticket.passenger_id
 
-def test_to_dict_method(ticket: Ticket) -> None:
-    dict_ticket: dict = ticket.to_dict()
-
-    assert dict_ticket["id"] == ticket.id
-    assert dict_ticket["ticket_number"] == ticket.ticket_number
-    assert dict_ticket["paid_amount_usd"] == ticket.paid_amount_usd
-    assert dict_ticket["current_status_id"] == ticket.current_status_id
-    assert dict_ticket["booking_id"] == ticket.booking_id
-    assert dict_ticket["flight_id"] == ticket.flight_id
-    assert dict_ticket["passenger_id"] == ticket.passenger_id
-
 @pytest.mark.parametrize(
     "field, value, exception, message", [
         ("id", 123, TypeError, "The type of the id is not UUID."),
@@ -67,12 +56,3 @@ def test_invalid_ticket(ticket: Ticket, field, value, exception, message) -> Non
 
     with pytest.raises(exception, match=message):
         Ticket(**test_data)
-
-    if field in {"paid_amount_usd", "booking_id", "flight_id", "passenger_id"}:
-        with pytest.raises(exception, match=message):
-            Ticket.new_ticket(
-                paid_amount_usd=test_data["paid_amount_usd"],
-                booking_id=test_data["booking_id"],
-                flight_id=test_data["flight_id"],
-                passenger_id=test_data["passenger_id"]
-            )

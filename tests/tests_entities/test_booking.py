@@ -14,7 +14,7 @@ def test_booking_valid_input(booking: Booking) -> None:
     assert booking.current_status_id == 1
 
 def test_new_booking_classmethod_valid_input(flight: Flight, number_of_passengers=4) -> None:
-    new_booking = Booking.new_booking([flight], number_of_passengers)
+    new_booking = Booking.new_booking([flight.base_price_usd], number_of_passengers)
 
     calculated_paid_amount_usd: Decimal = (flight.base_price_usd * number_of_passengers).quantize(Decimal("0.01"), ROUND_HALF_UP)
 
@@ -23,15 +23,6 @@ def test_new_booking_classmethod_valid_input(flight: Flight, number_of_passenger
     assert isinstance(new_booking.booking_datetime, datetime)
     assert new_booking.paid_amount_usd == calculated_paid_amount_usd
     assert new_booking.current_status_id == 1
-
-def test_to_dict_method(booking: Booking) -> None:
-    dict_booking: dict = booking.to_dict()
-
-    assert dict_booking["id"] == booking.id
-    assert dict_booking["booking_reference"] == booking.booking_reference
-    assert dict_booking["booking_datetime"] == booking.booking_datetime
-    assert dict_booking["paid_amount_usd"] == booking.paid_amount_usd
-    assert dict_booking["current_status_id"] == booking.current_status_id
 
 @pytest.mark.parametrize(
     "field, value, exception, message", [

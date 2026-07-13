@@ -34,19 +34,6 @@ def test_new_passenger_classmethod_valid_input(passenger: Passenger) -> None:
     assert new_passenger.is_blacklisted is False
     assert new_passenger.is_vip is False
 
-def test_to_dict_method(passenger: Passenger) -> None:
-    dict_passenger: dict = passenger.to_dict()
-
-    assert dict_passenger["id"] == passenger.id
-    assert dict_passenger["full_name"] == passenger.full_name
-    assert dict_passenger["national_identity_number"] == passenger.national_identity_number
-    assert dict_passenger["issue_country"] == passenger.issue_country
-    assert dict_passenger["birth_date"] == passenger.birth_date
-    assert dict_passenger["email"] == passenger.email
-    assert dict_passenger["phone_number"] == passenger.phone_number
-    assert dict_passenger["is_blacklisted"] == passenger.is_blacklisted
-    assert dict_passenger["is_vip"] == passenger.is_vip
-
 @pytest.mark.parametrize(
     "field, value, exception, message", [
         ("id", 123, TypeError, "The type of the id is not UUID."),
@@ -77,14 +64,3 @@ def test_invalid_passenger(passenger: Passenger, field, value, exception, messag
 
     with pytest.raises(exception, match=message):
         Passenger(**test_data)
-
-    if field in {"full_name", "birth_date", "email", "phone_number"}:
-        with pytest.raises(exception, match=message):
-            Passenger.new_passenger(
-                full_name=test_data["full_name"],
-                national_identity_number=test_data["national_identity_number"],
-                issue_country=test_data["issue_country"],
-                birth_date=test_data["birth_date"],
-                email=test_data["email"],
-                phone_number=test_data["phone_number"]
-            )

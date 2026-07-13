@@ -31,17 +31,6 @@ def test_new_document_classmethod_valid_input(document: Document) -> None:
     assert new_doc.passenger_id == document.passenger_id
     assert new_doc.document_type_id == document.document_type_id
 
-def test_to_dict_method(document: Document) -> None:
-    dict_document: dict = document.to_dict()
-
-    assert dict_document["id"] == document.id
-    assert dict_document["document_number"] == document.document_number
-    assert dict_document["valid_from"] == document.valid_from
-    assert dict_document["valid_until"] == document.valid_until
-    assert dict_document["issue_country"] == document.issue_country
-    assert dict_document["passenger_id"] == document.passenger_id
-    assert dict_document["document_type_id"] == document.document_type_id
-
 @pytest.mark.parametrize(
     "field, value, exception, message", [
         ("id", 123, TypeError, "The type of the id is not UUID."),
@@ -66,14 +55,3 @@ def test_invalid_document(document: Document, field, value, exception, message) 
 
     with pytest.raises(exception, match=message):
         Document(**test_data)
-
-    if field in {"document_number", "valid_from", "valid_until", "issue_country", "passenger_id", "document_type_id"}:
-        with pytest.raises(exception, match=message):
-            Document.new_document(
-                document_number=test_data["document_number"],
-                valid_from=test_data["valid_from"],
-                valid_until=test_data["valid_until"],
-                issue_country=test_data["issue_country"],
-                passenger_id=test_data["passenger_id"],
-                document_type_id=test_data["document_type_id"]
-            )

@@ -3,7 +3,20 @@ from datetime import datetime, date
 from decimal import Decimal
 from uuid import UUID
 
-from src.entities import Booking, Document, Flight, Passenger, Ticket
+from src.entities import Airplane, Booking, Document, Flight, Passenger, Ticket
+
+@pytest.fixture
+def airplane() -> Airplane:
+    return Airplane(
+        id=10,
+        tail_number="ABC-123",
+        manufacturer="Airbus",
+        model="123-200",
+        capacity=132,
+        range_km=6749,
+        flight_hour_cost_usd=Decimal("2000"),
+        current_status_id=1
+    )
 
 @pytest.fixture
 def booking() -> Booking:
@@ -67,3 +80,4 @@ def document() -> Document:
         passenger_id=UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7"),
         document_type_id=1
     )
+

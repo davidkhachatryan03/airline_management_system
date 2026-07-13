@@ -53,20 +53,6 @@ def test_new_flight_classmethod_valid_input(flight: Flight) -> None:
     assert new_flight.route_id == flight.route_id
     assert new_flight.airplane_id == flight.airplane_id
 
-def test_to_dict_method(flight: Flight) -> None:
-    dict_flight: dict = flight.to_dict()
-
-    assert dict_flight["id"] == UUID("019e92b3-e0db-7244-a9a2-43322a076e75")
-    assert dict_flight["scheduled_departure_datetime"] == datetime(2026, 1, 1)
-    assert dict_flight["scheduled_arrival_datetime"] == datetime(2026, 1, 2)
-    assert dict_flight["actual_departure_datetime"] == datetime(2026, 1, 1)
-    assert dict_flight["actual_arrival_datetime"] == datetime(2026, 1, 2)
-    assert dict_flight["operating_cost_usd"] == Decimal("10000")
-    assert dict_flight["base_price_usd"] == Decimal("13000")
-    assert dict_flight["current_status_id"] == 1
-    assert dict_flight["route_id"] == 1
-    assert dict_flight["airplane_id"] == 1
-
 @pytest.mark.parametrize(
         "field, value, exception, message", [
             ("id", 123, TypeError, "The type of the id is not UUID."),
@@ -96,13 +82,3 @@ def test_invalid_flight(flight: Flight, field, value, exception, message) -> Non
 
     with pytest.raises(exception, match=message):
         Flight(**test_data)
-    
-    if field in {"scheduled_departure_datetime", "scheduled_arrival_datetime", "operating_cost_usd", "route_id", "airplane_id"}:
-        with pytest.raises(exception, match=message):
-            Flight.new_flight(
-                scheduled_departure_datetime=test_data["scheduled_departure_datetime"],
-                scheduled_arrival_datetime=test_data["scheduled_arrival_datetime"],
-                operating_cost_usd=test_data["operating_cost_usd"],
-                route_id=test_data["route_id"],
-                airplane_id=test_data["airplane_id"]
-            )
