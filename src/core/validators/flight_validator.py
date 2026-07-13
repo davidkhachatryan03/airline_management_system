@@ -1,4 +1,4 @@
-from src.common.types import FlightId, CurrentStatusId
+from src.common.types import FlightId
 
 class FlightValidator:
     
