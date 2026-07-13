@@ -1,7 +1,7 @@
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
 from src.entities import Booking, Flight, Passenger, Ticket
 from src.common.exceptions import InexistentFlight, FullFlight, NotScheduledFlight, BlacklistedPassenger, MultipleExceptionsError
-from src.common.types import PassengerId, PassengerIdentityKey, FlightId, IsBlacklisted, CurrentStatusId
+from src.common.types import PassengerId, PassengerIdentityKey, FlightId, IsBlacklisted, CurrentStatusId, BasePriceUsd
 from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import FlightValidator, PassengerValidator
 
@@ -96,7 +96,9 @@ class CreateBooking:
 
             self.create_booking_validator.validate_business_logic(all_passengers_statuses, flights_retrieved_statuses, seats_available_per_flight)
 
-            booking_created = Booking.new_booking(flights_retrieved, len(all_passengers_id))
+            flights_retrieved_base_prices: list[BasePriceUsd] = [flight.base_price_usd for flight in flights_retrieved]
+
+            booking_created = Booking.new_booking(flights_retrieved_base_prices, len(all_passengers_id))
             uow.booking_repository.insert_booking(booking_created)
 
             tickets_created: list[Ticket] = booking_created.generate_tickets(all_passengers_id, flights_retrieved, booking_created.id)
