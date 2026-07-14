@@ -14,15 +14,10 @@ class RegisterFlightValidator:
         self.flight_validator = flight_validator
 
     def validate_data_logic(self, 
-                            flights_requested: list[FlightIdentityKey], 
-                            flights_retrieved: list[FlightIdentityKey], 
                             airplanes_id_retrieved: list[AirplaneId], 
                             routes_id_retrieved: list[RouteId], 
                             airplane_id: AirplaneId, 
                             route_id: RouteId) -> None:
-
-        if self.base_validator.check_existence(flights_requested, flights_retrieved):
-            raise DuplicatedFlight
 
         if not self.base_validator.check_existence([airplane_id], airplanes_id_retrieved):
             raise InexistentAirplane
@@ -30,8 +25,15 @@ class RegisterFlightValidator:
         if not self.base_validator.check_existence([route_id], routes_id_retrieved):
             raise InexistentRoute
     
-    def validate_business_logic(self, airplane_id: AirplaneId, available_airplanes_id: list[AirplaneId]) -> None:
+    def validate_business_logic(self, 
+                                flights_requested: list[FlightIdentityKey], 
+                                flights_retrieved: list[FlightIdentityKey],
+                                airplane_id: AirplaneId, 
+                                available_airplanes_id: list[AirplaneId]) -> None:
         exceptions: list[Exception] = []
+
+        if self.base_validator.check_existence(flights_requested, flights_retrieved):
+            raise DuplicatedFlight
 
         if not self.base_validator.check_existence([airplane_id], available_airplanes_id):
             exceptions.append(UnavailableAirplane())
@@ -58,8 +60,7 @@ class RegisterFlight:
             routes_retrieved: list[Route] = uow.route_repository.retrieve_routes_by_id(routes_requested_id)
             routes_retrieved_id: list[RouteId] = [route.id for route in routes_retrieved]
             
-            self.register_flight_validator.validate_data_logic(flights_requested_identity_keys, 
-                                                            flights_retrieved_identity_keys, 
+            self.register_flight_validator.validate_data_logic(
                                                             airplanes_retrieved_id, 
                                                             routes_retrieved_id, 
                                                             flight_request.airplane_id, 
@@ -67,7 +68,7 @@ class RegisterFlight:
 
             available_airplanes_id: list[AirplaneId] = uow.airplane_repository.retrieve_available_airplanes_id(flight_request.scheduled_departure_datetime, flight_request.scheduled_arrival_datetime)
 
-            self.register_flight_validator.validate_business_logic(flight_request.airplane_id, available_airplanes_id)
+            self.register_flight_validator.validate_business_logic(flights_requested_identity_keys, flights_retrieved_identity_keys, flight_request.airplane_id, available_airplanes_id)
 
             flight_hour_cost_usd: Decimal = uow.airplane_repository.retrieve_flight_hour_cost_usd_by_id(flight_request.airplane_id)[0]
             duration_min: DistanceKm = uow.route_repository.retrieve_distance_km_by_id(flight_request.route_id)[0]
