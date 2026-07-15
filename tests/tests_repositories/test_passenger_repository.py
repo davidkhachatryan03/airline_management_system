@@ -7,8 +7,6 @@ def test_insert_passenger(passenger_repository: PassengerRepository, passenger: 
     last_inserted_passenger: Passenger = passenger_repository.retrieve_passengers(limit=1)[0]
     
     assert last_inserted_passenger.id == passenger.id
-    assert last_inserted_passenger.national_identity_number == passenger.national_identity_number
-    assert last_inserted_passenger.issue_country == passenger.issue_country
     assert last_inserted_passenger.full_name == passenger.full_name
     assert last_inserted_passenger.birth_date == passenger.birth_date
     assert last_inserted_passenger.email == passenger.email

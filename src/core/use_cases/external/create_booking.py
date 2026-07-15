@@ -1,38 +1,47 @@
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
-from src.entities import Booking, Flight, Passenger, Ticket
+from src.entities import Booking, Document, Flight, Passenger, Ticket
 from src.common.exceptions import InexistentFlight, FullFlight, NotScheduledFlight, BlacklistedPassenger, MultipleExceptionsError
-from src.common.types import PassengerId, PassengerIdentityKey, FlightId, IsBlacklisted, CurrentStatusId, BasePriceUsd
+from src.common.types import BasePriceUsd, CurrentStatusId, DocumentIdentityKey, FlightId, IsBlacklisted, PassengerId, PassengerIdentityKey
 from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
 
 class PassengerProcessor:
     
-    def get_or_create_passengers(self, passengers_requested: list[PassengerRequest], passengers_retrieved: list[Passenger]) -> tuple[list[Passenger], list[PassengerId]]:
+    def get_or_create_passengers(self, 
+                                passengers_requested: list[PassengerRequest], 
+                                documents_retrieved: list[Document]) -> tuple[list[Passenger], list[Document], list[PassengerId]]:
         passengers_not_in_db: list[Passenger] = []
+        documents_not_in_db: list[Document] = []
         all_passengers_id: list[PassengerId] = []
         
-        dict_passengers_retrieved_identity_keys: dict[PassengerIdentityKey, PassengerId] = {passenger.identity_key: passenger.id for passenger in passengers_retrieved}
+        documents_retrieved_identity_keys: dict[DocumentIdentityKey, PassengerId] = {document.identity_key: document.passenger_id for document in documents_retrieved}
         for passenger in passengers_requested:
-            if passenger.identity_key not in dict_passengers_retrieved_identity_keys:
-
-                passenger_not_in_db = Passenger.new_passenger(
+            if passenger.identity_key not in documents_retrieved_identity_keys:
+                passenger_created = Passenger.new_passenger(
                     full_name=passenger.full_name,
-                    national_identity_number=passenger.national_identity_number,
-                    issue_country=passenger.issue_country,
                     birth_date=passenger.birth_date,
                     email=passenger.email,
                     phone_number=passenger.phone_number
                 )
+                
+                document_created = Document.new_document(
+                    document_number=passenger.document_number,
+                    valid_from=passenger.valid_from,
+                    valid_until=passenger.valid_until,
+                    issue_country=passenger.issue_country,
+                    passenger_id=passenger_created.id,
+                    document_type_id=passenger.document_type_id
+                )
 
-                passengers_not_in_db.append(passenger_not_in_db)
-                all_passengers_id.append(passenger_not_in_db.id)
+                passengers_not_in_db.append(passenger_created)
+                documents_not_in_db.append(document_created)
+                all_passengers_id.append(passenger_created.id)
             
             else:
-
-                all_passengers_id.append(dict_passengers_retrieved_identity_keys[passenger.identity_key])
-
-        return passengers_not_in_db, all_passengers_id
-    
+                all_passengers_id.append(documents_retrieved_identity_keys[passenger.identity_key])
+            
+        return passengers_not_in_db, documents_not_in_db, all_passengers_id
+        
 class CreateBookingValidator:
     
     def __init__(self, base_validator: BaseValidator, flight_validator: FlightValidator, passenger_validator: PassengerValidator) -> None:
@@ -81,14 +90,17 @@ class CreateBooking:
             seats_available_per_flight: dict[FlightId, int] = uow.flight_repository.retrieve_seats_available_per_flight(flights_retrieved_id)
 
             passengers_requested: list[PassengerRequest] = booking_request.passengers
-            passengers_requested_documents: list[PassengerIdentityKey] = [passenger.identity_key for passenger in passengers_requested]
+            documents_requested_identity_keys: list[DocumentIdentityKey] = [passenger.identity_key for passenger in passengers_requested]
+            
+            documents_retrieved: list[Document] = uow.document_repository.retrieve_documents_by_identity_key(documents_requested_identity_keys)
 
-            passengers_retrieved: list[Passenger] = uow.passenger_repository.retrieve_passengers_by_document(passengers_requested_documents)
-
-            passengers_not_in_db, all_passengers_id = self.passenger_processor.get_or_create_passengers(passengers_requested, passengers_retrieved)
+            passengers_not_in_db, documents_not_in_db, all_passengers_id = self.passenger_processor.get_or_create_passengers(passengers_requested, documents_retrieved)
 
             if passengers_not_in_db:
                 uow.passenger_repository.insert_passengers(passengers_not_in_db)
+
+            if documents_not_in_db:
+                uow.document_repository.insert_documents(documents_not_in_db)
 
             all_passengers: list[Passenger] = uow.passenger_repository.retrieve_passengers_by_id(all_passengers_id)
             all_passengers_statuses: list[IsBlacklisted] = [passenger.is_blacklisted for passenger in all_passengers]

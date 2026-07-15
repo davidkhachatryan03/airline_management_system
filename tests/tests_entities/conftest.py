@@ -60,8 +60,6 @@ def passenger() -> Passenger:
     return Passenger(
         id=UUID("019e92b3-e0db-7244-a9a2-43322a076e75"),
         full_name="David Khachatryan",
-        national_identity_number="40123789",
-        issue_country="ARG",
         birth_date=date(2000, 1, 1),
         email="dkh@email.com",
         phone_number="12345678",

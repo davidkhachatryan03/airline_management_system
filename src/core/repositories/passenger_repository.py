@@ -1,5 +1,5 @@
 from src.common import DBManager
-from src.common.types import PassengerRow, PassengerId, PassengerIdentityKey
+from src.common.types import PassengerRow, PassengerId, DocumentIdentityKey
 from src.entities import Passenger
 
 class PassengerRepository:
@@ -18,8 +18,6 @@ class PassengerRepository:
 
         query = """
                 SELECT  id, 
-                        national_identity_number, 
-                        issue_country, 
                         full_name, 
                         birth_date, 
                         email,
@@ -37,27 +35,27 @@ class PassengerRepository:
         
         return []
     
-    def retrieve_passengers_by_document(self, passengers_document: list[PassengerIdentityKey]) -> list[Passenger]:
-        if not passengers_document:
+    def retrieve_passengers_by_document(self, documents_identity_keys: list[DocumentIdentityKey]) -> list[Passenger]:
+        if not documents_identity_keys:
             return []
         
-        placeholders = ",".join(["%s" * len(passengers_document)])
+        placeholders = ",".join(["(" + ",".join(["%s"] * len(documents_identity_keys[0])) + ")"] * len(documents_identity_keys))
 
         query = """
-                SELECT  id, 
-                        national_identity_number, 
-                        issue_country, 
-                        full_name, 
-                        birth_date, 
-                        email,
-                        phone_number,
-                        is_blacklisted,
-                        is_vip
-                FROM    passengers
-                WHERE   (national_document_number) IN ({})
+                SELECT  p.id, 
+                        p.full_name, 
+                        p.birth_date, 
+                        p.email,
+                        p.phone_number,
+                        p.is_blacklisted,
+                        p.is_vip
+                FROM    passengers p
+                JOIN    documents d
+                ON      p.id = d.passenger_id
+                WHERE   (d.document_number, d.issue_country) IN ({})
                 """.format(placeholders)
         
-        result: list[PassengerRow] = self.db_manager.retrieve_many_columns(query, passengers_document)
+        result: list[PassengerRow] = self.db_manager.retrieve_many_columns(query, documents_identity_keys)
 
         if result:
             return [Passenger(*row) for row in result]
@@ -67,8 +65,6 @@ class PassengerRepository:
     def retrieve_passengers(self, limit: int = 5) -> list[Passenger]:
         query = """
                 SELECT      id, 
-                            national_identity_number, 
-                            issue_country, 
                             full_name, 
                             birth_date, 
                             email,

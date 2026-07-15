@@ -14,8 +14,6 @@ CREATE TABLE routes (
 
 CREATE TABLE passengers (
 	id BINARY(16) PRIMARY KEY,
-    national_identity_number VARCHAR(20),
-    issue_country CHAR(3),
     full_name VARCHAR(100) NOT NULL,
     birth_date DATE NOT NULL,
     email VARCHAR(100) NOT NULL,
