@@ -68,7 +68,7 @@ class CreateBookingValidator:
         if exceptions:
             raise MultipleExceptionsError(exceptions)
         
-class CreateBooking:
+class RegisterBooking:
 
     def __init__(self,
                 uow: CreateBookingUoW,

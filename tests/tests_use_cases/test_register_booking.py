@@ -5,9 +5,10 @@ import pytest
 from typing import cast
 
 from src.api.schemas import BookingRequest, BookingResponse
+from src.common.exceptions import InexistentFlight
 from src.common.types import BookingId, BookingReference, TicketNumber
 from src.core.units_of_work import CreateBookingUoW
-from src.core.use_cases import CreateBooking, CreateBookingValidator, PassengerProcessor
+from src.core.use_cases import RegisterBooking, CreateBookingValidator, PassengerProcessor
 from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
 from src.entities import Booking, Document, Flight, Passenger, Ticket
 from tests.fakes.fake_uows.fake_create_booking_uow import FakeCreateBookingUoW
@@ -19,8 +20,8 @@ def calculate_paid_amount_usd(flights_created: list[Flight], number_of_passenger
 def calculate_base_price_usd(operating_cost_usd: Decimal) -> Decimal:
         return (operating_cost_usd * Decimal("1.30")).quantize(Decimal("0.01"), ROUND_HALF_UP)
 
-def create_register_booking(fake_uow: FakeCreateBookingUoW) -> CreateBooking:
-    return CreateBooking(
+def create_register_booking(fake_uow: FakeCreateBookingUoW) -> RegisterBooking:
+    return RegisterBooking(
         uow=cast(CreateBookingUoW, fake_uow),
         passenger_processor=PassengerProcessor(),
         create_booking_validator=CreateBookingValidator(BaseValidator(), FlightValidator(), PassengerValidator())
@@ -56,7 +57,7 @@ def test_create_booking_valid_input_existent_passengers(booking_request: Booking
     fake_uow.flight_repository.insert_flights(flights_generated)
     fake_uow.passenger_repository.insert_passengers(passengers_generated)
 
-    register_booking: CreateBooking = create_register_booking(fake_uow)
+    register_booking: RegisterBooking = create_register_booking(fake_uow)
     booking_response: BookingResponse = register_booking.execute(booking_request)
 
     asserts(fake_uow, booking_request, booking_response, documents_generated, flights_generated, 
@@ -72,7 +73,7 @@ def test_create_booking_valid_input_non_existent_passengers(booking_request: Boo
 
     fake_uow.flight_repository.insert_flights(flights_generated)
 
-    register_booking: CreateBooking = create_register_booking(fake_uow)
+    register_booking: RegisterBooking = create_register_booking(fake_uow)
     booking_response: BookingResponse = register_booking.execute(booking_request)
 
     asserts(fake_uow, booking_request, booking_response, documents_generated, flights_generated, 
@@ -90,14 +91,19 @@ def test_create_booking_valid_input_existent_and_non_existent_passengers(booking
     fake_uow.passenger_repository.insert_passengers([passengers_generated[0]])
     fake_uow.document_repository.insert_documents([documents_generated[0]])
 
-    register_booking: CreateBooking = create_register_booking(fake_uow)
+    register_booking: RegisterBooking = create_register_booking(fake_uow)
     booking_response: BookingResponse = register_booking.execute(booking_request)
 
     asserts(fake_uow, booking_request, booking_response, documents_generated, flights_generated, 
             passengers_generated, tickets_generated, expected_booking_reference, expected_ticket_number, expected_booking_id)
 
-def test_create_booking_inexistent_flight() -> None:
-    pass
+def test_create_booking_inexistent_flight(booking_request: BookingRequest) -> None:
+    fake_uow = FakeCreateBookingUoW(FakeDBManager())
+    
+    register_booking: RegisterBooking = create_register_booking(fake_uow)
+
+    with pytest.raises(InexistentFlight):
+        register_booking.execute(booking_request)
 
 def test_create_booking_full_flight() -> None:
     pass
