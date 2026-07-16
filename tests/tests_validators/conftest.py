@@ -53,5 +53,5 @@ def seats_available_per_flight() -> dict[FlightId, int]:
     return {
         UUID("019f5bde-6af2-7383-bd1b-dd5954d4e3aa"): 10,
         UUID("019f5bdf-2240-7424-87a9-c42508929ae8"): 2,
-        UUID("019f5bdf-2240-7424-87a9-c42508929ae8"): 4
+        UUID("019f6cb0-752b-7a55-acdc-fdf10e26965b"): 4
     }

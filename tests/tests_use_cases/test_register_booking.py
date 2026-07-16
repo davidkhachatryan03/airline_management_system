@@ -5,7 +5,7 @@ import pytest
 from typing import cast
 
 from src.api.schemas import BookingRequest, BookingResponse
-from src.common.exceptions import InexistentFlight
+from src.common.exceptions import BlacklistedPassenger, FullFlight, InexistentFlight, InvalidData, MultipleExceptionsError, NotScheduledFlight, NotSeatsEnough
 from src.common.types import BookingId, BookingReference, TicketNumber
 from src.core.units_of_work import CreateBookingUoW
 from src.core.use_cases import RegisterBooking, CreateBookingValidator, PassengerProcessor
@@ -29,7 +29,7 @@ def create_register_booking(fake_uow: FakeCreateBookingUoW) -> RegisterBooking:
 
 def asserts(fake_uow: FakeCreateBookingUoW, booking_request: BookingRequest, booking_response: BookingResponse, documents_generated: list[Document], 
             flights_generated: list[Flight], passengers_generated: list[Passenger],  tickets_generated: list[Ticket], expected_booking_reference: BookingReference,
-            expected_ticket_number: TicketNumber, expected_booking_id: BookingId):
+            expected_ticket_number: TicketNumber, expected_booking_id: BookingId) -> None:
     booking_expected = Booking.new_booking([flight.base_price_usd for flight in flights_generated], len(booking_request.passengers))
     booking_expected.id = expected_booking_id
     
@@ -47,7 +47,7 @@ def asserts(fake_uow: FakeCreateBookingUoW, booking_request: BookingRequest, boo
 
 @freeze_time("2026-01-01 12:00:00")
 @pytest.mark.usefixtures("fixed_booking_identifiers")
-def test_create_booking_valid_input_existent_passengers(booking_request: BookingRequest, passengers_and_documents_generated: tuple[list[Passenger], list[Document]],
+def test_register_booking_valid_input_existent_passengers(booking_request: BookingRequest, passengers_and_documents_generated: tuple[list[Passenger], list[Document]],
                                                         flights_generated: list[Flight], tickets_generated: list[Ticket], expected_booking_reference: BookingReference,
                                                         expected_ticket_number: TicketNumber, expected_booking_id: BookingId) -> None:
     fake_uow = FakeCreateBookingUoW(FakeDBManager())
@@ -65,7 +65,7 @@ def test_create_booking_valid_input_existent_passengers(booking_request: Booking
 
 @freeze_time("2026-01-01 12:00:00")
 @pytest.mark.usefixtures("fixed_booking_identifiers")
-def test_create_booking_valid_input_non_existent_passengers(booking_request: BookingRequest,  passengers_and_documents_generated: tuple[list[Passenger], list[Document]],
+def test_register_booking_valid_input_non_existent_passengers(booking_request: BookingRequest,  passengers_and_documents_generated: tuple[list[Passenger], list[Document]],
                                                             flights_generated: list[Flight], tickets_generated: list[Ticket], expected_booking_reference: BookingReference,
                                                             expected_ticket_number: TicketNumber, expected_booking_id: BookingId) -> None:
     passengers_generated, documents_generated = passengers_and_documents_generated
@@ -81,7 +81,7 @@ def test_create_booking_valid_input_non_existent_passengers(booking_request: Boo
 
 @freeze_time("2026-01-01 12:00:00")
 @pytest.mark.usefixtures("fixed_booking_identifiers")
-def test_create_booking_valid_input_existent_and_non_existent_passengers(booking_request: BookingRequest,  passengers_and_documents_generated: tuple[list[Passenger], list[Document]],
+def test_register_booking_valid_input_existent_and_non_existent_passengers(booking_request: BookingRequest,  passengers_and_documents_generated: tuple[list[Passenger], list[Document]],
                                                             flights_generated: list[Flight], tickets_generated: list[Ticket], expected_booking_reference: BookingReference,
                                                             expected_ticket_number: TicketNumber, expected_booking_id: BookingId) -> None:
     passengers_generated, documents_generated = passengers_and_documents_generated
@@ -97,22 +97,109 @@ def test_create_booking_valid_input_existent_and_non_existent_passengers(booking
     asserts(fake_uow, booking_request, booking_response, documents_generated, flights_generated, 
             passengers_generated, tickets_generated, expected_booking_reference, expected_ticket_number, expected_booking_id)
 
-def test_create_booking_inexistent_flight(booking_request: BookingRequest) -> None:
+def test_register_booking_inexistent_flights(booking_request: BookingRequest) -> None:
     fake_uow = FakeCreateBookingUoW(FakeDBManager())
     
     register_booking: RegisterBooking = create_register_booking(fake_uow)
 
-    with pytest.raises(InexistentFlight):
+    with pytest.raises(MultipleExceptionsError) as exc_info:
         register_booking.execute(booking_request)
 
-def test_create_booking_full_flight() -> None:
-    pass
+    exceptions: list[InvalidData] = exc_info.value.exceptions
 
-def test_create_booking_not_scheduled_flight() -> None:
-    pass
+    assert len(exceptions) == 2
+    assert isinstance(exceptions[0], InexistentFlight)
+    assert isinstance(exceptions[0], InexistentFlight)
 
-def test_create_booking_blacklisted_passenger() -> None:
-    pass
+def test_register_booking_full_flight(booking_request: BookingRequest, flights_generated: list[Flight]) -> None:
+    fake_uow = FakeCreateBookingUoW(FakeDBManager())
 
-def test_create_booking_multiple_exceptions() -> None:
-    pass
+    fake_uow.flight_repository.insert_flights(flights_generated)
+
+    fake_uow.flight_repository.flights[flights_generated[0]] = 0
+
+    register_booking: RegisterBooking = create_register_booking(fake_uow)
+
+    with pytest.raises(MultipleExceptionsError) as exc_info:
+        register_booking.execute(booking_request)
+
+    exceptions: list[InvalidData] = exc_info.value.exceptions
+
+    assert len(exceptions) == 1
+    assert isinstance(exceptions[0], FullFlight)
+
+def test_register_booking_not_seats_enough(booking_request: BookingRequest, flights_generated: list[Flight]) -> None:
+    fake_uow = FakeCreateBookingUoW(FakeDBManager())
+
+    fake_uow.flight_repository.insert_flights(flights_generated, seats=1)
+
+    register_booking: RegisterBooking = create_register_booking(fake_uow)
+
+    with pytest.raises(MultipleExceptionsError) as exc_info:
+        register_booking.execute(booking_request)
+
+    exceptions: list[InvalidData] = exc_info.value.exceptions
+
+    assert len(exceptions) == 2
+    assert isinstance(exceptions[0], NotSeatsEnough)
+    assert isinstance(exceptions[1], NotSeatsEnough)
+
+def test_register_booking_not_scheduled_flight(booking_request: BookingRequest, flights_generated: list[Flight]) -> None:
+    fake_uow = FakeCreateBookingUoW(FakeDBManager())
+
+    flights_generated[0].current_status_id = 99
+
+    fake_uow.flight_repository.insert_flights(flights_generated)
+
+    register_booking: RegisterBooking = create_register_booking(fake_uow)
+
+    with pytest.raises(MultipleExceptionsError) as exc_info:
+        register_booking.execute(booking_request)
+
+    exceptions: list[InvalidData] = exc_info.value.exceptions
+
+    assert len(exceptions) == 1
+    assert isinstance(exceptions[0], NotScheduledFlight)
+
+def test_register_booking_blacklisted_passenger(booking_request: BookingRequest, flights_generated: list[Flight],
+                                                passengers_generated: list[Passenger]) -> None:
+    fake_uow = FakeCreateBookingUoW(FakeDBManager())
+
+    passengers_generated[0].is_blacklisted = True
+
+    fake_uow.flight_repository.insert_flights(flights_generated)
+    fake_uow.passenger_repository.insert_passengers(passengers_generated)
+
+    register_booking: RegisterBooking = create_register_booking(fake_uow)
+
+    with pytest.raises(MultipleExceptionsError) as exc_info:
+        register_booking.execute(booking_request)
+
+    exceptions: list[InvalidData] = exc_info.value.exceptions
+
+    assert len(exceptions) == 1
+    assert isinstance(exceptions[0], BlacklistedPassenger)
+
+def test_register_booking_multiple_exceptions(booking_request: BookingRequest, flights_generated: list[Flight],
+                                            passengers_generated: list[Passenger]) -> None:
+    fake_uow = FakeCreateBookingUoW(FakeDBManager())
+
+    passengers_generated[0].is_blacklisted = True
+    flights_generated[0].current_status_id = 99
+
+    fake_uow.flight_repository.insert_flights(flights_generated)
+    fake_uow.passenger_repository.insert_passengers(passengers_generated)
+
+    fake_uow.flight_repository.flights[flights_generated[0]] = 0
+
+    register_booking: RegisterBooking = create_register_booking(fake_uow)
+
+    with pytest.raises(MultipleExceptionsError) as exc_info:
+        register_booking.execute(booking_request)
+
+    exceptions: list[InvalidData] = exc_info.value.exceptions
+
+    assert len(exceptions) == 3
+    assert isinstance(exceptions[0], FullFlight)
+    assert isinstance(exceptions[1], NotScheduledFlight)
+    assert isinstance(exceptions[2], BlacklistedPassenger)

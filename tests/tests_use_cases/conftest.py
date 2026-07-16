@@ -85,13 +85,20 @@ def passengers_and_documents_generated(booking_request: BookingRequest) -> tuple
     return passengers_generated, documents_generated
 
 @pytest.fixture
-def tickets_generated(passengers_and_documents_generated: tuple[list[Passenger], list[Document]],
+def passengers_generated(passengers_and_documents_generated: tuple[list[Passenger], list[Document]]) -> list[Passenger]:
+    return passengers_and_documents_generated[0]
+
+@pytest.fixture
+def documents_generated(passengers_and_documents_generated: tuple[list[Passenger], list[Document]]) -> list[Document]:
+    return passengers_and_documents_generated[1]
+
+@pytest.fixture
+def tickets_generated(passengers_generated: list[Passenger],
                     flights_generated: list[Flight],
                     expected_booking_id: UUID,
                     expected_ticket_number: str) -> list[Ticket]:
     tickets_generated: list[Ticket] = []
 
-    passengers_generated, documents_generated = passengers_and_documents_generated
     for passenger in passengers_generated:
         for flight in flights_generated:
             ticket_generated = Ticket.new_ticket(

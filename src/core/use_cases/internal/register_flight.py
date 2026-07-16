@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from src.api.schemas import FlightRequest, FlightResponse
-from src.common.exceptions import DuplicatedFlight, InexistentAirplane, InexistentRoute, MultipleExceptionsError, UnavailableAirplane
+from src.common.exceptions import DuplicatedFlight, InexistentAirplane, InexistentRoute, InvalidData, MultipleExceptionsError, UnavailableAirplane
 from src.common.types import AirplaneId, DistanceKm, FlightIdentityKey, RouteId
 from src.core.units_of_work import RegisterFlightUoW
 from src.core.validators import BaseValidator, FlightValidator
@@ -18,25 +18,36 @@ class RegisterFlightValidator:
                             routes_id_retrieved: list[RouteId], 
                             airplane_id: AirplaneId, 
                             route_id: RouteId) -> None:
+        exceptions: list[InvalidData] = []
 
-        if not self.base_validator.check_existence([airplane_id], airplanes_id_retrieved):
-            raise InexistentAirplane
+        airplanes_missing_ids: set[AirplaneId] = self.base_validator.check_existence([airplane_id], airplanes_id_retrieved)
+        if airplanes_missing_ids:
+            for airplane_id in airplanes_missing_ids:
+                exceptions.append(InexistentAirplane(airplane_id))
         
-        if not self.base_validator.check_existence([route_id], routes_id_retrieved):
-            raise InexistentRoute
+        routes_missing_ids: set[RouteId] = self.base_validator.check_existence([route_id], routes_id_retrieved)
+        if routes_missing_ids:
+            for route_id in routes_missing_ids:
+                exceptions.append(InexistentRoute(route_id))
+        
+        if exceptions:
+            raise MultipleExceptionsError(exceptions)
     
     def validate_business_logic(self, 
                                 flights_requested: list[FlightIdentityKey], 
                                 flights_retrieved: list[FlightIdentityKey],
                                 airplane_id: AirplaneId, 
                                 available_airplanes_id: list[AirplaneId]) -> None:
-        exceptions: list[Exception] = []
+        exceptions: list[InvalidData] = []
 
-        if self.base_validator.check_existence(flights_requested, flights_retrieved):
-            raise DuplicatedFlight
+        duplicated_flights_identity_keys: set[FlightIdentityKey] = self.base_validator.check_existence(flights_requested, flights_retrieved)
+        unavailable_airplanes_ids: set[AirplaneId] = self.base_validator.check_existence([airplane_id], available_airplanes_id)
 
-        if not self.base_validator.check_existence([airplane_id], available_airplanes_id):
-            exceptions.append(UnavailableAirplane())
+        for flight_identity_key in duplicated_flights_identity_keys:
+            exceptions.append(DuplicatedFlight(flight_identity_key))
+
+        for airplane_id in unavailable_airplanes_ids:
+            exceptions.append(UnavailableAirplane(airplane_id))
         
         if exceptions:
             raise MultipleExceptionsError(exceptions)

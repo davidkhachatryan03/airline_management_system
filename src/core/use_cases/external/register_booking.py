@@ -1,7 +1,7 @@
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
 from src.entities import Booking, Document, Flight, Passenger, Ticket
-from src.common.exceptions import InexistentFlight, FullFlight, NotScheduledFlight, BlacklistedPassenger, MultipleExceptionsError
-from src.common.types import BasePriceUsd, CurrentStatusId, DocumentIdentityKey, FlightId, IsBlacklisted, PassengerId, PassengerIdentityKey
+from src.common.exceptions import InexistentFlight, InvalidData, FullFlight, NotScheduledFlight, NotSeatsEnough, BlacklistedPassenger, MultipleExceptionsError
+from src.common.types import BasePriceUsd, DocumentIdentityKey, FlightId, PassengerId
 from src.core.units_of_work import CreateBookingUoW
 from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
 
@@ -50,20 +50,34 @@ class CreateBookingValidator:
         self.passenger_validator = passenger_validator
 
     def validate_data_logic(self, flights_requested_id: list[FlightId], flights_retrieved_id: list[FlightId]) -> None:
-        if not self.base_validator.check_existence(flights_requested_id, flights_retrieved_id):
-            raise InexistentFlight
+        exceptions: list[InvalidData] = []
 
-    def validate_business_logic(self, passengers_statuses: list[IsBlacklisted], flights_retrieved_statuses: list[CurrentStatusId], seats_available_per_flight: dict[FlightId, int]) -> None:
-        exceptions: list[Exception] = []
+        flights_missing_ids: set[FlightId] = self.base_validator.check_existence(flights_requested_id, flights_retrieved_id)
+        
+        for flight_id in flights_missing_ids:
+            exceptions.append(InexistentFlight(flight_id))
 
-        if not self.flight_validator.check_seats_available(seats_available_per_flight, len(passengers_statuses)):
-            exceptions.append(FullFlight())
+        if exceptions:
+            raise MultipleExceptionsError(exceptions)
+
+    def validate_business_logic(self, all_passengers: list[Passenger], flights_retrieved: list[Flight], seats_available_per_flight: dict[FlightId, int]) -> None:
+        exceptions: list[InvalidData] = []
+
+        full_flights_ids, not_seats_enough_flights_ids = self.flight_validator.check_seats_available(seats_available_per_flight, len(all_passengers))
+        not_scheduled_flights_ids: list[FlightId] = self.flight_validator.check_statuses(flights_retrieved)
+        passengers_blacklisted_ids: list[FlightId] = self.passenger_validator.is_blacklisted(all_passengers)
+
+        for flight_id in full_flights_ids:
+            exceptions.append(FullFlight(flight_id))
         
-        if not self.flight_validator.check_statuses(flights_retrieved_statuses):
-            exceptions.append(NotScheduledFlight())
+        for flight_id in not_seats_enough_flights_ids:
+            exceptions.append(NotSeatsEnough(flight_id))
         
-        if  self.passenger_validator.is_blacklisted(passengers_statuses):
-            exceptions.append(BlacklistedPassenger())
+        for flight_id in not_scheduled_flights_ids:
+            exceptions.append(NotScheduledFlight(flight_id))
+        
+        for passenger_id in passengers_blacklisted_ids:
+            exceptions.append(BlacklistedPassenger(passenger_id))
         
         if exceptions:
             raise MultipleExceptionsError(exceptions)
@@ -101,13 +115,10 @@ class RegisterBooking:
 
             if documents_not_in_db:
                 uow.document_repository.insert_documents(documents_not_in_db)
-
+            
             all_passengers: list[Passenger] = uow.passenger_repository.retrieve_passengers_by_id(all_passengers_id)
-            all_passengers_statuses: list[IsBlacklisted] = [passenger.is_blacklisted for passenger in all_passengers]
 
-            flights_retrieved_statuses: list[CurrentStatusId] = [flight.current_status_id for flight in flights_retrieved]
-
-            self.create_booking_validator.validate_business_logic(all_passengers_statuses, flights_retrieved_statuses, seats_available_per_flight)
+            self.create_booking_validator.validate_business_logic(all_passengers, flights_retrieved, seats_available_per_flight)
 
             flights_retrieved_base_prices: list[BasePriceUsd] = [flight.base_price_usd for flight in flights_retrieved]
 

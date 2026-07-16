@@ -1,7 +1,7 @@
 from src.api.schemas import DocumentRequest, DocumentResponse
 from src.core.units_of_work import RegisterDocumentUoW
 from src.core.validators import BaseValidator
-from src.common.exceptions import InexistentPassenger, DuplicatedDocument, MultipleExceptionsError
+from src.common.exceptions import InexistentPassenger, InvalidData, DuplicatedDocument, MultipleExceptionsError
 from src.common.types import PassengerId, DocumentIdentityKey
 from src.entities import Document, Passenger
 
@@ -13,14 +13,23 @@ class RegisterDocumentValidator:
     def validate_data_logic(self, 
                             passengers_id: list[PassengerId], 
                             passengers_retrieved_id: list[PassengerId]) -> None:
-        if not self.base_validator.check_existence(passengers_id, passengers_retrieved_id):
-            raise InexistentPassenger
+        exceptions: list[InvalidData] = []
+        
+        passengers_missing_ids: set[PassengerId] = self.base_validator.check_existence(passengers_id, passengers_retrieved_id)
+
+        for passenger_id in passengers_missing_ids:
+            exceptions.append(InexistentPassenger(passenger_id))
+
+        if exceptions:
+            raise MultipleExceptionsError(exceptions)
     
     def validate_business_logic(self, documents_requested_identity_keys: list[DocumentIdentityKey], documents_retrieved_identity_keys: list[DocumentIdentityKey]) -> None:
-        exceptions: list[Exception] = []
+        exceptions: list[InvalidData] = []
 
-        if self.base_validator.check_existence(documents_requested_identity_keys, documents_retrieved_identity_keys):
-            exceptions.append(DuplicatedDocument())
+        documents_missing_identity_keys: set[DocumentIdentityKey] = self.base_validator.check_existence(documents_requested_identity_keys, documents_retrieved_identity_keys)
+        
+        for document_identity_key in documents_missing_identity_keys:
+            exceptions.append(DuplicatedDocument(document_identity_key))
         
         if exceptions:
             raise MultipleExceptionsError(exceptions)
