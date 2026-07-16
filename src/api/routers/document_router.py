@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 
 from src.api.schemas import DocumentRequest, DocumentResponse
 from src.common import DBManager
-from src.core.validators import DocumentValidator, PassengerValidator
+from src.core.validators import BaseValidator
 from src.core.use_cases import RegisterDocument, RegisterDocumentValidator
 from src.core.units_of_work import RegisterDocumentUoW
 
@@ -10,10 +10,9 @@ router = APIRouter(prefix="/api/documents", tags=["Documents"])
 
 def get_document_registrar() -> RegisterDocument:
     db_manager = DBManager()
-    document_validator = DocumentValidator()
-    passenger_validator = PassengerValidator()
+    base_validator = BaseValidator()
 
-    return RegisterDocument(RegisterDocumentUoW(db_manager), RegisterDocumentValidator(passenger_validator, document_validator))
+    return RegisterDocument(RegisterDocumentUoW(db_manager), RegisterDocumentValidator(base_validator))
 
 @router.post("/", response_model=DocumentResponse)
 def register_document(document_request: DocumentRequest, document_registrar: RegisterDocument = Depends(get_document_registrar)):

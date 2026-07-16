@@ -8,7 +8,7 @@ from src.api.schemas import BookingRequest, BookingResponse
 from src.common.exceptions import BlacklistedPassenger, FullFlight, InexistentFlight, InvalidData, MultipleExceptionsError, NotScheduledFlight, NotSeatsEnough
 from src.common.types import BookingId, BookingReference, TicketNumber
 from src.core.units_of_work import CreateBookingUoW
-from src.core.use_cases import RegisterBooking, CreateBookingValidator, PassengerProcessor
+from src.core.use_cases import RegisterBooking, RegisterBookingValidator, PassengerProcessor
 from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
 from src.entities import Booking, Document, Flight, Passenger, Ticket
 from tests.fakes.fake_uows.fake_create_booking_uow import FakeCreateBookingUoW
@@ -24,7 +24,7 @@ def create_register_booking(fake_uow: FakeCreateBookingUoW) -> RegisterBooking:
     return RegisterBooking(
         uow=cast(CreateBookingUoW, fake_uow),
         passenger_processor=PassengerProcessor(),
-        create_booking_validator=CreateBookingValidator(BaseValidator(), FlightValidator(), PassengerValidator())
+        register_booking_validator=RegisterBookingValidator(BaseValidator(), FlightValidator(), PassengerValidator())
     )
 
 def asserts(fake_uow: FakeCreateBookingUoW, booking_request: BookingRequest, booking_response: BookingResponse, documents_generated: list[Document], 
