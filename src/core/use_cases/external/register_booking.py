@@ -2,7 +2,7 @@ from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
 from src.entities import Booking, Document, Flight, Passenger, Ticket
 from src.common.exceptions import InexistentFlight, InvalidData, FullFlight, NotScheduledFlight, NotSeatsEnough, BlacklistedPassenger, MultipleExceptionsError
 from src.common.types import BasePriceUsd, DocumentIdentityKey, FlightId, PassengerId
-from src.core.units_of_work import CreateBookingUoW
+from src.core.units_of_work import RegisterBookingUoW
 from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
 
 class PassengerProcessor:
@@ -85,7 +85,7 @@ class RegisterBookingValidator:
 class RegisterBooking:
 
     def __init__(self,
-                uow: CreateBookingUoW,
+                uow: RegisterBookingUoW,
                 passenger_processor: PassengerProcessor,
                 register_booking_validator: RegisterBookingValidator) -> None:
         

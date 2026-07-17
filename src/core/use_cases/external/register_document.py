@@ -28,8 +28,8 @@ class RegisterDocumentValidator:
 
         documents_missing_identity_keys: set[DocumentIdentityKey] = self.base_validator.check_existence(documents_requested_identity_keys, documents_retrieved_identity_keys)
         
-        for document_identity_key in documents_missing_identity_keys:
-            exceptions.append(DuplicatedDocument(document_identity_key))
+        if not set(documents_requested_identity_keys) == documents_missing_identity_keys:
+            exceptions.append(DuplicatedDocument(documents_requested_identity_keys[0]))
         
         if exceptions:
             raise MultipleExceptionsError(exceptions)
@@ -59,6 +59,7 @@ class RegisterDocument:
                 passenger_id=document_request.passenger_id,
                 document_type_id=document_request.document_type_id
             )
+
             uow.document_repository.insert_documents([document_created])
 
             return DocumentResponse(
