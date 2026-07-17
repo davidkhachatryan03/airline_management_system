@@ -5,7 +5,7 @@ from src.entities.base_entity import BaseEntity
 class Airplane(BaseEntity):
 
     def __init__(self,
-                id: int | None, 
+                id: int, 
                 tail_number: str, 
                 manufacturer: str, 
                 model: str,
@@ -24,11 +24,11 @@ class Airplane(BaseEntity):
         self.current_status_id = current_status_id
 
     @property
-    def id(self) -> int | None:
+    def id(self) -> int:
         return self._id
     
     @id.setter
-    def id(self, value: int | None) -> None:
+    def id(self, value: int) -> None:
         if not isinstance(value, int):
             raise TypeError(f"The type the id is not int.")
         
