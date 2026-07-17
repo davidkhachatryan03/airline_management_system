@@ -1,8 +1,8 @@
 from decimal import Decimal
 
 from src.api.schemas import FlightRequest, FlightResponse
-from src.common.exceptions import DuplicatedFlight, InexistentAirplane, InexistentRoute, MultipleExceptionsError, UnavailableAirplane
-from src.common.types import AirplaneId, DistanceKm, FlightIdentityKey, RouteId
+from src.common.exceptions import DuplicatedFlight, InexistentAirplane, InexistentRoute, InvalidData, MultipleExceptionsError, UnavailableAirplane
+from src.common.types import AirplaneId, DurationMin, FlightIdentityKey, RouteId
 from src.core.units_of_work import RegisterFlightUoW
 from src.core.validators import BaseValidator, FlightValidator
 from src.entities import Flight, Route
@@ -18,25 +18,36 @@ class RegisterFlightValidator:
                             routes_id_retrieved: list[RouteId], 
                             airplane_id: AirplaneId, 
                             route_id: RouteId) -> None:
+        exceptions: list[InvalidData] = []
 
-        if not self.base_validator.check_existence([airplane_id], airplanes_id_retrieved):
-            raise InexistentAirplane
+        airplanes_missing_ids: set[AirplaneId] = self.base_validator.check_existence([airplane_id], airplanes_id_retrieved)
+        if airplanes_missing_ids:
+            for airplane_id in airplanes_missing_ids:
+                exceptions.append(InexistentAirplane(airplane_id))
         
-        if not self.base_validator.check_existence([route_id], routes_id_retrieved):
-            raise InexistentRoute
+        routes_missing_ids: set[RouteId] = self.base_validator.check_existence([route_id], routes_id_retrieved)
+        if routes_missing_ids:
+            for route_id in routes_missing_ids:
+                exceptions.append(InexistentRoute(route_id))
+        
+        if exceptions:
+            raise MultipleExceptionsError(exceptions)
     
     def validate_business_logic(self, 
-                                flights_requested: list[FlightIdentityKey], 
-                                flights_retrieved: list[FlightIdentityKey],
+                                flights_requested_identity_keys: list[FlightIdentityKey], 
+                                flights_retrieved_identity_keys: list[FlightIdentityKey],
                                 airplane_id: AirplaneId, 
                                 available_airplanes_id: list[AirplaneId]) -> None:
-        exceptions: list[Exception] = []
+        exceptions: list[InvalidData] = []
 
-        if self.base_validator.check_existence(flights_requested, flights_retrieved):
-            raise DuplicatedFlight
+        flight_requested_identity_key: set[FlightIdentityKey] = self.base_validator.check_existence(flights_requested_identity_keys, flights_retrieved_identity_keys)
+        available_airplane_id: set[AirplaneId] = self.base_validator.check_existence([airplane_id], available_airplanes_id)
 
-        if not self.base_validator.check_existence([airplane_id], available_airplanes_id):
-            exceptions.append(UnavailableAirplane())
+        if not flight_requested_identity_key:
+            exceptions.append(DuplicatedFlight(flights_requested_identity_keys[0]))
+
+        if available_airplane_id:
+            exceptions.append(UnavailableAirplane(available_airplane_id.pop()))
         
         if exceptions:
             raise MultipleExceptionsError(exceptions)
@@ -60,20 +71,19 @@ class RegisterFlight:
             routes_retrieved: list[Route] = uow.route_repository.retrieve_routes_by_id(routes_requested_id)
             routes_retrieved_id: list[RouteId] = [route.id for route in routes_retrieved]
             
-            self.register_flight_validator.validate_data_logic(
-                                                            airplanes_retrieved_id, 
+            self.register_flight_validator.validate_data_logic(airplanes_retrieved_id, 
                                                             routes_retrieved_id, 
                                                             flight_request.airplane_id, 
                                                             flight_request.route_id)
 
-            available_airplanes_id: list[AirplaneId] = uow.airplane_repository.retrieve_available_airplanes_id(flight_request.scheduled_departure_datetime, flight_request.scheduled_arrival_datetime)
+            available_airplanes_id: list[AirplaneId] = uow.airplane_repository.retrieve_available_airplanes_id(routes_retrieved[0].distance_km, flight_request.scheduled_departure_datetime, flight_request.scheduled_arrival_datetime)
 
             self.register_flight_validator.validate_business_logic(flights_requested_identity_keys, flights_retrieved_identity_keys, flight_request.airplane_id, available_airplanes_id)
 
             flight_hour_cost_usd: Decimal = uow.airplane_repository.retrieve_flight_hour_cost_usd_by_id(flight_request.airplane_id)[0]
-            duration_min: DistanceKm = uow.route_repository.retrieve_distance_km_by_id(flight_request.route_id)[0]
+            duration_min: DurationMin = uow.route_repository.retrieve_duration_min_by_id(flight_request.route_id)[0]
             
-            flight_created: Flight = Flight.new_flight(
+            flight_created = Flight.new_flight(
                 scheduled_departure_datetime=flight_request.scheduled_departure_datetime,
                 scheduled_arrival_datetime=flight_request.scheduled_arrival_datetime,
                 operating_cost_usd=Flight._calculate_operating_cost_usd(flight_hour_cost_usd, duration_min),

@@ -17,8 +17,6 @@ def test_passenger_valid_input(passenger: Passenger) -> None:
 def test_new_passenger_classmethod_valid_input(passenger: Passenger) -> None:
     new_passenger = Passenger.new_passenger(
         full_name=passenger.full_name,
-        national_identity_number=passenger.national_identity_number,
-        issue_country=passenger.issue_country,
         birth_date=passenger.birth_date,
         email=passenger.email,
         phone_number=passenger.phone_number
@@ -26,8 +24,6 @@ def test_new_passenger_classmethod_valid_input(passenger: Passenger) -> None:
 
     assert isinstance(new_passenger.id, UUID)
     assert new_passenger.full_name == passenger.full_name
-    assert new_passenger.national_identity_number == passenger.national_identity_number
-    assert new_passenger.issue_country == passenger.issue_country
     assert new_passenger.birth_date == passenger.birth_date
     assert new_passenger.email == passenger.email
     assert new_passenger.phone_number == passenger.phone_number
@@ -40,13 +36,6 @@ def test_new_passenger_classmethod_valid_input(passenger: Passenger) -> None:
         ("full_name", 123, TypeError, "The type of the full name is not str."),
         ("full_name", "   ", ValueError, "The full name can not be empty."),
         ("full_name", "A" * 101, ValueError, "The full name must be 100 characters long or less."),
-        ("national_identity_number", 123, TypeError, "The type of the national_identity_number is not str."),
-        ("national_identity_number", "   ", ValueError, "The national_identity_number can not be empty."),
-        ("national_identity_number", "A" * 21, ValueError, "The national_identity_number must be 20 characters long or less."),
-        ("issue_country", 123, TypeError, "The type of the issue country is not str."),
-        ("issue_country", "   ", ValueError, "The issue country can not be empty."),
-        ("issue_country", "AR", ValueError, "The issue country must be 3 characters long."),
-        ("issue_country", "ARGE", ValueError, "The issue country must be 3 characters long."),
         ("birth_date", "2000-01-01", TypeError, "The type of the birth date is not date."),
         ("email", 123, TypeError, "The type of the email is not str."),
         ("email", "   ", ValueError, "The email can not be empty."),

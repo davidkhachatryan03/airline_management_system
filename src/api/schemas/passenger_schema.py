@@ -7,14 +7,15 @@ class PassengerRequest(BaseModel):
     birth_date: date
     email: EmailStr
     phone_number: str = Field(min_length=3, max_length=20, pattern=r"^[1-9]\d{1,14}$")
-    national_identity_number: str = Field(min_length=3, max_length=20)
+    document_number: str = Field(min_length=3, max_length=20)
     valid_from: date
     valid_until: date
     issue_country: str = Field(min_length=3, max_length=3)
+    document_type_id: int = Field(gt=0)
 
     @property
     def identity_key(self) -> tuple:
-        return (self.national_identity_number, self.issue_country)
+        return (self.document_number, self.issue_country)
 
 @model_validator(mode='after')
 def validate_document_dates(self) -> PassengerRequest:

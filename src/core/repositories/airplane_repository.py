@@ -49,7 +49,7 @@ class AirplaneRepository:
         
         return []
     
-    def retrieve_available_airplanes_id(self, scheduled_departure_datetime: datetime, scheduled_arrival_datetime: datetime) -> list[AirplaneId]:
+    def retrieve_available_airplanes_id(self, range_km: RangeKm, scheduled_departure_datetime: datetime, scheduled_arrival_datetime: datetime) -> list[AirplaneId]:
         query = """
                 SELECT  a.id
                 FROM    airplanes a
@@ -78,7 +78,7 @@ class AirplaneRepository:
                 )
                 """
         
-        values = (scheduled_departure_datetime, scheduled_arrival_datetime)
+        values = (range_km, scheduled_departure_datetime, scheduled_arrival_datetime, scheduled_departure_datetime, scheduled_arrival_datetime)
 
         results: list[AirplaneId] = self.db_manager.retrieve_single_column(query, values)
 

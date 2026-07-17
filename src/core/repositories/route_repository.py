@@ -1,5 +1,5 @@
 from src.common import DBManager
-from src.common.types import RouteRow, RouteId
+from src.common.types import DistanceKm, DurationMin, RouteRow, RouteId
 from src.entities import Route
 
 class RouteRepository:
@@ -32,8 +32,18 @@ class RouteRepository:
         
         return []
     
-    def retrieve_distance_km_by_id(self, route_id: RouteId) -> list[RouteId]:
-        query = "SELECT id FROM routes WHERE id = %s"
+    def retrieve_distance_km_by_id(self, route_id: RouteId) -> list[DistanceKm]:
+        query = "SELECT distance_km FROM routes WHERE id = %s"
+
+        results: list[RouteId] = self.db_manager.retrieve_single_column(query, (route_id,))
+
+        if results:
+            return results
+        
+        return []
+    
+    def retrieve_duration_min_by_id(self, route_id: RouteId) -> list[DurationMin]:
+        query = "SELECT duration_min FROM routes WHERE id = %s"
 
         results: list[RouteId] = self.db_manager.retrieve_single_column(query, (route_id,))
 

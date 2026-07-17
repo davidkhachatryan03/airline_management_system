@@ -1,3 +1,3 @@
-from src.core.units_of_work.create_booking_uow import CreateBookingUoW
+from src.core.units_of_work.register_booking_uow import RegisterBookingUoW
 from src.core.units_of_work.register_document_uow import RegisterDocumentUoW
 from src.core.units_of_work.register_flight_uow import RegisterFlightUoW

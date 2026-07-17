@@ -1,6 +1,10 @@
 from typing import Any
+from uuid import UUID
 
 class BaseEntity:
+
+    id: int | UUID
+
     def to_dict(self) -> dict[str, Any]:
         result = {}
         
@@ -26,3 +30,12 @@ class BaseEntity:
                 result[key] = value
                 
         return result
+    
+    def __eq__(self, other: 'BaseEntity') -> bool:
+        if type(self) is not type(other):
+            return False
+            
+        return self.to_dict() == other.to_dict()
+
+    def __hash__(self) -> int:
+        return hash((type(self), self.id))

@@ -1,7 +1,7 @@
 from src.common import DBManager
 from src.core.repositories import BookingRepository, DocumentRepository, FlightRepository, PassengerRepository, TicketRepository
 
-class CreateBookingUoW:
+class RegisterBookingUoW:
 
     def __init__(self, db_manager: DBManager) -> None:
         self.db_manager = db_manager

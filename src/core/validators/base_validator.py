@@ -1,13 +1,11 @@
 from collections.abc import Sequence
+from typing import TypeVar, Sequence
 
-from src.common.types import RowId, RowIdentityKey
+T = TypeVar('T')
 
 class BaseValidator:
 
-    def check_existence(self, list_one: Sequence[RowId] | Sequence[RowIdentityKey], list_two: Sequence[RowId] | Sequence[RowIdentityKey]) -> bool:
+    def check_existence(self, list_one: Sequence[T], list_two: Sequence[T]) -> set[T]:
         missing_ids = set(list_one) - set(list_two)
         
-        if missing_ids:
-            return False
-            
-        return True
+        return missing_ids

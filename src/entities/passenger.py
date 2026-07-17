@@ -2,15 +2,12 @@ from datetime import date
 from uuid import UUID
 import uuid6
 
-from src.common.types import PassengerIdentityKey
 from src.entities.base_entity import BaseEntity
 
 class Passenger(BaseEntity):
 
     def __init__(self,
                 id: UUID,
-                national_identity_number: str,
-                issue_country: str,
                 full_name: str,
                 birth_date: date,
                 email: str,
@@ -20,8 +17,6 @@ class Passenger(BaseEntity):
         
         self.id = id
         self.full_name = full_name
-        self.national_identity_number = national_identity_number
-        self.issue_country = issue_country
         self.birth_date = birth_date
         self.email = email
         self.phone_number = phone_number
@@ -38,44 +33,6 @@ class Passenger(BaseEntity):
             raise TypeError("The type of the id is not UUID.")
         
         self._id = value
-
-    @property
-    def national_identity_number(self) -> str:
-        return self._national_identity_number
-    
-    @national_identity_number.setter
-    def national_identity_number(self, value: str) -> None:
-        if not isinstance(value, str):
-            raise TypeError("The type of the national_identity_number is not str.")
-        
-        value = value.strip()
-
-        if not value:
-            raise ValueError("The national_identity_number can not be empty.")
-        
-        if len(value) > 20:
-            raise ValueError("The national_identity_number must be 20 characters long or less.")
-        
-        self._national_identity_number = value
-    
-    @property
-    def issue_country(self) -> str:
-        return self._issue_country
-    
-    @issue_country.setter
-    def issue_country(self, value: str) -> None:
-        if not isinstance(value, str):
-            raise TypeError(f"The type of the issue country is not str.")
-
-        value_formatted: str = value.strip()
-        
-        if not value_formatted:
-            raise ValueError("The issue country can not be empty.")
-        
-        if len(value_formatted) != 3:
-            raise ValueError("The issue country must be 3 characters long.")
-        
-        self._issue_country = value
 
     @property
     def full_name(self) -> str:
@@ -167,17 +124,11 @@ class Passenger(BaseEntity):
         
         self._is_vip = value
 
-    @property
-    def identity_key(self) -> PassengerIdentityKey:
-        return (self.national_identity_number, self.issue_country)
-    
     @classmethod
-    def new_passenger(cls, full_name: str, national_identity_number: str, issue_country: str, birth_date: date, email: str, phone_number: str) -> "Passenger":
+    def new_passenger(cls, full_name: str, birth_date: date, email: str, phone_number: str) -> "Passenger":
         return cls(
             id=uuid6.uuid7(), 
             full_name=full_name,
-            national_identity_number=national_identity_number,
-            issue_country=issue_country,
             birth_date=birth_date,
             email=email,
             phone_number=phone_number,

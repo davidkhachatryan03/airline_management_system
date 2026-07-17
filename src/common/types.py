@@ -58,7 +58,7 @@ type Email = str
 type PhoneNumber = str
 type IsBlacklisted = bool
 type IsVip = bool
-type PassengerRow = tuple[PassengerId, NationalIdentityNumber, IssueCountry, FullName, BirthDate, Email, PhoneNumber, IsBlacklisted, IsVip]
+type PassengerRow = tuple[PassengerId, FullName, BirthDate, Email, PhoneNumber, IsBlacklisted, IsVip]
 type PassengerIdentityKey = tuple[NationalIdentityNumber, IssueCountry]
 
 # TICKET TYPES

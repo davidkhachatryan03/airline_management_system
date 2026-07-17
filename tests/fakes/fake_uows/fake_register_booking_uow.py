@@ -1,7 +1,7 @@
 from tests.fakes.fake_db_manager import FakeDBManager
 from tests.fakes.fake_repositories import FakeBookingRepository, FakeDocumentRepository, FakeFlightRepository, FakePassengerRepository, FakeTicketRepository
 
-class FakeCreateBookingUoW:
+class FakeRegisterBookingUoW:
 
     def __init__(self, db_manager: FakeDBManager) -> None:
         self.db_manager = db_manager
