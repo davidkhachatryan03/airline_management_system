@@ -132,13 +132,13 @@ def fixed_booking_identifiers(mocker: MockerFixture, expected_booking_id: Bookin
     )
 
 @pytest.fixture
-def expected_booking_reference() -> str:
+def expected_booking_reference() -> BookingReference:
     return "ABC123"
 
 @pytest.fixture
-def expected_ticket_number() -> str:
+def expected_ticket_number() -> TicketNumber:
     return "1234567890123"
 
 @pytest.fixture
-def expected_booking_id() -> UUID:
+def expected_booking_id() -> BookingId:
     return UUID("12345678-1234-5678-1234-567812345678")
