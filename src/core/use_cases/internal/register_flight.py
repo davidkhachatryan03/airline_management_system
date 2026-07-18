@@ -103,7 +103,7 @@ class RegisterFlight:
 
             airplanes_retrieved_id: list[AirplaneId] = (
                 uow.airplane_repository.retrieve_airplanes_by_id(
-                    flight_request.airplane_id
+                    [flight_request.airplane_id]
                 )
             )
 
@@ -138,12 +138,12 @@ class RegisterFlight:
 
             flight_hour_cost_usd: Decimal = (
                 uow.airplane_repository.retrieve_flight_hour_cost_usd_by_id(
-                    flight_request.airplane_id
+                    [flight_request.airplane_id]
                 )[0]
             )
             duration_min: DurationMin = (
                 uow.route_repository.retrieve_duration_min_by_id(
-                    flight_request.route_id
+                    [flight_request.route_id]
                 )[0]
             )
 
