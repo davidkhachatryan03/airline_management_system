@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 from typing import cast
@@ -199,7 +200,7 @@ def test_register_booking_inexistent_flights(booking_request: BookingRequest) ->
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_booking.execute(booking_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 2
     assert isinstance(exceptions[0], InexistentFlight)
@@ -220,7 +221,7 @@ def test_register_booking_full_flight(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_booking.execute(booking_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], FullFlight)
@@ -238,7 +239,7 @@ def test_register_booking_not_seats_enough(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_booking.execute(booking_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 2
     assert isinstance(exceptions[0], NotSeatsEnough)
@@ -259,7 +260,7 @@ def test_register_booking_not_scheduled_flight(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_booking.execute(booking_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], NotScheduledFlight)
@@ -282,7 +283,7 @@ def test_register_booking_blacklisted_passenger(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_booking.execute(booking_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], BlacklistedPassenger)
@@ -308,7 +309,7 @@ def test_register_booking_multiple_exceptions(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_booking.execute(booking_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 3
     assert isinstance(exceptions[0], FullFlight)

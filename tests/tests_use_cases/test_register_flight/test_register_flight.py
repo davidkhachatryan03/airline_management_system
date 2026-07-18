@@ -1,4 +1,5 @@
 from typing import cast
+from collections.abc import Sequence
 
 import pytest
 
@@ -73,7 +74,7 @@ def test_register_flight_inexistent_airplane(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_flight.execute(flight_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], InexistentAirplane)
@@ -96,7 +97,7 @@ def test_register_flight_unavailable_airplane(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_flight.execute(flight_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], UnavailableAirplane)
@@ -114,7 +115,7 @@ def test_register_flight_inexistent_route(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_flight.execute(flight_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], InexistentRoute)
@@ -137,7 +138,7 @@ def test_register_flight_duplicated_flight(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_flight.execute(flight_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], DuplicatedFlight)

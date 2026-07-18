@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import cast
 
 import pytest
@@ -61,7 +62,7 @@ def test_register_document_inexistent_passenger(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_document.execute(document_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], InexistentPassenger)
@@ -81,7 +82,7 @@ def test_register_document_duplicated_document(
     with pytest.raises(MultipleExceptionsError) as exc_info:
         register_document.execute(document_request)
 
-    exceptions: list[InvalidData] = exc_info.value.exceptions
+    exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], DuplicatedDocument)
