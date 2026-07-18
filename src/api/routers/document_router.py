@@ -8,14 +8,14 @@ from src.core.units_of_work import RegisterDocumentUoW
 
 router = APIRouter(prefix="/api/documents", tags=["Documents"])
 
-def get_document_registrar() -> RegisterDocument:
+def create_register_document() -> RegisterDocument:
     db_manager = DBManager()
     base_validator = BaseValidator()
 
     return RegisterDocument(RegisterDocumentUoW(db_manager), RegisterDocumentValidator(base_validator))
 
 @router.post("/", response_model=DocumentResponse)
-def register_document(document_request: DocumentRequest, document_registrar: RegisterDocument = Depends(get_document_registrar)):
-    document_response = document_registrar.execute(document_request)
+def register_document(document_request: DocumentRequest, register_document: RegisterDocument = Depends(create_register_document)):
+    document_response = register_document.execute(document_request)
 
     return document_response
