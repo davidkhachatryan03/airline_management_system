@@ -1,8 +1,10 @@
 from datetime import date
-import pytest
 from uuid import UUID
 
+import pytest
+
 from src.entities import Passenger
+
 
 def test_passenger_valid_input(passenger: Passenger) -> None:
 

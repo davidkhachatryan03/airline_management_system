@@ -1,8 +1,10 @@
-import pytest
-from uuid import UUID, uuid4
 from decimal import Decimal
+from uuid import UUID, uuid4
+
+import pytest
 
 from src.entities.base_entity import BaseEntity
+
 
 class DummyFlight(BaseEntity):
     def __init__(self, id: UUID, flight_number: str):

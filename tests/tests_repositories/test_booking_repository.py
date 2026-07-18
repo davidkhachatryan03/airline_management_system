@@ -1,5 +1,6 @@
-from src.entities import Booking
 from src.core.repositories import BookingRepository
+from src.entities import Booking
+
 
 def test_insert_booking(booking_repository: BookingRepository, booking: Booking) -> None:
     booking_repository.insert_booking(booking)

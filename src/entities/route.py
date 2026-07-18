@@ -1,5 +1,6 @@
 from src.entities.base_entity import BaseEntity
 
+
 class Route(BaseEntity):
 
     def __init__(self,

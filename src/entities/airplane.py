@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from src.entities.base_entity import BaseEntity
 
+
 class Airplane(BaseEntity):
 
     def __init__(self,

@@ -1,11 +1,13 @@
 from datetime import date
+from uuid import UUID
+
 import pytest
 from pytest_mock import MockerFixture
-from uuid import UUID
 
 from src.api.schemas import DocumentRequest
 from src.common.types import DocumentId
 from src.entities import Passenger
+
 
 @pytest.fixture
 def document_request(passenger_generated: Passenger) -> DocumentRequest:

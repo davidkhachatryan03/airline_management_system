@@ -1,10 +1,12 @@
 from datetime import datetime
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 from uuid import UUID
+
 import uuid6
 
 from src.common.types import DurationMin
 from src.entities.base_entity import BaseEntity
+
 
 class Flight(BaseEntity):
 

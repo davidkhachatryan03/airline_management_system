@@ -1,9 +1,11 @@
 from decimal import Decimal
 
-import pytest, uuid6
+import pytest
+import uuid6
 from pydantic import ValidationError
 
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
+
 
 def test_booking_request_valid_data(passenger_request: PassengerRequest) -> None:
     data = {

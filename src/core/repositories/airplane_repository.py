@@ -1,8 +1,10 @@
 from datetime import datetime
 
 from src.common import DBManager
-from src.common.types import RangeKm, AirplaneId, AirplaneRow, FlightHourCostUsd
+from src.common.types import (AirplaneId, AirplaneRow, FlightHourCostUsd,
+                                RangeKm)
 from src.entities import Airplane
+
 
 class AirplaneRepository:
 

@@ -5,8 +5,10 @@ from pytest_mock import MockerFixture
 
 from src.api.main import app
 from src.api.routers.document_router import create_register_document
-from src.api.schemas import DocumentResponse, DocumentRequest
-from src.common.exceptions import InexistentPassenger, DuplicatedDocument, MultipleExceptionsError
+from src.api.schemas import DocumentRequest, DocumentResponse
+from src.common.exceptions import (DuplicatedDocument, InexistentPassenger,
+                                   MultipleExceptionsError)
+
 
 def test_document_router_no_exceptions(mocker: MockerFixture, client: TestClient, document_request: DocumentRequest, document_response: DocumentResponse) -> None:
     mock_use_case = mocker.Mock()

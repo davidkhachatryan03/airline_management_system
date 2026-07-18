@@ -4,6 +4,7 @@ from uuid import UUID
 from src.common.types import FlightIdentityKey
 from src.entities import Flight
 
+
 class FakeFlightRepository:
 
     def __init__(self) -> None:

@@ -1,6 +1,7 @@
 from src.common import DBManager
-from src.common.types import DocumentRow, DocumentIdentityKey
+from src.common.types import DocumentIdentityKey, DocumentRow
 from src.entities import Document
+
 
 class DocumentRepository:
 

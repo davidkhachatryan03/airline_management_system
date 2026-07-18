@@ -1,9 +1,11 @@
 from src.api.schemas import DocumentRequest, DocumentResponse
+from src.common.exceptions import (DuplicatedDocument, InexistentPassenger,
+                                    InvalidData, MultipleExceptionsError)
+from src.common.types import DocumentIdentityKey, PassengerId
 from src.core.units_of_work import RegisterDocumentUoW
 from src.core.validators import BaseValidator
-from src.common.exceptions import InexistentPassenger, InvalidData, DuplicatedDocument, MultipleExceptionsError
-from src.common.types import PassengerId, DocumentIdentityKey
 from src.entities import Document, Passenger
+
 
 class RegisterDocumentValidator:
 

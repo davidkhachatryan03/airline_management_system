@@ -2,6 +2,7 @@ from uuid import UUID
 
 from src.entities import Passenger
 
+
 class FakePassengerRepository:
 
     def __init__(self) -> None:

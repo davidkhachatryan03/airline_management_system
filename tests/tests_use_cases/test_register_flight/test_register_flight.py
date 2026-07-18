@@ -1,15 +1,21 @@
-import pytest
 from typing import cast
 
+import pytest
+
 from src.api.schemas import FlightRequest, FlightResponse
-from src.common.exceptions import DuplicatedFlight, InexistentAirplane, InexistentRoute, InvalidData, MultipleExceptionsError, UnavailableAirplane
+from src.common.exceptions import (DuplicatedFlight, InexistentAirplane,
+                                    InexistentRoute, InvalidData,
+                                    MultipleExceptionsError,
+                                    UnavailableAirplane)
 from src.common.types import FlightId
 from src.core.units_of_work import RegisterFlightUoW
 from src.core.use_cases import RegisterFlight, RegisterFlightValidator
 from src.core.validators import BaseValidator, FlightValidator
 from src.entities import Airplane, Flight, Route
-from tests.fakes.fake_uows.fake_register_flight_uow import FakeRegisterFlightUoW
 from tests.fakes.fake_db_manager import FakeDBManager
+from tests.fakes.fake_uows.fake_register_flight_uow import \
+    FakeRegisterFlightUoW
+
 
 def create_register_flight(fake_uow: FakeRegisterFlightUoW) -> RegisterFlight:
     return RegisterFlight(

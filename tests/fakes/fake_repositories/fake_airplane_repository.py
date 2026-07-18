@@ -3,6 +3,7 @@ from datetime import datetime
 from src.common.types import AirplaneId, FlightHourCostUsd, RangeKm
 from src.entities import Airplane
 
+
 class FakeAirplaneRepository:
 
     def __init__(self) -> None:

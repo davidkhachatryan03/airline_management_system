@@ -1,12 +1,14 @@
-import mysql.connector, os
-from dotenv import load_dotenv
+import os
 from typing import Any, cast
 from uuid import UUID
 
+import mysql.connector
+from dotenv import load_dotenv
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
 
-from src.common.exceptions import DatabaseError, InexistentConnection, InexistentSQLFile, InvalidBytes
+from src.common.exceptions import (DatabaseError, InexistentConnection,
+                                   InexistentSQLFile, InvalidBytes)
 
 load_dotenv()
 

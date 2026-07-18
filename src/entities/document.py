@@ -1,9 +1,11 @@
 from datetime import date
 from uuid import UUID
+
 import uuid6
 
 from src.common.types import DocumentIdentityKey
 from src.entities.base_entity import BaseEntity
+
 
 class Document(BaseEntity):
 

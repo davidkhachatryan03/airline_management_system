@@ -1,12 +1,14 @@
 from datetime import datetime
 from decimal import Decimal
+from uuid import UUID
+
 import pytest
 from pytest_mock import MockerFixture
-from uuid import UUID
 
 from src.api.schemas import FlightRequest
 from src.common.types import DocumentId, FlightId
 from src.entities import Airplane, Flight, Route
+
 
 @pytest.fixture
 def flight_request(route_generated: Route, airplane_generated: Airplane) -> FlightRequest:

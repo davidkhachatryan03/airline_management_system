@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta
 
-import pytest, uuid6
+import pytest
+import uuid6
 from pydantic import ValidationError
 
 from src.api.schemas import FlightRequest, FlightResponse
+
 
 def test_flight_request_valid_data() -> None:
     departure = datetime(2026, 8, 1, 10, 0, 0)

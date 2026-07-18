@@ -3,6 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
+
 class DocumentRequest(BaseModel):
     document_number: str = Field(min_length=5)
     valid_from: date

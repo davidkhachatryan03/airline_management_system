@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from src.api.schemas.passenger_schema import PassengerRequest
 
+
 class BookingRequest(BaseModel):
     flights_id: list[UUID] = Field(min_length=1)
     passengers: list[PassengerRequest] = Field(min_length=1)

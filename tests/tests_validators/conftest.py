@@ -1,8 +1,10 @@
-import pytest
 from uuid import UUID
+
+import pytest
 
 from src.common.types import CurrentStatusId, FlightId, RowId, RowIdentityKey
 from src.core.validators import BaseValidator, FlightValidator
+
 
 @pytest.fixture
 def base_validator() -> BaseValidator:

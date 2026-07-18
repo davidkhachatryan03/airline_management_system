@@ -1,6 +1,7 @@
 from src.common.types import RowId, RowIdentityKey
 from src.core.validators import BaseValidator
 
+
 def test_check_existence_id_int(base_validator: BaseValidator, ids_int_one: list[RowId], ids_int_two: list[RowId]) -> None:
     missing_ids: set[RowId] | set[RowIdentityKey] = base_validator.check_existence(ids_int_one, ids_int_one)
     assert len(missing_ids) == 0

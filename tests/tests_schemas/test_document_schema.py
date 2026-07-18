@@ -1,8 +1,11 @@
-import pytest, uuid6
 from datetime import date
+
+import pytest
+import uuid6
 from pydantic import ValidationError
 
 from src.api.schemas import DocumentRequest, DocumentResponse
+
 
 def test_document_request_valid_data() -> None:
     data = {

@@ -1,12 +1,15 @@
 from datetime import date, datetime
 from decimal import Decimal
-import pytest
-from pytest_mock import MockerFixture
 from uuid import UUID
 
+import pytest
+from pytest_mock import MockerFixture
+
 from src.api.schemas import BookingRequest, PassengerRequest
-from src.common.types import BookingId, BookingReference, FlightId, TicketNumber
+from src.common.types import (BookingId, BookingReference, FlightId,
+                              TicketNumber)
 from src.entities import Document, Flight, Passenger, Ticket
+
 
 @pytest.fixture
 def booking_request() -> BookingRequest:

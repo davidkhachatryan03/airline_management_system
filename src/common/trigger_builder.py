@@ -1,5 +1,6 @@
 from src.common import DBManager
 
+
 class TriggerBuilder:
 
     def create_all_triggers(self, table_name: str, db_manager: DBManager) -> None:

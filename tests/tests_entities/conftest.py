@@ -1,9 +1,11 @@
-import pytest
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID
 
+import pytest
+
 from src.entities import Airplane, Booking, Document, Flight, Passenger, Ticket
+
 
 @pytest.fixture
 def airplane() -> Airplane:

@@ -1,8 +1,10 @@
 from decimal import Decimal
-import pytest
 from uuid import UUID
 
+import pytest
+
 from src.entities import Airplane
+
 
 def test_airplane_valid_input(airplane: Airplane) -> None:
 

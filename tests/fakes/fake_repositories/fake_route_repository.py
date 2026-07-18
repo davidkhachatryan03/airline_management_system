@@ -1,6 +1,7 @@
 from src.common.types import DistanceKm, RouteId
 from src.entities import Route
 
+
 class FakeRouteRepository:
 
     def __init__(self) -> None:

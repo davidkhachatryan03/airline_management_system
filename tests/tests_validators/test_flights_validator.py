@@ -1,6 +1,7 @@
 from src.common.types import FlightId
 from src.core.validators import FlightValidator
 
+
 def test_check_seats_available_full_flight(flight_validator: FlightValidator, seats_available_per_flight: dict[FlightId, int]) -> None:
     first_flight: FlightId = list(seats_available_per_flight.keys())[0]
     seats_available_per_flight[first_flight] = 0

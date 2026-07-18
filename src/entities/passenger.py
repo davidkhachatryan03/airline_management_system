@@ -1,8 +1,10 @@
 from datetime import date
 from uuid import UUID
+
 import uuid6
 
 from src.entities.base_entity import BaseEntity
+
 
 class Passenger(BaseEntity):
 

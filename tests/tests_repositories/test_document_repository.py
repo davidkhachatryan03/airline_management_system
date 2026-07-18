@@ -1,5 +1,6 @@
-from src.entities import Document, Passenger
 from src.core.repositories import DocumentRepository, PassengerRepository
+from src.entities import Document, Passenger
+
 
 def test_insert_document(document_repository: DocumentRepository, passenger_repository: PassengerRepository, document: Document, passenger: Passenger) -> None:
     passenger_repository.insert_passengers([passenger])

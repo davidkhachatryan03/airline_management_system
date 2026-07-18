@@ -4,6 +4,7 @@ import pytest
 
 from src.api.schemas import PassengerRequest
 
+
 @pytest.fixture
 def passenger_request() -> PassengerRequest:
     return PassengerRequest(

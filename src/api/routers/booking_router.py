@@ -2,9 +2,11 @@ from fastapi import APIRouter, Depends
 
 from src.api.schemas import BookingRequest, BookingResponse
 from src.common import DBManager
-from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
-from src.core.use_cases import PassengerProcessor, RegisterBooking, RegisterBookingValidator
 from src.core.units_of_work import RegisterBookingUoW
+from src.core.use_cases import (PassengerProcessor, RegisterBooking,
+                                RegisterBookingValidator)
+from src.core.validators import (BaseValidator, FlightValidator,
+                                 PassengerValidator)
 
 router = APIRouter(prefix="/api/bookings", tags=["Bookings"])
 

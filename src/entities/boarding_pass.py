@@ -3,6 +3,7 @@ from uuid import UUID
 
 from src.entities.base_entity import BaseEntity
 
+
 class BoardingPass(BaseEntity):
 
     def __init__(self,

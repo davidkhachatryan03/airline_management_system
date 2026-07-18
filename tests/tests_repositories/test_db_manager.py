@@ -1,9 +1,12 @@
-import os, pytest
+import os
 from uuid import UUID
+
+import pytest
 
 from src.common import DBManager
 from src.common.exceptions import InvalidBytes
 from src.entities import Passenger
+
 
 def test_db_manager_enter_and_exit(db: DBManager) -> None:
     with db:

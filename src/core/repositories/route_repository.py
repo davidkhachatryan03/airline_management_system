@@ -1,6 +1,7 @@
 from src.common import DBManager
-from src.common.types import DistanceKm, DurationMin, RouteRow, RouteId
+from src.common.types import DistanceKm, DurationMin, RouteId, RouteRow
 from src.entities import Route
+
 
 class RouteRepository:
 

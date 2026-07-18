@@ -1,12 +1,15 @@
-import uuid6, string, random
+import random
+import string
 from datetime import datetime
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 from uuid import UUID
 
+import uuid6
+
+from src.common.types import BasePriceUsd
+from src.entities.base_entity import BaseEntity
 from src.entities.flight import Flight
 from src.entities.ticket import Ticket
-from src.entities.base_entity import BaseEntity
-from src.common.types import BasePriceUsd
 
 
 class Booking(BaseEntity):

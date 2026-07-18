@@ -1,18 +1,26 @@
 from datetime import datetime
-from decimal import Decimal, ROUND_HALF_UP
-from freezegun import freeze_time
-import pytest
+from decimal import ROUND_HALF_UP, Decimal
 from typing import cast
 
+import pytest
+from freezegun import freeze_time
+
 from src.api.schemas import BookingRequest, BookingResponse
-from src.common.exceptions import BlacklistedPassenger, FullFlight, InexistentFlight, InvalidData, MultipleExceptionsError, NotScheduledFlight, NotSeatsEnough
+from src.common.exceptions import (BlacklistedPassenger, FullFlight,
+                                    InexistentFlight, InvalidData,
+                                    MultipleExceptionsError, NotScheduledFlight,
+                                    NotSeatsEnough)
 from src.common.types import BookingId, BookingReference, TicketNumber
 from src.core.units_of_work import RegisterBookingUoW
-from src.core.use_cases import RegisterBooking, RegisterBookingValidator, PassengerProcessor
-from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
+from src.core.use_cases import (PassengerProcessor, RegisterBooking,
+                                RegisterBookingValidator)
+from src.core.validators import (BaseValidator, FlightValidator,
+                                PassengerValidator)
 from src.entities import Booking, Document, Flight, Passenger, Ticket
-from tests.fakes.fake_uows.fake_register_booking_uow import FakeRegisterBookingUoW
 from tests.fakes.fake_db_manager import FakeDBManager
+from tests.fakes.fake_uows.fake_register_booking_uow import \
+    FakeRegisterBookingUoW
+
 
 def calculate_paid_amount_usd(flights_created: list[Flight], number_of_passengers: int) -> Decimal:
     return (sum((flight.base_price_usd for flight in flights_created), Decimal("0")) * number_of_passengers).quantize(Decimal("0.01"), ROUND_HALF_UP)

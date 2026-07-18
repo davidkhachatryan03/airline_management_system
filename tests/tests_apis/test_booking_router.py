@@ -5,8 +5,10 @@ from pytest_mock import MockerFixture
 
 from src.api.main import app
 from src.api.routers.booking_router import create_register_booking
-from src.api.schemas import BookingResponse, BookingRequest
-from src.common.exceptions import InexistentFlight, FullFlight, NotScheduledFlight, MultipleExceptionsError
+from src.api.schemas import BookingRequest, BookingResponse
+from src.common.exceptions import (FullFlight, InexistentFlight,
+                                   MultipleExceptionsError, NotScheduledFlight)
+
 
 def test_booking_router_no_exceptions(mocker: MockerFixture, client: TestClient, booking_request: BookingRequest, booking_response: BookingResponse) -> None:
     mock_use_case = mocker.Mock()

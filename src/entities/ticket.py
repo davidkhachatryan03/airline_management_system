@@ -1,8 +1,12 @@
-import uuid6, random, string
+import random
+import string
 from decimal import Decimal
 from uuid import UUID
 
+import uuid6
+
 from src.entities.base_entity import BaseEntity
+
 
 class Ticket(BaseEntity):
 

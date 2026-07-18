@@ -1,9 +1,11 @@
 from datetime import datetime
-from decimal import Decimal, ROUND_HALF_UP
-import pytest
+from decimal import ROUND_HALF_UP, Decimal
 from uuid import UUID
 
+import pytest
+
 from src.entities import Booking, Flight
+
 
 def test_booking_valid_input(booking: Booking) -> None:
 

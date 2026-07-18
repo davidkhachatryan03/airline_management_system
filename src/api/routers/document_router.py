@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends
 
 from src.api.schemas import DocumentRequest, DocumentResponse
 from src.common import DBManager
-from src.core.validators import BaseValidator
-from src.core.use_cases import RegisterDocument, RegisterDocumentValidator
 from src.core.units_of_work import RegisterDocumentUoW
+from src.core.use_cases import RegisterDocument, RegisterDocumentValidator
+from src.core.validators import BaseValidator
 
 router = APIRouter(prefix="/api/documents", tags=["Documents"])
 

@@ -2,6 +2,7 @@ from src.common import DBManager
 from src.common.types import TicketRow
 from src.entities import Ticket
 
+
 class TicketRepository:
 
     def __init__(self, db_manager: DBManager) -> None:

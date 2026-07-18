@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID
 
@@ -6,7 +6,10 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.api.main import app
-from src.api.schemas import BookingResponse, BookingRequest, DocumentRequest, DocumentResponse, FlightRequest, FlightResponse, PassengerRequest
+from src.api.schemas import (BookingRequest, BookingResponse, DocumentRequest,
+                             DocumentResponse, FlightRequest, FlightResponse,
+                             PassengerRequest)
+
 
 @pytest.fixture
 def client() -> TestClient:

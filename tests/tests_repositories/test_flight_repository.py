@@ -1,5 +1,6 @@
-from src.entities import Flight
 from src.core.repositories import FlightRepository
+from src.entities import Flight
+
 
 def test_insert_flight(flight_repository: FlightRepository, flight: Flight) -> None:
     flight_repository.insert_flights([flight])

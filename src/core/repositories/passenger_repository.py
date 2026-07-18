@@ -1,6 +1,7 @@
 from src.common import DBManager
-from src.common.types import PassengerRow, PassengerId, DocumentIdentityKey
+from src.common.types import DocumentIdentityKey, PassengerId, PassengerRow
 from src.entities import Passenger
+
 
 class PassengerRepository:
 

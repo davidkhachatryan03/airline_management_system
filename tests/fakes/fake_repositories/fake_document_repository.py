@@ -1,5 +1,6 @@
 from src.entities import Document
 
+
 class FakeDocumentRepository:
 
     def __init__(self) -> None:

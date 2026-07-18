@@ -1,5 +1,6 @@
 from src.entities import Ticket
 
+
 class FakeTicketRepository:
 
     def __init__(self) -> None:

@@ -1,13 +1,17 @@
 import random
 from datetime import date, datetime
 from decimal import Decimal
-import pytest
-from uuid6 import uuid7
 from uuid import UUID
 
+import pytest
+from uuid6 import uuid7
+
 from src.common import DBManager
-from src.core.repositories import BookingRepository, DocumentRepository, FlightRepository, PassengerRepository, TicketRepository
+from src.core.repositories import (BookingRepository, DocumentRepository,
+                                   FlightRepository, PassengerRepository,
+                                   TicketRepository)
 from src.entities import Booking, Document, Flight, Passenger, Ticket
+
 
 @pytest.fixture
 def db() -> DBManager:

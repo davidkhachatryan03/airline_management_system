@@ -1,6 +1,7 @@
 from typing import Any
 from uuid import UUID
 
+
 class BaseEntity:
 
     id: int | UUID

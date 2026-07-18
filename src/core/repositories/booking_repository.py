@@ -2,6 +2,7 @@ from src.common import DBManager
 from src.common.types import BookingRow
 from src.entities import Booking
 
+
 class BookingRepository:
 
     def __init__(self, db_manager: DBManager) -> None:

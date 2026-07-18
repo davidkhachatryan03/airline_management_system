@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 
 from src.common.exceptions import MultipleExceptionsError
 
+
 def setup_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(MultipleExceptionsError)

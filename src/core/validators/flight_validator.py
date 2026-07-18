@@ -1,6 +1,7 @@
 from src.common.types import FlightId
 from src.entities import Flight
 
+
 class FlightValidator:
     
     def check_seats_available(self, seats_available_per_flight: dict[FlightId, int], number_of_passengers: int) -> tuple[list[FlightId], list[FlightId]]:
