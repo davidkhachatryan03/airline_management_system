@@ -32,8 +32,6 @@ class Route(BaseEntity):
         if value <= 0:
             raise ValueError(f"The id can not be negative or zero.")
 
-        self._current_status_id = value
-
         self._id = value
 
     @property
@@ -83,7 +81,7 @@ class Route(BaseEntity):
             raise ValueError("The destination can not be empty.")
 
         if len(value.strip()) != 3:
-            raise ValueError("The origin must be 3 characters long.")
+            raise ValueError("The destination must be 3 characters long.")
 
         self._destination = value
 

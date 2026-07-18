@@ -38,8 +38,6 @@ class Airplane(BaseEntity):
         if value <= 0:
             raise ValueError(f"The id can not be negative or zero.")
 
-        self._current_status_id = value
-
         self._id = value
 
     @property
@@ -92,10 +90,10 @@ class Airplane(BaseEntity):
         value_formatted: str = value.strip()
 
         if not value_formatted:
-            raise ValueError(f"The tail number can not be empty.")
+            raise ValueError(f"The model can not be empty.")
 
         if len(value_formatted) > 50:
-            raise ValueError("The tail number must be 50 characters or less.")
+            raise ValueError("The model must be 50 characters or less.")
 
         self._model = value_formatted
 

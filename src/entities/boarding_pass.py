@@ -44,12 +44,12 @@ class BoardingPass(BaseEntity):
         self._issue_datetime = value
 
     @property
-    def boarding_datetime(self) -> datetime:
+    def boarding_datetime(self) -> datetime | None:
         return self._boarding_datetime
 
     @boarding_datetime.setter
     def boarding_datetime(self, value: datetime | None) -> None:
-        if not isinstance(value, datetime) or value is not None:
+        if value is not None and not isinstance(value, datetime):
             raise TypeError(f"The type of {value} must be datetime or none.")
 
         self._boarding_datetime = value
