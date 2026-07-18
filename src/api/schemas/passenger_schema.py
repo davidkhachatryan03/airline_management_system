@@ -18,14 +18,15 @@ class PassengerRequest(BaseModel):
     def identity_key(self) -> tuple:
         return (self.document_number, self.issue_country)
 
-@model_validator(mode='after')
+
+@model_validator(mode="after")
 def validate_document_dates(self) -> PassengerRequest:
     if self.valid_from >= self.valid_until:
         raise ValueError("The issue date can not be greater than the expiration date.")
 
     if self.valid_until <= date.today():
         raise ValueError("The document is expired.")
-        
+
     if self.valid_from > date.today():
         raise ValueError("The issue date is invalid.")
 

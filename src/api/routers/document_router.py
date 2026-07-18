@@ -8,14 +8,21 @@ from src.core.validators import BaseValidator
 
 router = APIRouter(prefix="/api/documents", tags=["Documents"])
 
+
 def create_register_document() -> RegisterDocument:
     db_manager = DBManager()
     base_validator = BaseValidator()
 
-    return RegisterDocument(RegisterDocumentUoW(db_manager), RegisterDocumentValidator(base_validator))
+    return RegisterDocument(
+        RegisterDocumentUoW(db_manager), RegisterDocumentValidator(base_validator)
+    )
+
 
 @router.post("/", response_model=DocumentResponse)
-def register_document(document_request: DocumentRequest, register_document: RegisterDocument = Depends(create_register_document)):
+def register_document(
+    document_request: DocumentRequest,
+    register_document: RegisterDocument = Depends(create_register_document),
+):
     document_response = register_document.execute(document_request)
 
     return document_response

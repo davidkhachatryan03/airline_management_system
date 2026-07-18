@@ -8,7 +8,9 @@ class TriggerBuilder:
         self._create_trigger_after_update(table_name, db_manager)
         self._create_trigger_after_delete(table_name, db_manager)
 
-    def _create_trigger_after_insert(self, table_name: str, db_manager: DBManager) -> None:
+    def _create_trigger_after_insert(
+        self, table_name: str, db_manager: DBManager
+    ) -> None:
         db_manager.cursor.execute(f"DROP TRIGGER IF EXISTS tr_{table_name}_ai")
 
         query = f"""
@@ -20,10 +22,12 @@ class TriggerBuilder:
                 VALUES ('{table_name}', 'INSERT', NEW.id, NULL, NULL, NULL, NOW(), @user);
                 END
                 """
-        
+
         db_manager.cursor.execute(query)
 
-    def _create_trigger_after_update(self, table_name: str, db_manager: DBManager) -> None:
+    def _create_trigger_after_update(
+        self, table_name: str, db_manager: DBManager
+    ) -> None:
         db_manager.cursor.execute(f"DROP TRIGGER IF EXISTS tr_{table_name}_au")
 
         query = "SELECT COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME = %s AND TABLE_SCHEMA = 'airline'"
@@ -39,7 +43,7 @@ class TriggerBuilder:
                             VALUES ('{table_name}', 'UPDATE', OLD.id, '{column}', OLD.{column}, NEW.{column}, NOW(), @user);
                         END IF;
                         """
-            
+
         query: str = f"""
                 CREATE TRIGGER tr_{table_name}_au
                 AFTER UPDATE ON {table_name}
@@ -51,7 +55,9 @@ class TriggerBuilder:
 
         db_manager.cursor.execute(query)
 
-    def _create_trigger_after_delete(self, table_name: str, db_manager: DBManager) -> None:
+    def _create_trigger_after_delete(
+        self, table_name: str, db_manager: DBManager
+    ) -> None:
         db_manager.cursor.execute(f"DROP TRIGGER IF EXISTS tr_{table_name}_ad")
 
         query: str = f"""
@@ -63,5 +69,5 @@ class TriggerBuilder:
                 VALUES ('{table_name}', 'DELETE', OLD.id, NULL, NULL, NULL, NOW(), @usuario);
                 END
                 """
-        
+
         db_manager.cursor.execute(query)

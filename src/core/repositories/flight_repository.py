@@ -7,10 +7,10 @@ class FlightRepository:
 
     def __init__(self, db_manager: DBManager) -> None:
         self.db_manager = db_manager
-    
+
     def insert_flights(self, flights: list[Flight]) -> None:
         self.db_manager.insert_rows("flights", flights)
-    
+
     def retrieve_flights(self, limit: int = 5) -> list[Flight]:
         query = """
                 SELECT  id, 
@@ -28,17 +28,19 @@ class FlightRepository:
                         LIMIT %s
                 """
 
-        results: list[FlightRow] = self.db_manager.retrieve_many_columns(query, (limit,))
+        results: list[FlightRow] = self.db_manager.retrieve_many_columns(
+            query, (limit,)
+        )
 
         if results:
             return [Flight(*result) for result in results]
-        
+
         return []
 
     def retrieve_flights_by_id(self, flights_id: list[FlightId]) -> list[Flight]:
         if not flights_id:
             return []
-        
+
         placeholders = ",".join(["%s" * len(flights_id)])
 
         query = """
@@ -56,18 +58,22 @@ class FlightRepository:
                 WHERE   id 
                 IN      ({})
                 """.format(placeholders)
-        
-        result: list[FlightRow] = self.db_manager.retrieve_many_columns(query, flights_id)
+
+        result: list[FlightRow] = self.db_manager.retrieve_many_columns(
+            query, flights_id
+        )
 
         if result:
             return [Flight(*row) for row in result]
-        
+
         return []
-    
-    def retrieve_seats_available_per_flight(self, flights_id: list[FlightId]) -> dict[FlightId, int]:
+
+    def retrieve_seats_available_per_flight(
+        self, flights_id: list[FlightId]
+    ) -> dict[FlightId, int]:
         if not flights_id:
             return {}
-        
+
         placeholders = "".join(["%s" * len(flights_id)])
 
         query = """
@@ -84,22 +90,29 @@ class FlightRepository:
                 GROUP BY    f.id, 
                             a.capacity;
                 """.format(placeholders)
-        
+
         values: list[FlightId] = [id for id in flights_id]
 
-        result: list[tuple[FlightId, int]] = self.db_manager.retrieve_many_columns(query, values)
+        result: list[tuple[FlightId, int]] = self.db_manager.retrieve_many_columns(
+            query, values
+        )
 
         result_dict: dict[FlightId, int] = {}
         for row in result:
             result_dict[row[0]] = row[1]
-        
+
         return result_dict
-    
-    def retrieve_flights_by_identity_key(self, flights_requested: list[FlightIdentityKey]) -> list[Flight]:
+
+    def retrieve_flights_by_identity_key(
+        self, flights_requested: list[FlightIdentityKey]
+    ) -> list[Flight]:
         if not flights_requested:
             return []
-        
-        placeholders = ",".join(["(" + ",".join(["%s"] * len(flights_requested[0])) + ")"] * len(flights_requested))
+
+        placeholders = ",".join(
+            ["(" + ",".join(["%s"] * len(flights_requested[0])) + ")"]
+            * len(flights_requested)
+        )
 
         query = """
                 SELECT  id, 
@@ -123,5 +136,5 @@ class FlightRepository:
 
         if result:
             return [Flight(*row) for row in result]
-        
+
         return []

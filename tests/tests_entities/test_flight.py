@@ -20,6 +20,7 @@ def test_flight_completed_valid_input(flight: Flight) -> None:
     assert flight.route_id == 1
     assert flight.airplane_id == 1
 
+
 def test_flight_uncompleted_valid_input(flight: Flight) -> None:
     flight.actual_departure_datetime = None
     flight.actual_arrival_datetime = None
@@ -35,17 +36,20 @@ def test_flight_uncompleted_valid_input(flight: Flight) -> None:
     assert flight.route_id == 1
     assert flight.airplane_id == 1
 
+
 def test_new_flight_classmethod_valid_input(flight: Flight) -> None:
     new_flight = Flight.new_flight(
         scheduled_departure_datetime=flight.scheduled_departure_datetime,
         scheduled_arrival_datetime=flight.scheduled_arrival_datetime,
         operating_cost_usd=flight.operating_cost_usd,
         route_id=flight.route_id,
-        airplane_id=flight.airplane_id
+        airplane_id=flight.airplane_id,
     )
 
     assert isinstance(new_flight.id, UUID)
-    assert new_flight.scheduled_departure_datetime == flight.scheduled_departure_datetime
+    assert (
+        new_flight.scheduled_departure_datetime == flight.scheduled_departure_datetime
+    )
     assert new_flight.scheduled_arrival_datetime == flight.scheduled_arrival_datetime
     assert new_flight.actual_departure_datetime == None
     assert new_flight.actual_arrival_datetime == None
@@ -55,29 +59,90 @@ def test_new_flight_classmethod_valid_input(flight: Flight) -> None:
     assert new_flight.route_id == flight.route_id
     assert new_flight.airplane_id == flight.airplane_id
 
-@pytest.mark.parametrize(
-        "field, value, exception, message", [
-            ("id", 123, TypeError, "The type of the id is not UUID."),
-            ("scheduled_departure_datetime", 123, TypeError, "The type of the scheduled departure datetime must be datetime or none."),
-            ("scheduled_arrival_datetime", 123, TypeError, "The type of the scheduled arrival datetime must be datetime or none."),
-            ("actual_departure_datetime", 123, TypeError, "The type of the actual departure datetime must be datetime or none."),
-            ("actual_arrival_datetime", 123, TypeError, "The type of the actual arrival datetime must be datetime or none."),
-            ("operating_cost_usd", Decimal("0"), ValueError, "The operating cost can not be negative or zero."),
-            ("operating_cost_usd", Decimal("-10"), ValueError, "The operating cost can not be negative or zero."),
-            ("base_price_usd", Decimal("0"), ValueError, "The base price can not be negative or zero."),
-            ("base_price_usd", Decimal("-10"), ValueError, "The base price can not be negative or zero."),
-            ("current_status_id", "1", TypeError, "The type of the current status id is not int."),
-            ("current_status_id", 0, ValueError, "The current status id can not be negative or zero."),
-            ("current_status_id", -10, ValueError, "The current status id can not be negative or zero."),
-            ("route_id", "1", TypeError, "The type of the route id is not int."),
-            ("route_id", 0, ValueError, "The route id can not be negative or zero."),
-            ("route_id", -10, ValueError, "The route id can not be negative or zero."),
-            ("airplane_id", "1", TypeError, "The type of the airplane id is not int."),
-            ("airplane_id", 0, ValueError, "The airplane id can not be negative or zero."),
-            ("airplane_id", -10, ValueError, "The airplane id can not be negative or zero."),
-                ]
-)
 
+@pytest.mark.parametrize(
+    "field, value, exception, message",
+    [
+        ("id", 123, TypeError, "The type of the id is not UUID."),
+        (
+            "scheduled_departure_datetime",
+            123,
+            TypeError,
+            "The type of the scheduled departure datetime must be datetime or none.",
+        ),
+        (
+            "scheduled_arrival_datetime",
+            123,
+            TypeError,
+            "The type of the scheduled arrival datetime must be datetime or none.",
+        ),
+        (
+            "actual_departure_datetime",
+            123,
+            TypeError,
+            "The type of the actual departure datetime must be datetime or none.",
+        ),
+        (
+            "actual_arrival_datetime",
+            123,
+            TypeError,
+            "The type of the actual arrival datetime must be datetime or none.",
+        ),
+        (
+            "operating_cost_usd",
+            Decimal("0"),
+            ValueError,
+            "The operating cost can not be negative or zero.",
+        ),
+        (
+            "operating_cost_usd",
+            Decimal("-10"),
+            ValueError,
+            "The operating cost can not be negative or zero.",
+        ),
+        (
+            "base_price_usd",
+            Decimal("0"),
+            ValueError,
+            "The base price can not be negative or zero.",
+        ),
+        (
+            "base_price_usd",
+            Decimal("-10"),
+            ValueError,
+            "The base price can not be negative or zero.",
+        ),
+        (
+            "current_status_id",
+            "1",
+            TypeError,
+            "The type of the current status id is not int.",
+        ),
+        (
+            "current_status_id",
+            0,
+            ValueError,
+            "The current status id can not be negative or zero.",
+        ),
+        (
+            "current_status_id",
+            -10,
+            ValueError,
+            "The current status id can not be negative or zero.",
+        ),
+        ("route_id", "1", TypeError, "The type of the route id is not int."),
+        ("route_id", 0, ValueError, "The route id can not be negative or zero."),
+        ("route_id", -10, ValueError, "The route id can not be negative or zero."),
+        ("airplane_id", "1", TypeError, "The type of the airplane id is not int."),
+        ("airplane_id", 0, ValueError, "The airplane id can not be negative or zero."),
+        (
+            "airplane_id",
+            -10,
+            ValueError,
+            "The airplane id can not be negative or zero.",
+        ),
+    ],
+)
 def test_invalid_flight(flight: Flight, field, value, exception, message) -> None:
     test_data: dict = flight.to_dict()
     test_data[field] = value

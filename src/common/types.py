@@ -21,13 +21,15 @@ type IssueCountry = str
 # GENERIC TYPES
 
 type RowId = AirplaneId | BookingId | CurrentStatusId | DocumentId | FlightId | PassengerId | RouteId | TicketId
-type RowIdentityKey = DocumentIdentityKey | FlightIdentityKey | PassengerIdentityKey 
+type RowIdentityKey = DocumentIdentityKey | FlightIdentityKey | PassengerIdentityKey
 
 # BOOKING TYPES
 
 type BookingReference = str
 type BookingDatetime = datetime
-type BookingRow = tuple[BookingId, BookingReference, BookingDatetime, PaidAmountUsd, CurrentStatusId]
+type BookingRow = tuple[
+    BookingId, BookingReference, BookingDatetime, PaidAmountUsd, CurrentStatusId
+]
 
 # DOCUMENT TYPES
 
@@ -35,7 +37,15 @@ type DocumentNumber = str
 type ValidFrom = date
 type ValidUntil = date
 type DocumentTypeId = int
-type DocumentRow = tuple[DocumentId, DocumentNumber, ValidFrom, ValidUntil, IssueCountry, PassengerId, DocumentTypeId]
+type DocumentRow = tuple[
+    DocumentId,
+    DocumentNumber,
+    ValidFrom,
+    ValidUntil,
+    IssueCountry,
+    PassengerId,
+    DocumentTypeId,
+]
 type DocumentIdentityKey = tuple[DocumentNumber, IssueCountry]
 
 # FLIGHT TYPES
@@ -46,7 +56,18 @@ type ActualDepartureDatetime = datetime | None
 type ActualArrivalDatetime = datetime | None
 type OperatingCostUsd = Decimal
 type BasePriceUsd = Decimal
-type FlightRow = tuple[FlightId, ScheduledDepartureDatetime,  ScheduledArrivalDatetime,  ActualDepartureDatetime,  ActualArrivalDatetime,  OperatingCostUsd, BasePriceUsd, CurrentStatusId, RouteId, AirplaneId]
+type FlightRow = tuple[
+    FlightId,
+    ScheduledDepartureDatetime,
+    ScheduledArrivalDatetime,
+    ActualDepartureDatetime,
+    ActualArrivalDatetime,
+    OperatingCostUsd,
+    BasePriceUsd,
+    CurrentStatusId,
+    RouteId,
+    AirplaneId,
+]
 type FlightIdentityKey = tuple[ScheduledDepartureDatetime, RouteId]
 
 # PASSENGER TYPES
@@ -58,13 +79,23 @@ type Email = str
 type PhoneNumber = str
 type IsBlacklisted = bool
 type IsVip = bool
-type PassengerRow = tuple[PassengerId, FullName, BirthDate, Email, PhoneNumber, IsBlacklisted, IsVip]
+type PassengerRow = tuple[
+    PassengerId, FullName, BirthDate, Email, PhoneNumber, IsBlacklisted, IsVip
+]
 type PassengerIdentityKey = tuple[NationalIdentityNumber, IssueCountry]
 
 # TICKET TYPES
 
 type TicketNumber = str
-type TicketRow = tuple[TicketId, TicketNumber, PaidAmountUsd, CurrentStatusId, BookingId, FlightId, PassengerId]
+type TicketRow = tuple[
+    TicketId,
+    TicketNumber,
+    PaidAmountUsd,
+    CurrentStatusId,
+    BookingId,
+    FlightId,
+    PassengerId,
+]
 
 # ROUTE TYPES
 
@@ -73,7 +104,9 @@ type Origin = str
 type Destination = str
 type DistanceKm = int
 type DurationMin = int
-type RouteRow = tuple[RouteId, FlightNumber, Origin, Destination, DistanceKm, DurationMin]
+type RouteRow = tuple[
+    RouteId, FlightNumber, Origin, Destination, DistanceKm, DurationMin
+]
 
 # AIRPLANE TYPES
 
@@ -83,4 +116,13 @@ type Model = str
 type Capacity = int
 type RangeKm = int
 type FlightHourCostUsd = Decimal
-type AirplaneRow = tuple[AirplaneId, TailNumber, Manufacturer, Model, Capacity, RangeKm, FlightHourCostUsd, CurrentStatusId]
+type AirplaneRow = tuple[
+    AirplaneId,
+    TailNumber,
+    Manufacturer,
+    Model,
+    Capacity,
+    RangeKm,
+    FlightHourCostUsd,
+    CurrentStatusId,
+]

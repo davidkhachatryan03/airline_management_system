@@ -15,6 +15,7 @@ def test_document_valid_input(document: Document) -> None:
     assert document.passenger_id == UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7")
     assert document.document_type_id == 1
 
+
 def test_new_document_classmethod_valid_input(document: Document) -> None:
     new_doc = Document.new_document(
         document_number=document.document_number,
@@ -22,7 +23,7 @@ def test_new_document_classmethod_valid_input(document: Document) -> None:
         valid_until=document.valid_until,
         issue_country=document.issue_country,
         passenger_id=document.passenger_id,
-        document_type_id=document.document_type_id
+        document_type_id=document.document_type_id,
     )
 
     assert isinstance(new_doc.id, UUID)
@@ -33,23 +34,70 @@ def test_new_document_classmethod_valid_input(document: Document) -> None:
     assert new_doc.passenger_id == document.passenger_id
     assert new_doc.document_type_id == document.document_type_id
 
+
 @pytest.mark.parametrize(
-    "field, value, exception, message", [
+    "field, value, exception, message",
+    [
         ("id", 123, TypeError, "The type of the id is not UUID."),
-        ("document_number", 123, TypeError, "The type of the document number is not str."),
+        (
+            "document_number",
+            123,
+            TypeError,
+            "The type of the document number is not str.",
+        ),
         ("document_number", "   ", ValueError, "The document number can not be empty."),
-        ("document_number", "A" * 21, ValueError, "The document number must be 20 characters or less."),
-        ("valid_from", "2024-01-01", TypeError, "The type of the valid from date is not date."),
-        ("valid_until", "2034-01-01", TypeError, "The type of the valid until date is not date."),
+        (
+            "document_number",
+            "A" * 21,
+            ValueError,
+            "The document number must be 20 characters or less.",
+        ),
+        (
+            "valid_from",
+            "2024-01-01",
+            TypeError,
+            "The type of the valid from date is not date.",
+        ),
+        (
+            "valid_until",
+            "2034-01-01",
+            TypeError,
+            "The type of the valid until date is not date.",
+        ),
         ("issue_country", 123, TypeError, "The type of the issue country is not str."),
         ("issue_country", "   ", ValueError, "The issue country can not be empty."),
-        ("issue_country", "AR", ValueError, "The issue country must be 3 characters long."),
-        ("issue_country", "ARGE", ValueError, "The issue country must be 3 characters long."),
+        (
+            "issue_country",
+            "AR",
+            ValueError,
+            "The issue country must be 3 characters long.",
+        ),
+        (
+            "issue_country",
+            "ARGE",
+            ValueError,
+            "The issue country must be 3 characters long.",
+        ),
         ("passenger_id", 123, TypeError, "The type of the passenger id is not UUID."),
-        ("document_type_id", "1", TypeError, "The type of the document type id is not int."),
-        ("document_type_id", 0, ValueError, "The document type id can not be negative or zero."),
-        ("document_type_id", -10, ValueError, "The document type id can not be negative or zero."),
-    ]
+        (
+            "document_type_id",
+            "1",
+            TypeError,
+            "The type of the document type id is not int.",
+        ),
+        (
+            "document_type_id",
+            0,
+            ValueError,
+            "The document type id can not be negative or zero.",
+        ),
+        (
+            "document_type_id",
+            -10,
+            ValueError,
+            "The document type id can not be negative or zero.",
+        ),
+    ],
 )
 def test_invalid_document(document: Document, field, value, exception, message) -> None:
     test_data: dict = document.to_dict()

@@ -17,8 +17,9 @@ def airplane() -> Airplane:
         capacity=132,
         range_km=6749,
         flight_hour_cost_usd=Decimal("2000"),
-        current_status_id=1
+        current_status_id=1,
     )
+
 
 @pytest.fixture
 def booking() -> Booking:
@@ -27,8 +28,9 @@ def booking() -> Booking:
         booking_reference="ABC123",
         booking_datetime=datetime(2026, 1, 1),
         paid_amount_usd=Decimal("10000.76"),
-        current_status_id=1
+        current_status_id=1,
     )
+
 
 @pytest.fixture
 def flight() -> Flight:
@@ -42,8 +44,9 @@ def flight() -> Flight:
         base_price_usd=Decimal("13000"),
         current_status_id=1,
         route_id=1,
-        airplane_id=1
+        airplane_id=1,
     )
+
 
 @pytest.fixture
 def ticket() -> Ticket:
@@ -57,6 +60,7 @@ def ticket() -> Ticket:
         passenger_id=UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7"),
     )
 
+
 @pytest.fixture
 def passenger() -> Passenger:
     return Passenger(
@@ -66,8 +70,9 @@ def passenger() -> Passenger:
         email="dkh@email.com",
         phone_number="12345678",
         is_blacklisted=False,
-        is_vip=True
+        is_vip=True,
     )
+
 
 @pytest.fixture
 def document() -> Document:
@@ -78,6 +83,5 @@ def document() -> Document:
         valid_until=date(2034, 1, 1),
         issue_country="ARG",
         passenger_id=UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7"),
-        document_type_id=1
+        document_type_id=1,
     )
-

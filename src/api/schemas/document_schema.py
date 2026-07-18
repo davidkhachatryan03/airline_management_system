@@ -16,6 +16,7 @@ class DocumentRequest(BaseModel):
     def identity_key(self) -> tuple:
         return (self.document_number, self.issue_country)
 
+
 class DocumentResponse(BaseModel):
     document_number: str = Field(min_length=5)
     document_type_id: int = Field(gt=0)

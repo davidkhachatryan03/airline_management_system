@@ -11,26 +11,33 @@ class FakeAirplaneRepository:
 
     def insert_airplanes(self, airplanes: list[Airplane]) -> None:
         self.airplanes.extend(airplanes)
-    
+
     def retrieve_airplanes_by_id(self, airplane: AirplaneId) -> list[AirplaneId]:
         for airplane_stored in self.airplanes:
             if airplane_stored.id == airplane:
                 return [airplane_stored.id]
-        
+
         return []
-    
-    def retrieve_available_airplanes_id(self, range_km: RangeKm, scheduled_departure_datetime: datetime, scheduled_arrival_datetime: datetime) -> list[AirplaneId]:
+
+    def retrieve_available_airplanes_id(
+        self,
+        range_km: RangeKm,
+        scheduled_departure_datetime: datetime,
+        scheduled_arrival_datetime: datetime,
+    ) -> list[AirplaneId]:
         airplanes_available: list[AirplaneId] = []
 
         for airplane_stored in self.airplanes:
             if airplane_stored.range_km >= range_km:
                 airplanes_available.append(airplane_stored.id)
-        
+
         return airplanes_available
 
-    def retrieve_flight_hour_cost_usd_by_id(self, airplane_id: Airplane) -> list[FlightHourCostUsd]:
+    def retrieve_flight_hour_cost_usd_by_id(
+        self, airplane_id: Airplane
+    ) -> list[FlightHourCostUsd]:
         for airplane in self.airplanes:
             if airplane.id == airplane_id:
                 return [airplane.flight_hour_cost_usd]
-        
+
         return []

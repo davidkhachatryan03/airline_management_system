@@ -1,17 +1,22 @@
-from src.core.repositories import (BookingRepository, FlightRepository,
-                                   PassengerRepository, TicketRepository)
+from src.core.repositories import (
+    BookingRepository,
+    FlightRepository,
+    PassengerRepository,
+    TicketRepository,
+)
 from src.entities import Booking, Flight, Passenger, Ticket
 
 
 def test_insert_ticket(
-                    ticket_repository: TicketRepository, 
-                    booking_repository: BookingRepository,
-                    flight_repository: FlightRepository,
-                    passenger_repository: PassengerRepository, 
-                    ticket: Ticket, 
-                    booking: Booking, 
-                    flight: Flight,
-                    passenger: Passenger) -> None:
+    ticket_repository: TicketRepository,
+    booking_repository: BookingRepository,
+    flight_repository: FlightRepository,
+    passenger_repository: PassengerRepository,
+    ticket: Ticket,
+    booking: Booking,
+    flight: Flight,
+    passenger: Passenger,
+) -> None:
     booking_repository.insert_booking(booking)
     flight_repository.insert_flights([flight])
     passenger_repository.insert_passengers([passenger])
@@ -27,15 +32,17 @@ def test_insert_ticket(
     assert last_inserted_ticket.flight_id == ticket.flight_id
     assert last_inserted_ticket.passenger_id == ticket.passenger_id
 
+
 def test_retrieve_all_tickets(
-                    ticket_repository: TicketRepository, 
-                    booking_repository: BookingRepository,
-                    flight_repository: FlightRepository,
-                    passenger_repository: PassengerRepository, 
-                    tickets: list[Ticket], 
-                    booking: Booking, 
-                    flight: Flight,
-                    passengers: list[Passenger]) -> None:
+    ticket_repository: TicketRepository,
+    booking_repository: BookingRepository,
+    flight_repository: FlightRepository,
+    passenger_repository: PassengerRepository,
+    tickets: list[Ticket],
+    booking: Booking,
+    flight: Flight,
+    passengers: list[Passenger],
+) -> None:
     booking_repository.insert_booking(booking)
     flight_repository.insert_flights([flight])
     passenger_repository.insert_passengers(passengers)

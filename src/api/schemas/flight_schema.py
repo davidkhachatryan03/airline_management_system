@@ -14,5 +14,6 @@ class FlightRequest(BaseModel):
     def identity_key(self) -> tuple[datetime, int]:
         return (self.scheduled_departure_datetime, self.route_id)
 
+
 class FlightResponse(BaseModel):
     id: UUID

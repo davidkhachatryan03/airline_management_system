@@ -16,9 +16,10 @@ class BookingRequest(BaseModel):
     def validate_flights_id(cls, value: list[UUID]):
         if len(value) != len(set(value)):
             raise ValueError("The flights must be unique.")
-        
+
         return value
-        
+
+
 class BookingResponse(BaseModel):
     booking_reference: str
     tickets: list[str]

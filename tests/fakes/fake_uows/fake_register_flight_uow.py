@@ -1,7 +1,9 @@
 from tests.fakes.fake_db_manager import FakeDBManager
-from tests.fakes.fake_repositories import (FakeAirplaneRepository,
-                                           FakeFlightRepository,
-                                           FakeRouteRepository)
+from tests.fakes.fake_repositories import (
+    FakeAirplaneRepository,
+    FakeFlightRepository,
+    FakeRouteRepository,
+)
 
 
 class FakeRegisterFlightUoW:

@@ -10,5 +10,5 @@ class PassengerValidator:
         for passenger in passengers:
             if passenger.is_blacklisted:
                 passengers_blacklisted.append(passenger.id)
-        
+
         return passengers_blacklisted
