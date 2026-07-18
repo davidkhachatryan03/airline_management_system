@@ -6,7 +6,7 @@ from src.core.validators import BaseValidator, FlightValidator, PassengerValidat
 from src.core.use_cases import PassengerProcessor, RegisterBooking, RegisterBookingValidator
 from src.core.units_of_work import RegisterBookingUoW
 
-router = APIRouter(prefix="/api/flights", tags=["Flights"])
+router = APIRouter(prefix="/api/bookings", tags=["Bookings"])
 
 def create_register_booking() -> RegisterBooking:
     db_manager = DBManager()

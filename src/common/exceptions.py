@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from uuid import UUID
 
 from src.common.types import AirplaneId, DocumentIdentityKey, FlightId, FlightIdentityKey, PassengerId, RouteId, RowIdentityKey
@@ -129,5 +130,5 @@ class InvalidBytes(DatabaseError):
 # MULTIPLE EXCEPTIONS
 
 class MultipleExceptionsError(Exception):
-    def __init__(self, exceptions: list[InvalidData]) -> None:
+    def __init__(self, exceptions: Sequence[InvalidData]) -> None:
         self.exceptions = exceptions
