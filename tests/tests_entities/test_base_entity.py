@@ -58,7 +58,7 @@ class DummyBooking(BaseEntity):
         amount: Decimal,
         flight: DummyFlight,
         passenger: DummyPassenger,
-        flights_list: list[DummyFlight] = None,
+        flights_list: list[DummyFlight] = [],
     ):
         self.reference = reference
         self.amount = amount

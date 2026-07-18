@@ -22,16 +22,16 @@ class FakeRouteRepository:
 
         return routes_retrieved
 
-    def retrieve_distance_km_by_id(self, route_id: RouteId) -> list[DistanceKm]:
+    def retrieve_distance_km_by_id(self, routes_id: list[RouteId]) -> list[DistanceKm]:
         for route in self.routes:
-            if route.id == route_id:
+            if route.id == routes_id[0]:
                 return [route.distance_km]
 
         return []
 
-    def retrieve_duration_min_by_id(self, route_id: RouteId) -> list[DistanceKm]:
+    def retrieve_duration_min_by_id(self, routes_id: list[RouteId]) -> list[DistanceKm]:
         for route in self.routes:
-            if route.id == route_id:
+            if route.id == routes_id[0]:
                 return [route.duration_min]
 
         return []
