@@ -21,5 +21,5 @@ class BookingRequest(BaseModel):
 class BookingResponse(BaseModel):
     booking_reference: str
     tickets: list[str]
-    booking_datetime: datetime = datetime.now()
+    booking_datetime: datetime = Field(default_factory=datetime.now)
     paid_amount_usd: Decimal = Field(gt=0, decimal_places=2, max_digits=8)
