@@ -28,7 +28,7 @@ class RouteRepository:
             placeholders
         )
 
-        results: list[RouteRow] = self.db_manager.retrieve_single_column(
+        results: list[RouteRow] = self.db_manager.retrieve_many_columns(
             query, routes_id
         )
 
@@ -37,11 +37,18 @@ class RouteRepository:
 
         return []
 
-    def retrieve_distance_km_by_id(self, route_id: RouteId) -> list[DistanceKm]:
-        query = "SELECT distance_km FROM routes WHERE id = %s"
+    def retrieve_distance_km_by_id(self, routes_id: list[RouteId]) -> list[DistanceKm]:
+        if not routes_id:
+            return []
+
+        placeholders = ",".join(["%s" * len(routes_id)])
+
+        query = "SELECT distance_km FROM routes WHERE id IN ({})".format(
+            placeholders
+        )
 
         results: list[RouteId] = self.db_manager.retrieve_single_column(
-            query, (route_id,)
+            query, routes_id
         )
 
         if results:
@@ -49,11 +56,18 @@ class RouteRepository:
 
         return []
 
-    def retrieve_duration_min_by_id(self, route_id: RouteId) -> list[DurationMin]:
-        query = "SELECT duration_min FROM routes WHERE id = %s"
+    def retrieve_duration_min_by_id(self, routes_id: list[RouteId]) -> list[DurationMin]:
+        if not routes_id:
+            return []
+
+        placeholders = ",".join(["%s" * len(routes_id)])
+
+        query = "SELECT duration_min FROM routes WHERE id IN ({})".format(
+            placeholders
+        )
 
         results: list[RouteId] = self.db_manager.retrieve_single_column(
-            query, (route_id,)
+            query, routes_id
         )
 
         if results:
