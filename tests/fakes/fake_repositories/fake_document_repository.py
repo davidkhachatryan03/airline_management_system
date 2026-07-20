@@ -1,3 +1,4 @@
+from src.common.types import DocumentIdentityKey
 from src.entities import Document
 
 
@@ -7,7 +8,7 @@ class FakeDocumentRepository:
         self.documents: list[Document] = []
 
     def retrieve_documents_by_identity_key(
-        self, documents_requested: list[tuple]
+        self, documents_requested_identity_keys: list[DocumentIdentityKey]
     ) -> list[Document]:
         return self.documents
 

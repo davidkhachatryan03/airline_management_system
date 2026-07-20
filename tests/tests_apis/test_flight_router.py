@@ -6,11 +6,8 @@ from pytest_mock import MockerFixture
 from src.api.main import app
 from src.api.routers.flight_router import create_register_flight
 from src.api.schemas import FlightRequest, FlightResponse
-from src.common.exceptions import (
-    InexistentAirplane,
-    InexistentRoute,
-    MultipleExceptionsError,
-)
+from src.common.exceptions import (InexistentAirplane, InexistentRoute,
+                                    MultipleExceptionsError)
 
 
 def test_flight_router_no_exceptions(

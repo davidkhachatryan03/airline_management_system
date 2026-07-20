@@ -1,15 +1,9 @@
 from collections.abc import Sequence
 from uuid import UUID
 
-from src.common.types import (
-    AirplaneId,
-    DocumentIdentityKey,
-    FlightId,
-    FlightIdentityKey,
-    PassengerId,
-    RouteId,
-    RowIdentityKey,
-)
+from src.common.types import (AirplaneId, DocumentIdentityKey, FlightId,
+                                FlightIdentityKey, PassengerId, RouteId,
+                                RowIdentityKey)
 
 # GENERAL EXCEPTIONS
 

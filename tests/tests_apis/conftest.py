@@ -6,15 +6,9 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.api.main import app
-from src.api.schemas import (
-    BookingRequest,
-    BookingResponse,
-    DocumentRequest,
-    DocumentResponse,
-    FlightRequest,
-    FlightResponse,
-    PassengerRequest,
-)
+from src.api.schemas import (BookingRequest, BookingResponse, DocumentRequest,
+                            DocumentResponse, FlightRequest, FlightResponse,
+                            PassengerRequest)
 
 
 @pytest.fixture

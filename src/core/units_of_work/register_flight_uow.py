@@ -1,5 +1,6 @@
 from src.common import DBManager
-from src.core.repositories import AirplaneRepository, FlightRepository, RouteRepository
+from src.core.repositories import (AirplaneRepository, FlightRepository,
+                                   RouteRepository)
 
 
 class RegisterFlightUoW:

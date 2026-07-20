@@ -1,16 +1,13 @@
 from src.api.schemas import BookingRequest, BookingResponse, PassengerRequest
-from src.common.exceptions import (
-    BlacklistedPassenger,
-    FullFlight,
-    InexistentFlight,
-    InvalidData,
-    MultipleExceptionsError,
-    NotScheduledFlight,
-    NotSeatsEnough,
-)
-from src.common.types import BasePriceUsd, DocumentIdentityKey, FlightId, PassengerId
+from src.common.exceptions import (BlacklistedPassenger, FullFlight,
+                                   InexistentFlight, InvalidData,
+                                   MultipleExceptionsError, NotScheduledFlight,
+                                   NotSeatsEnough)
+from src.common.types import (BasePriceUsd, DocumentIdentityKey, FlightId,
+                              PassengerId)
 from src.core.units_of_work import RegisterBookingUoW
-from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
+from src.core.validators import (BaseValidator, FlightValidator,
+                                 PassengerValidator)
 from src.entities import Booking, Document, Flight, Passenger, Ticket
 
 
