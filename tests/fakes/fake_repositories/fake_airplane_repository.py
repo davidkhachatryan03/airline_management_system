@@ -12,7 +12,9 @@ class FakeAirplaneRepository:
     def insert_airplanes(self, airplanes: list[Airplane]) -> None:
         self.airplanes.extend(airplanes)
 
-    def retrieve_airplanes_by_id(self, airplane_ids: list[AirplaneId]) -> list[AirplaneId]:
+    def retrieve_airplanes_by_id(
+        self, airplane_ids: list[AirplaneId]
+    ) -> list[AirplaneId]:
         for airplane_stored in self.airplanes:
             if airplane_stored.id == airplane_ids[0]:
                 return [airplane_stored.id]

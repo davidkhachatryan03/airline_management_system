@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from src.common import DBManager
-from src.common.types import (AirplaneId, AirplaneRow, FlightHourCostUsd,
-                              RangeKm)
+from src.common.types import AirplaneId, AirplaneRow, FlightHourCostUsd, RangeKm
 from src.entities import Airplane
 
 
@@ -23,15 +22,15 @@ class AirplaneRepository:
 
         return []
 
-    def retrieve_airplanes_by_id(self, airplanes_id: list[AirplaneId]) -> list[AirplaneId]:
+    def retrieve_airplanes_by_id(
+        self, airplanes_id: list[AirplaneId]
+    ) -> list[AirplaneId]:
         if not airplanes_id:
             return []
-        
+
         placeholders = ",".join(["%s" * len(airplanes_id)])
-        
-        query = "SELECT id FROM airplanes WHERE id IN ({})".format(
-            placeholders
-        )
+
+        query = "SELECT id FROM airplanes WHERE id IN ({})".format(placeholders)
 
         results: list[AirplaneId] = self.db_manager.retrieve_single_column(
             query, airplanes_id
@@ -45,12 +44,10 @@ class AirplaneRepository:
     def retrieve_range_km_by_id(self, airplanes_id: list[AirplaneId]) -> list[RangeKm]:
         if not airplanes_id:
             return []
-        
+
         placeholders = ",".join(["%s" * len(airplanes_id)])
 
-        query = "SELECT range_km FROM airplanes WHERE id IN ({})".format(
-            placeholders
-        )
+        query = "SELECT range_km FROM airplanes WHERE id IN ({})".format(placeholders)
 
         results: list[RangeKm] = self.db_manager.retrieve_single_column(
             query, airplanes_id
@@ -66,7 +63,7 @@ class AirplaneRepository:
     ) -> list[FlightHourCostUsd]:
         if not airplanes_id:
             return []
-        
+
         placeholders = ",".join(["%s" * len(airplanes_id)])
 
         query = "SELECT flight_hour_cost_usd FROM airplanes WHERE id IN ({})".format(

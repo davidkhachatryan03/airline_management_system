@@ -29,7 +29,9 @@ class FakeRouteRepository:
 
         return []
 
-    def retrieve_duration_min_by_id(self, route_ids: list[RouteId]) -> list[DurationMin]:
+    def retrieve_duration_min_by_id(
+        self, route_ids: list[RouteId]
+    ) -> list[DurationMin]:
         for route in self.routes:
             if route.id == route_ids[0]:
                 return [route.duration_min]

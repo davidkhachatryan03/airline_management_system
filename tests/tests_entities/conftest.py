@@ -4,8 +4,16 @@ from uuid import UUID
 
 import pytest
 
-from src.entities import (Airplane, BoardingPass, Booking, Document, Flight,
-                            Passenger, Route, Ticket)
+from src.entities import (
+    Airplane,
+    BoardingPass,
+    Booking,
+    Document,
+    Flight,
+    Passenger,
+    Route,
+    Ticket,
+)
 
 
 @pytest.fixture
@@ -29,8 +37,8 @@ def boarding_pass() -> BoardingPass:
         issue_datetime=datetime(2024, 1, 1, 10, 0, 0),
         boarding_datetime=datetime(2024, 1, 1, 10, 30, 0),
         current_status_id=1,
-        ticket_id=UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7")
-        )
+        ticket_id=UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7"),
+    )
 
 
 @pytest.fixture
@@ -94,7 +102,7 @@ def route() -> Route:
         origin="EZE",
         destination="COR",
         distance_km=645,
-        duration_min=90
+        duration_min=90,
     )
 
 
