@@ -3,7 +3,7 @@ from uuid import UUID
 
 import uuid6
 
-from src.common.types import DocumentIdentityKey
+from src.common.types import DocumentIdentityKey, DocumentId, DocumentNumber, ValidFrom, ValidUntil, IssueCountry, PassengerId, DocumentTypeId
 from src.entities.base_entity import BaseEntity
 
 
@@ -11,13 +11,13 @@ class Document(BaseEntity):
 
     def __init__(
         self,
-        id: UUID,
-        document_number: str,
-        valid_from: date,
-        valid_until: date,
-        issue_country: str,
-        passenger_id: UUID,
-        document_type_id: int,
+        id: DocumentId,
+        document_number: DocumentNumber,
+        valid_from: ValidFrom,
+        valid_until: ValidUntil,
+        issue_country: IssueCountry,
+        passenger_id: PassengerId,
+        document_type_id: DocumentTypeId,
     ) -> None:
 
         self.id = id
@@ -29,26 +29,26 @@ class Document(BaseEntity):
         self.document_type_id = document_type_id
 
     @property
-    def id(self) -> UUID:
+    def id(self) -> DocumentId:
         return self._id
 
     @id.setter
-    def id(self, value: UUID) -> None:
-        if not isinstance(value, UUID):
+    def id(self, value: DocumentId) -> None:
+        if not isinstance(value, DocumentId.__value__):
             raise TypeError("The type of the id is not UUID.")
 
         self._id = value
 
     @property
-    def document_number(self) -> str:
+    def document_number(self) -> DocumentNumber:
         return self._document_number
 
     @document_number.setter
-    def document_number(self, value: str) -> None:
-        if not isinstance(value, str):
+    def document_number(self, value: DocumentNumber) -> None:
+        if not isinstance(value, DocumentNumber.__value__):
             raise TypeError("The type of the document number is not str.")
 
-        value_formatted: str = value.strip()
+        value_formatted: DocumentNumber = value.strip()
 
         if not value_formatted:
             raise ValueError("The document number can not be empty.")
@@ -59,37 +59,37 @@ class Document(BaseEntity):
         self._document_number = value_formatted
 
     @property
-    def valid_from(self) -> date:
+    def valid_from(self) -> ValidFrom:
         return self._valid_from
 
     @valid_from.setter
-    def valid_from(self, value: date) -> None:
-        if not isinstance(value, date):
+    def valid_from(self, value: ValidFrom) -> None:
+        if not isinstance(value, ValidFrom.__value__):
             raise TypeError("The type of the valid from date is not date.")
 
         self._valid_from = value
 
     @property
-    def valid_until(self) -> date:
+    def valid_until(self) -> ValidUntil:
         return self._valid_until
 
     @valid_until.setter
-    def valid_until(self, value: date) -> None:
-        if not isinstance(value, date):
+    def valid_until(self, value: ValidUntil) -> None:
+        if not isinstance(value, ValidUntil.__value__):
             raise TypeError(f"The type of the valid until date is not date.")
 
         self._valid_until = value
 
     @property
-    def issue_country(self) -> str:
+    def issue_country(self) -> IssueCountry:
         return self._issue_country
 
     @issue_country.setter
-    def issue_country(self, value: str) -> None:
-        if not isinstance(value, str):
+    def issue_country(self, value: IssueCountry) -> None:
+        if not isinstance(value, IssueCountry.__value__):
             raise TypeError(f"The type of the issue country is not str.")
 
-        value_formatted: str = value.strip()
+        value_formatted: IssueCountry = value.strip()
 
         if not value_formatted:
             raise ValueError("The issue country can not be empty.")
@@ -100,23 +100,23 @@ class Document(BaseEntity):
         self._issue_country = value
 
     @property
-    def passenger_id(self) -> UUID:
+    def passenger_id(self) -> PassengerId:
         return self._passenger_id
 
     @passenger_id.setter
-    def passenger_id(self, value: UUID) -> None:
-        if not isinstance(value, UUID):
+    def passenger_id(self, value: PassengerId) -> None:
+        if not isinstance(value, PassengerId.__value__):
             raise TypeError("The type of the passenger id is not UUID.")
 
         self._passenger_id = value
 
     @property
-    def document_type_id(self) -> int:
+    def document_type_id(self) -> DocumentTypeId:
         return self._document_type_id
 
     @document_type_id.setter
-    def document_type_id(self, value: int) -> None:
-        if not isinstance(value, int):
+    def document_type_id(self, value: DocumentTypeId) -> None:
+        if not isinstance(value, DocumentTypeId.__value__):
             raise TypeError("The type of the document type id is not int.")
 
         if value <= 0:
@@ -131,12 +131,12 @@ class Document(BaseEntity):
     @classmethod
     def new_document(
         cls,
-        document_number: str,
-        valid_from: date,
-        valid_until: date,
-        issue_country: str,
-        passenger_id: UUID,
-        document_type_id: int,
+        document_number: DocumentNumber,
+        valid_from: ValidFrom,
+        valid_until: ValidUntil,
+        issue_country: IssueCountry,
+        passenger_id: PassengerId,
+        document_type_id: DocumentTypeId,
     ) -> "Document":
         return cls(
             id=uuid6.uuid7(),

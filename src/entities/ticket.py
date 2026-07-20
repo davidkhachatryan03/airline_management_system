@@ -1,10 +1,9 @@
 import random
 import string
-from decimal import Decimal
-from uuid import UUID
 
 import uuid6
 
+from src.common.types import TicketId, TicketNumber, PaidAmountUsd, CurrentStatusId, BookingId, FlightId, PassengerId
 from src.entities.base_entity import BaseEntity
 
 
@@ -12,13 +11,13 @@ class Ticket(BaseEntity):
 
     def __init__(
         self,
-        id: UUID,
-        ticket_number: str,
-        paid_amount_usd: Decimal,
-        current_status_id: int,
-        booking_id: UUID,
-        flight_id: UUID,
-        passenger_id: UUID,
+        id: TicketId,
+        ticket_number: TicketNumber,
+        paid_amount_usd: PaidAmountUsd,
+        current_status_id: CurrentStatusId,
+        booking_id: BookingId,
+        flight_id: FlightId,
+        passenger_id: PassengerId,
     ) -> None:
 
         self.id = id
@@ -30,26 +29,26 @@ class Ticket(BaseEntity):
         self.passenger_id = passenger_id
 
     @property
-    def id(self) -> UUID:
+    def id(self) -> TicketId:
         return self._id
 
     @id.setter
-    def id(self, value: UUID) -> None:
-        if not isinstance(value, UUID):
+    def id(self, value: TicketId) -> None:
+        if not isinstance(value, TicketId.__value__):
             raise TypeError("The type of the id is not UUID.")
 
         self._id = value
 
     @property
-    def ticket_number(self) -> str:
+    def ticket_number(self) -> TicketNumber:
         return self._ticket_number
 
     @ticket_number.setter
-    def ticket_number(self, value: str) -> None:
-        if not isinstance(value, str):
+    def ticket_number(self, value: TicketNumber) -> None:
+        if not isinstance(value, TicketNumber.__value__):
             raise TypeError("The type of the ticket number is not str.")
 
-        value_formatted: str = value.strip()
+        value_formatted: TicketNumber = value.strip()
 
         if not value_formatted:
             raise ValueError("The ticket number can not be empty.")
@@ -63,12 +62,12 @@ class Ticket(BaseEntity):
         self._ticket_number = value_formatted
 
     @property
-    def paid_amount_usd(self) -> Decimal:
+    def paid_amount_usd(self) -> PaidAmountUsd:
         return self._paid_amount_usd
 
     @paid_amount_usd.setter
-    def paid_amount_usd(self, value: Decimal) -> None:
-        if not isinstance(value, Decimal):
+    def paid_amount_usd(self, value: PaidAmountUsd) -> None:
+        if not isinstance(value, PaidAmountUsd.__value__):
             raise TypeError(f"The type of the paid amount is not decimal.")
 
         if value <= 0:
@@ -77,12 +76,12 @@ class Ticket(BaseEntity):
         self._paid_amount_usd = value
 
     @property
-    def current_status_id(self) -> int:
+    def current_status_id(self) -> CurrentStatusId:
         return self._current_status_id
 
     @current_status_id.setter
-    def current_status_id(self, value: int) -> None:
-        if not isinstance(value, int):
+    def current_status_id(self, value: CurrentStatusId) -> None:
+        if not isinstance(value, CurrentStatusId.__value__):
             raise TypeError("The type of the current status id is not int.")
 
         if value <= 0:
@@ -91,34 +90,34 @@ class Ticket(BaseEntity):
         self._current_status_id = value
 
     @property
-    def booking_id(self) -> UUID:
+    def booking_id(self) -> BookingId:
         return self._booking_id
 
     @booking_id.setter
-    def booking_id(self, value: UUID) -> None:
-        if not isinstance(value, UUID):
+    def booking_id(self, value: BookingId) -> None:
+        if not isinstance(value, BookingId.__value__):
             raise TypeError("The type of the booking id is not UUID.")
 
         self._booking_id = value
 
     @property
-    def flight_id(self) -> UUID:
+    def flight_id(self) -> FlightId:
         return self._flight_id
 
     @flight_id.setter
-    def flight_id(self, value: UUID) -> None:
-        if not isinstance(value, UUID):
+    def flight_id(self, value: FlightId) -> None:
+        if not isinstance(value, FlightId.__value__):
             raise TypeError("The type of the flight id is not UUID.")
 
         self._flight_id = value
 
     @property
-    def passenger_id(self) -> UUID:
+    def passenger_id(self) -> PassengerId:
         return self._passenger_id
 
     @passenger_id.setter
-    def passenger_id(self, value: UUID) -> None:
-        if not isinstance(value, UUID):
+    def passenger_id(self, value: PassengerId) -> None:
+        if not isinstance(value, PassengerId.__value__):
             raise TypeError("The type of the passenger id is not UUID.")
 
         self._passenger_id = value
@@ -126,10 +125,10 @@ class Ticket(BaseEntity):
     @classmethod
     def new_ticket(
         cls,
-        paid_amount_usd: Decimal,
-        booking_id: UUID,
-        flight_id: UUID,
-        passenger_id: UUID,
+        paid_amount_usd: PaidAmountUsd,
+        booking_id: BookingId,
+        flight_id: FlightId,
+        passenger_id: PassengerId,
     ) -> "Ticket":
         return cls(
             id=uuid6.uuid7(),
@@ -142,7 +141,7 @@ class Ticket(BaseEntity):
         )
 
     @staticmethod
-    def _generate_ticket_number() -> str:
+    def _generate_ticket_number() -> TicketNumber:
         first_digit = str(random.randint(1, 9))
         rest_digits = "".join(random.choices(string.digits, k=12))
 

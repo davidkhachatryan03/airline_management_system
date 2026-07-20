@@ -2,20 +2,21 @@ from datetime import date
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
 
+from src.common.types import FullName, BirthDate, PhoneNumber, DocumentNumber, ValidFrom, ValidUntil, IssueCountry, DocumentTypeId, PassengerIdentityKey
 
 class PassengerRequest(BaseModel):
-    full_name: str = Field(min_length=2, max_length=100)
-    birth_date: date
+    full_name: FullName = Field(min_length=2, max_length=100)
+    birth_date: BirthDate
     email: EmailStr
-    phone_number: str = Field(min_length=3, max_length=20, pattern=r"^[1-9]\d{1,14}$")
-    document_number: str = Field(min_length=3, max_length=20)
-    valid_from: date
-    valid_until: date
-    issue_country: str = Field(min_length=3, max_length=3)
-    document_type_id: int = Field(gt=0)
+    phone_number: PhoneNumber = Field(min_length=3, max_length=20, pattern=r"^[1-9]\d{1,14}$")
+    document_number: DocumentNumber = Field(min_length=3, max_length=20)
+    valid_from: ValidFrom
+    valid_until: ValidUntil
+    issue_country: IssueCountry = Field(min_length=3, max_length=3)
+    document_type_id: DocumentTypeId = Field(gt=0)
 
     @property
-    def identity_key(self) -> tuple:
+    def identity_key(self) -> PassengerIdentityKey:
         return (self.document_number, self.issue_country)
 
 

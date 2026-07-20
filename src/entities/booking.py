@@ -2,11 +2,10 @@ import random
 import string
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
-from uuid import UUID
 
 import uuid6
 
-from src.common.types import BasePriceUsd
+from src.common.types import BasePriceUsd, BookingId, BookingReference, PaidAmountUsd, BookingDatetime, CurrentStatusId, PassengerId
 from src.entities.base_entity import BaseEntity
 from src.entities.flight import Flight
 from src.entities.ticket import Ticket
@@ -16,11 +15,11 @@ class Booking(BaseEntity):
 
     def __init__(
         self,
-        id: UUID,
-        booking_reference: str,
-        booking_datetime: datetime,
-        paid_amount_usd: Decimal,
-        current_status_id: int,
+        id: BookingId,
+        booking_reference: BookingReference,
+        booking_datetime: BookingDatetime,
+        paid_amount_usd: PaidAmountUsd,
+        current_status_id: CurrentStatusId,
     ) -> None:
 
         self.id = id
@@ -30,26 +29,26 @@ class Booking(BaseEntity):
         self.current_status_id = current_status_id
 
     @property
-    def id(self) -> UUID:
+    def id(self) -> BookingId:
         return self._id
 
     @id.setter
-    def id(self, value: UUID) -> None:
-        if not isinstance(value, UUID):
+    def id(self, value: BookingId) -> None:
+        if not isinstance(value, BookingId.__value__):
             raise TypeError("The type of the id is not UUID.")
 
         self._id = value
 
     @property
-    def booking_reference(self) -> str:
+    def booking_reference(self) -> BookingReference:
         return self._booking_reference
 
     @booking_reference.setter
-    def booking_reference(self, value: str) -> None:
-        if not isinstance(value, str):
+    def booking_reference(self, value: BookingReference) -> None:
+        if not isinstance(value, BookingReference.__value__):
             raise TypeError("The type of the booking reference is not str.")
 
-        value_formatted: str = value.strip()
+        value_formatted: BookingReference = value.strip()
 
         if not value_formatted:
             raise ValueError("The booking reference can not be empty.")
@@ -60,23 +59,23 @@ class Booking(BaseEntity):
         self._booking_reference = value_formatted
 
     @property
-    def booking_datetime(self) -> datetime:
+    def booking_datetime(self) -> BookingDatetime:
         return self._booking_datetime
 
     @booking_datetime.setter
-    def booking_datetime(self, value: datetime) -> None:
-        if not isinstance(value, datetime):
+    def booking_datetime(self, value: BookingDatetime) -> None:
+        if not isinstance(value, BookingDatetime.__value__):
             raise TypeError("The type of the booking datetime is not datetime.")
 
         self._booking_datetime = value
 
     @property
-    def paid_amount_usd(self) -> Decimal:
+    def paid_amount_usd(self) -> PaidAmountUsd:
         return self._paid_amount_usd
 
     @paid_amount_usd.setter
-    def paid_amount_usd(self, value: Decimal) -> None:
-        if not isinstance(value, Decimal):
+    def paid_amount_usd(self, value: PaidAmountUsd) -> None:
+        if not isinstance(value, PaidAmountUsd.__value__):
             raise TypeError("The type of the paid amount is not decimal.")
 
         if value <= 0:
@@ -85,12 +84,12 @@ class Booking(BaseEntity):
         self._paid_amount_usd = value
 
     @property
-    def current_status_id(self) -> int:
+    def current_status_id(self) -> CurrentStatusId:
         return self._current_status_id
 
     @current_status_id.setter
-    def current_status_id(self, value: int) -> None:
-        if not isinstance(value, int):
+    def current_status_id(self, value: CurrentStatusId) -> None:
+        if not isinstance(value, CurrentStatusId.__value__):
             raise TypeError("The type of the current status id is not int.")
 
         if value <= 0:
@@ -99,11 +98,11 @@ class Booking(BaseEntity):
         self._current_status_id = value
 
     def generate_tickets(
-        self, passengers_id: list[UUID], flights: list[Flight], booking_id: UUID
+        self, passenger_ids: list[PassengerId], flights: list[Flight], booking_id: BookingId
     ) -> list[Ticket]:
         tickets_created: list[Ticket] = []
 
-        for passenger_id in passengers_id:
+        for passenger_id in passenger_ids:
             for flight in flights:
                 ticket_created = Ticket.new_ticket(
                     paid_amount_usd=flight.base_price_usd,
@@ -131,14 +130,14 @@ class Booking(BaseEntity):
         )
 
     @staticmethod
-    def _generate_reference() -> str:
+    def _generate_reference() -> BookingReference:
         chars = string.ascii_uppercase + string.digits
         return "".join(random.choices(chars, k=6))
 
     @staticmethod
     def _calculate_paid_amount_usd(
         flights_base_prices: list[BasePriceUsd], number_of_passengers: int
-    ) -> Decimal:
+    ) -> PaidAmountUsd:
         paid_amount_usd: Decimal = (
             sum(
                 (base_price_usd for base_price_usd in flights_base_prices), Decimal("0")

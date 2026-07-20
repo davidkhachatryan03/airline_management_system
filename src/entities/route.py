@@ -1,3 +1,4 @@
+from src.common.types import RouteId, FlightNumber, Origin, Destination, DistanceKm, DurationMin
 from src.entities.base_entity import BaseEntity
 
 
@@ -5,12 +6,12 @@ class Route(BaseEntity):
 
     def __init__(
         self,
-        id: int,
-        flight_number: str,
-        origin: str,
-        destination: str,
-        distance_km: int,
-        duration_min: int,
+        id: RouteId,
+        flight_number: FlightNumber,
+        origin: Origin,
+        destination: Destination,
+        distance_km: DistanceKm,
+        duration_min: DurationMin,
     ) -> None:
 
         self.id = id
@@ -21,12 +22,12 @@ class Route(BaseEntity):
         self.duration_min = duration_min
 
     @property
-    def id(self) -> int:
+    def id(self) -> RouteId:
         return self._id
 
     @id.setter
-    def id(self, value: int) -> None:
-        if not isinstance(value, int):
+    def id(self, value: RouteId) -> None:
+        if not isinstance(value, RouteId.__value__):
             raise TypeError(f"The type the id is not int.")
 
         if value <= 0:
@@ -35,12 +36,12 @@ class Route(BaseEntity):
         self._id = value
 
     @property
-    def flight_number(self) -> str:
+    def flight_number(self) -> FlightNumber:
         return self._flight_number
 
     @flight_number.setter
-    def flight_number(self, value: str) -> None:
-        if not isinstance(value, str):
+    def flight_number(self, value: FlightNumber) -> None:
+        if not isinstance(value, FlightNumber.__value__):
             raise TypeError(f"The type of {value} is not str.")
 
         if not value.strip():
@@ -52,12 +53,12 @@ class Route(BaseEntity):
         self._flight_number = value
 
     @property
-    def origin(self) -> str:
+    def origin(self) -> Origin:
         return self._origin
 
     @origin.setter
-    def origin(self, value: str) -> None:
-        if not isinstance(value, str):
+    def origin(self, value: Origin) -> None:
+        if not isinstance(value, Origin.__value__):
             raise TypeError(f"The type of {value} is not str.")
 
         if not value.strip():
@@ -69,12 +70,12 @@ class Route(BaseEntity):
         self._origin = value
 
     @property
-    def destination(self) -> str:
+    def destination(self) -> Destination:
         return self._destination
 
     @destination.setter
-    def destination(self, value: str) -> None:
-        if not isinstance(value, str):
+    def destination(self, value: Destination) -> None:
+        if not isinstance(value, Destination.__value__):
             raise TypeError(f"The type of {value} is not str.")
 
         if not value.strip():
@@ -86,12 +87,12 @@ class Route(BaseEntity):
         self._destination = value
 
     @property
-    def distance_km(self) -> int:
+    def distance_km(self) -> DistanceKm:
         return self._distance_km
 
     @distance_km.setter
-    def distance_km(self, value: int) -> None:
-        if not isinstance(value, int):
+    def distance_km(self, value: DistanceKm) -> None:
+        if not isinstance(value, DistanceKm.__value__):
             raise TypeError(f"The type of {value} is not int.")
 
         if value <= 0:
@@ -100,12 +101,12 @@ class Route(BaseEntity):
         self._distance_km = value
 
     @property
-    def duration_min(self) -> int:
+    def duration_min(self) -> DurationMin:
         return self._duration_min
 
     @duration_min.setter
-    def duration_min(self, value: int) -> None:
-        if not isinstance(value, int):
+    def duration_min(self, value: DurationMin) -> None:
+        if not isinstance(value, DurationMin.__value__):
             raise TypeError(f"The type of {value} is not int.")
 
         if value <= 0:

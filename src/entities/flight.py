@@ -1,10 +1,8 @@
-from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
-from uuid import UUID
 
 import uuid6
 
-from src.common.types import DurationMin
+from src.common.types import DurationMin, FlightId, ScheduledDepartureDatetime, ScheduledArrivalDatetime, ActualDepartureDatetime, ActualArrivalDatetime, OperatingCostUsd, BasePriceUsd, CurrentStatusId, RouteId, AirplaneId, FlightIdentityKey, FlightHourCostUsd
 from src.entities.base_entity import BaseEntity
 
 
@@ -12,16 +10,16 @@ class Flight(BaseEntity):
 
     def __init__(
         self,
-        id: UUID,
-        scheduled_departure_datetime: datetime,
-        scheduled_arrival_datetime: datetime,
-        actual_departure_datetime: datetime | None,
-        actual_arrival_datetime: datetime | None,
-        operating_cost_usd: Decimal,
-        base_price_usd: Decimal,
-        current_status_id: int,
-        route_id: int,
-        airplane_id: int,
+        id: FlightId,
+        scheduled_departure_datetime: ScheduledDepartureDatetime,
+        scheduled_arrival_datetime: ScheduledArrivalDatetime,
+        actual_departure_datetime: ActualDepartureDatetime | None,
+        actual_arrival_datetime: ActualArrivalDatetime | None,
+        operating_cost_usd: OperatingCostUsd,
+        base_price_usd: BasePriceUsd,
+        current_status_id: CurrentStatusId,
+        route_id: RouteId,
+        airplane_id: AirplaneId,
     ) -> None:
 
         self.id = id
@@ -36,23 +34,23 @@ class Flight(BaseEntity):
         self.airplane_id = airplane_id
 
     @property
-    def id(self) -> UUID:
+    def id(self) -> FlightId:
         return self._id
 
     @id.setter
-    def id(self, value: UUID) -> None:
-        if not isinstance(value, UUID):
+    def id(self, value: FlightId) -> None:
+        if not isinstance(value, FlightId.__value__):
             raise TypeError("The type of the id is not UUID.")
 
         self._id = value
 
     @property
-    def scheduled_departure_datetime(self) -> datetime:
+    def scheduled_departure_datetime(self) -> ScheduledDepartureDatetime:
         return self._scheduled_departure_datetime
 
     @scheduled_departure_datetime.setter
-    def scheduled_departure_datetime(self, value: datetime) -> None:
-        if not isinstance(value, datetime):
+    def scheduled_departure_datetime(self, value: ScheduledDepartureDatetime) -> None:
+        if not isinstance(value, ScheduledDepartureDatetime.__value__):
             raise TypeError(
                 "The type of the scheduled departure datetime must be datetime or none."
             )
@@ -60,12 +58,12 @@ class Flight(BaseEntity):
         self._scheduled_departure_datetime = value
 
     @property
-    def scheduled_arrival_datetime(self) -> datetime:
+    def scheduled_arrival_datetime(self) -> ScheduledArrivalDatetime:
         return self._scheduled_arrival_datetime
 
     @scheduled_arrival_datetime.setter
-    def scheduled_arrival_datetime(self, value: datetime) -> None:
-        if not isinstance(value, datetime):
+    def scheduled_arrival_datetime(self, value: ScheduledArrivalDatetime) -> None:
+        if not isinstance(value, ScheduledArrivalDatetime.__value__):
             raise TypeError(
                 "The type of the scheduled arrival datetime must be datetime or none."
             )
@@ -73,12 +71,12 @@ class Flight(BaseEntity):
         self._scheduled_arrival_datetime = value
 
     @property
-    def actual_departure_datetime(self) -> datetime | None:
+    def actual_departure_datetime(self) -> ActualDepartureDatetime | None:
         return self._actual_departure_datetime
 
     @actual_departure_datetime.setter
-    def actual_departure_datetime(self, value: datetime | None) -> None:
-        if value is not None and not isinstance(value, datetime):
+    def actual_departure_datetime(self, value: ActualDepartureDatetime | None) -> None:
+        if value is not None and not isinstance(value, ActualDepartureDatetime.__value__):
             raise TypeError(
                 "The type of the actual departure datetime must be datetime or none."
             )
@@ -86,12 +84,12 @@ class Flight(BaseEntity):
         self._actual_departure_datetime = value
 
     @property
-    def actual_arrival_datetime(self) -> datetime | None:
+    def actual_arrival_datetime(self) -> ActualArrivalDatetime | None:
         return self._actual_arrival_datetime
 
     @actual_arrival_datetime.setter
-    def actual_arrival_datetime(self, value: datetime | None) -> None:
-        if value is not None and not isinstance(value, datetime):
+    def actual_arrival_datetime(self, value: ActualArrivalDatetime | None) -> None:
+        if value is not None and not isinstance(value, ActualArrivalDatetime.__value__):
             raise TypeError(
                 "The type of the actual arrival datetime must be datetime or none."
             )
@@ -99,12 +97,12 @@ class Flight(BaseEntity):
         self._actual_arrival_datetime = value
 
     @property
-    def operating_cost_usd(self) -> Decimal:
+    def operating_cost_usd(self) -> OperatingCostUsd:
         return self._operating_cost_usd
 
     @operating_cost_usd.setter
-    def operating_cost_usd(self, value: Decimal) -> None:
-        if not isinstance(value, Decimal):
+    def operating_cost_usd(self, value: OperatingCostUsd) -> None:
+        if not isinstance(value, OperatingCostUsd.__value__):
             raise TypeError("The type of the operating cost is not datetime.")
 
         if value <= 0:
@@ -113,12 +111,12 @@ class Flight(BaseEntity):
         self._operating_cost_usd = value
 
     @property
-    def base_price_usd(self) -> Decimal:
+    def base_price_usd(self) -> BasePriceUsd:
         return self._base_price_usd
 
     @base_price_usd.setter
-    def base_price_usd(self, value: Decimal) -> None:
-        if not isinstance(value, Decimal):
+    def base_price_usd(self, value: BasePriceUsd) -> None:
+        if not isinstance(value, BasePriceUsd.__value__):
             raise TypeError("The type of the base price is not decimal.")
 
         if value <= 0:
@@ -127,12 +125,12 @@ class Flight(BaseEntity):
         self._base_price_usd = value
 
     @property
-    def current_status_id(self) -> int:
+    def current_status_id(self) -> CurrentStatusId:
         return self._current_status_id
 
     @current_status_id.setter
-    def current_status_id(self, value: int) -> None:
-        if not isinstance(value, int):
+    def current_status_id(self, value: CurrentStatusId) -> None:
+        if not isinstance(value, CurrentStatusId.__value__):
             raise TypeError("The type of the current status id is not int.")
 
         if value <= 0:
@@ -141,12 +139,12 @@ class Flight(BaseEntity):
         self._current_status_id = value
 
     @property
-    def route_id(self) -> int:
+    def route_id(self) -> RouteId:
         return self._route_id
 
     @route_id.setter
-    def route_id(self, value: int) -> None:
-        if not isinstance(value, int):
+    def route_id(self, value: RouteId) -> None:
+        if not isinstance(value, RouteId.__value__):
             raise TypeError("The type of the route id is not int.")
 
         if value <= 0:
@@ -155,12 +153,12 @@ class Flight(BaseEntity):
         self._route_id = value
 
     @property
-    def airplane_id(self) -> int:
+    def airplane_id(self) -> AirplaneId:
         return self._airplane_id
 
     @airplane_id.setter
-    def airplane_id(self, value: int) -> None:
-        if not isinstance(value, int):
+    def airplane_id(self, value: AirplaneId) -> None:
+        if not isinstance(value, AirplaneId.__value__):
             raise TypeError("The type of the airplane id is not int.")
 
         if value <= 0:
@@ -169,17 +167,17 @@ class Flight(BaseEntity):
         self._airplane_id = value
 
     @property
-    def identity_key(self) -> tuple[datetime, int]:
+    def identity_key(self) -> FlightIdentityKey:
         return (self.scheduled_departure_datetime, self.route_id)
 
     @classmethod
     def new_flight(
         cls,
-        scheduled_departure_datetime: datetime,
-        scheduled_arrival_datetime: datetime,
-        operating_cost_usd: Decimal,
-        route_id: int,
-        airplane_id: int,
+        scheduled_departure_datetime: ScheduledDepartureDatetime,
+        scheduled_arrival_datetime: ScheduledArrivalDatetime,
+        operating_cost_usd: OperatingCostUsd,
+        route_id: RouteId,
+        airplane_id: AirplaneId,
     ) -> "Flight":
 
         return cls(
@@ -196,15 +194,15 @@ class Flight(BaseEntity):
         )
 
     @staticmethod
-    def _calculate_base_price_usd(operating_cost_usd: Decimal) -> Decimal:
+    def _calculate_base_price_usd(operating_cost_usd: OperatingCostUsd) -> OperatingCostUsd:
         return (operating_cost_usd * Decimal("1.30")).quantize(
             Decimal("0.01"), ROUND_HALF_UP
         )
 
     @staticmethod
     def _calculate_operating_cost_usd(
-        flight_hour_cost_usd: Decimal, duration_min: DurationMin
-    ) -> Decimal:
+        flight_hour_cost_usd: FlightHourCostUsd, duration_min: DurationMin
+    ) -> OperatingCostUsd:
         return (flight_hour_cost_usd * (duration_min / Decimal("60"))).quantize(
             Decimal("0.01"), ROUND_HALF_UP
         )

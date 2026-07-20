@@ -5,6 +5,7 @@ from uuid import UUID
 # ID TYPES
 
 type AirplaneId = int
+type BoardingPassId = UUID
 type BookingId = UUID
 type CurrentStatusId = int
 type DocumentId = UUID
@@ -22,6 +23,30 @@ type IssueCountry = str
 
 type RowId = AirplaneId | BookingId | CurrentStatusId | DocumentId | FlightId | PassengerId | RouteId | TicketId
 type RowIdentityKey = DocumentIdentityKey | FlightIdentityKey | PassengerIdentityKey
+
+# AIRPLANE TYPES
+
+type TailNumber = str
+type Manufacturer = str
+type Model = str
+type Capacity = int
+type RangeKm = int
+type FlightHourCostUsd = Decimal
+type AirplaneRow = tuple[
+    AirplaneId,
+    TailNumber,
+    Manufacturer,
+    Model,
+    Capacity,
+    RangeKm,
+    FlightHourCostUsd,
+    CurrentStatusId,
+]
+
+# BOARDING PASS TYPES
+
+type IssueDatetime = datetime
+type BoardingDatetime = datetime
 
 # BOOKING TYPES
 
@@ -84,19 +109,6 @@ type PassengerRow = tuple[
 ]
 type PassengerIdentityKey = tuple[NationalIdentityNumber, IssueCountry]
 
-# TICKET TYPES
-
-type TicketNumber = str
-type TicketRow = tuple[
-    TicketId,
-    TicketNumber,
-    PaidAmountUsd,
-    CurrentStatusId,
-    BookingId,
-    FlightId,
-    PassengerId,
-]
-
 # ROUTE TYPES
 
 type FlightNumber = str
@@ -108,21 +120,15 @@ type RouteRow = tuple[
     RouteId, FlightNumber, Origin, Destination, DistanceKm, DurationMin
 ]
 
-# AIRPLANE TYPES
+# TICKET TYPES
 
-type TailNumber = str
-type Manufacturer = str
-type Model = str
-type Capacity = int
-type RangeKm = int
-type FlightHourCostUsd = Decimal
-type AirplaneRow = tuple[
-    AirplaneId,
-    TailNumber,
-    Manufacturer,
-    Model,
-    Capacity,
-    RangeKm,
-    FlightHourCostUsd,
+type TicketNumber = str
+type TicketRow = tuple[
+    TicketId,
+    TicketNumber,
+    PaidAmountUsd,
     CurrentStatusId,
+    BookingId,
+    FlightId,
+    PassengerId,
 ]
