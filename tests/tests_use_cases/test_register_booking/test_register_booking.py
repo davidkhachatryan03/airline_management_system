@@ -270,6 +270,7 @@ def test_register_booking_blacklisted_passenger(
     booking_request: BookingRequest,
     flights_generated: list[Flight],
     passengers_generated: list[Passenger],
+    documents_generated: list[Document]
 ) -> None:
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 
@@ -277,6 +278,7 @@ def test_register_booking_blacklisted_passenger(
 
     fake_uow.flight_repository.insert_flights(flights_generated)
     fake_uow.passenger_repository.insert_passengers(passengers_generated)
+    fake_uow.document_repository.insert_documents(documents_generated)
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
 
@@ -293,6 +295,7 @@ def test_register_booking_multiple_exceptions(
     booking_request: BookingRequest,
     flights_generated: list[Flight],
     passengers_generated: list[Passenger],
+    documents_generated: list[Document]
 ) -> None:
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 
@@ -301,6 +304,7 @@ def test_register_booking_multiple_exceptions(
 
     fake_uow.flight_repository.insert_flights(flights_generated)
     fake_uow.passenger_repository.insert_passengers(passengers_generated)
+    fake_uow.document_repository.insert_documents(documents_generated)
 
     fake_uow.flight_repository.flights[flights_generated[0]] = 0
 
