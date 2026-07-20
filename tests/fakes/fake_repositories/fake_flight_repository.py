@@ -1,5 +1,3 @@
-from collections.abc import KeysView
-
 from src.common.types import FlightId, FlightIdentityKey
 from src.entities import Flight
 
@@ -28,22 +26,22 @@ class FakeFlightRepository:
     ) -> list[Flight]:
         flights_retrieved: list[Flight] = []
         flights_stored: list[Flight] = list(self.flights.keys())
-        dict_flights_stored_identity_keys: dict[FlightIdentityKey, Flight] = {
+
+        flight_stored_identity_keys: dict[FlightIdentityKey, Flight] = {
             flight.identity_key: flight for flight in flights_stored
         }
-
         for flight in flights:
-            if flight in dict_flights_stored_identity_keys:
-                flights_retrieved.append(dict_flights_stored_identity_keys[flight])
+            if flight in flight_stored_identity_keys:
+                flights_retrieved.append(flight_stored_identity_keys[flight])
 
         return flights_retrieved
 
     def retrieve_seats_available_per_flight(
         self, flights: list[Flight]
     ) -> dict[FlightId, int]:
-        flights_stored: KeysView[Flight] = self.flights.keys()
         seats_available_per_flight: dict[FlightId, int] = {}
-
+        
+        flights_stored: list[Flight] = list(self.flights.keys())
         for flight in flights_stored:
             seats_available_per_flight[flight.id] = self.flights[flight]
 

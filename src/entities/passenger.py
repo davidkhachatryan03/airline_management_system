@@ -3,6 +3,7 @@ from uuid import UUID
 
 import uuid6
 
+from src.common.types import PassengerIdentityKey
 from src.entities.base_entity import BaseEntity
 
 

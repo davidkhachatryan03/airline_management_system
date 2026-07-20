@@ -9,10 +9,12 @@ class FakePassengerRepository:
     def insert_passengers(self, passengers: list[Passenger]) -> None:
         self.passengers.extend(passengers)
 
-    def retrieve_passengers_by_id(self, passengers_id: list[PassengerId]) -> list[Passenger]:
-        return self.passengers
+    def retrieve_passengers_by_id(self, passenger_ids: list[PassengerId]) -> list[Passenger]:
+        passengers_retrieved: list[Passenger] = []
 
-    def retrieve_passengers_by_document(
-        self, passengers_document: list[tuple]
-    ) -> list[Passenger]:
-        return self.passengers
+        passenger_stored_ids: dict[PassengerId, Passenger] = {passenger.id: passenger for passenger in self.passengers}
+        for passenger_id in passenger_ids:
+            if passenger_id in passenger_stored_ids:
+                passengers_retrieved.append(passenger_stored_ids[passenger_id])
+            
+        return passengers_retrieved

@@ -10,28 +10,28 @@ class FakeRouteRepository:
     def insert_routes(self, routes: list[Route]) -> None:
         self.routes.extend(routes)
 
-    def retrieve_routes_by_id(self, routes: list[RouteId]) -> list[Route]:
+    def retrieve_routes_by_id(self, route_ids: list[RouteId]) -> list[Route]:
         routes_retrieved: list[Route] = []
-        dict_routes_stored_ids: dict[RouteId, Route] = {
+
+        routes_stored_ids: dict[RouteId, Route] = {
             route.id: route for route in self.routes
         }
-
-        for route in routes:
-            if route in dict_routes_stored_ids:
-                routes_retrieved.append(dict_routes_stored_ids[route])
+        for route_id in route_ids:
+            if route_id in routes_stored_ids:
+                routes_retrieved.append(routes_stored_ids[route_id])
 
         return routes_retrieved
 
-    def retrieve_distance_km_by_id(self, routes_id: list[RouteId]) -> list[DistanceKm]:
+    def retrieve_distance_km_by_id(self, route_ids: list[RouteId]) -> list[DistanceKm]:
         for route in self.routes:
-            if route.id == routes_id[0]:
+            if route.id == route_ids[0]:
                 return [route.distance_km]
 
         return []
 
-    def retrieve_duration_min_by_id(self, routes_id: list[RouteId]) -> list[DurationMin]:
+    def retrieve_duration_min_by_id(self, route_ids: list[RouteId]) -> list[DurationMin]:
         for route in self.routes:
-            if route.id == routes_id[0]:
+            if route.id == route_ids[0]:
                 return [route.duration_min]
 
         return []
