@@ -3,7 +3,15 @@ import string
 
 import uuid6
 
-from src.common.types import TicketId, TicketNumber, PaidAmountUsd, CurrentStatusId, BookingId, FlightId, PassengerId
+from src.common.types import (
+    BookingId,
+    CurrentStatusId,
+    FlightId,
+    PaidAmountUsd,
+    PassengerId,
+    TicketId,
+    TicketNumber,
+)
 from src.entities.base_entity import BaseEntity
 
 

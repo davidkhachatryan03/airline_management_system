@@ -1,6 +1,15 @@
 from pydantic import BaseModel, Field
 
-from src.common.types import DocumentNumber, ValidFrom, ValidUntil, IssueCountry, PassengerId, DocumentTypeId, DocumentIdentityKey
+from src.common.types import (
+    DocumentIdentityKey,
+    DocumentNumber,
+    DocumentTypeId,
+    IssueCountry,
+    PassengerId,
+    ValidFrom,
+    ValidUntil,
+)
+
 
 class DocumentRequest(BaseModel):
     document_number: DocumentNumber = Field(min_length=5)

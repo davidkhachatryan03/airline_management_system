@@ -2,13 +2,26 @@ from datetime import date
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
 
-from src.common.types import FullName, BirthDate, PhoneNumber, DocumentNumber, ValidFrom, ValidUntil, IssueCountry, DocumentTypeId, PassengerIdentityKey
+from src.common.types import (
+    BirthDate,
+    DocumentNumber,
+    DocumentTypeId,
+    FullName,
+    IssueCountry,
+    PassengerIdentityKey,
+    PhoneNumber,
+    ValidFrom,
+    ValidUntil,
+)
+
 
 class PassengerRequest(BaseModel):
     full_name: FullName = Field(min_length=2, max_length=100)
     birth_date: BirthDate
     email: EmailStr
-    phone_number: PhoneNumber = Field(min_length=3, max_length=20, pattern=r"^[1-9]\d{1,14}$")
+    phone_number: PhoneNumber = Field(
+        min_length=3, max_length=20, pattern=r"^[1-9]\d{1,14}$"
+    )
     document_number: DocumentNumber = Field(min_length=3, max_length=20)
     valid_from: ValidFrom
     valid_until: ValidUntil

@@ -270,7 +270,7 @@ def test_register_booking_blacklisted_passenger(
     booking_request: BookingRequest,
     flights_generated: list[Flight],
     passengers_generated: list[Passenger],
-    documents_generated: list[Document]
+    documents_generated: list[Document],
 ) -> None:
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 
@@ -295,7 +295,7 @@ def test_register_booking_multiple_exceptions(
     booking_request: BookingRequest,
     flights_generated: list[Flight],
     passengers_generated: list[Passenger],
-    documents_generated: list[Document]
+    documents_generated: list[Document],
 ) -> None:
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 

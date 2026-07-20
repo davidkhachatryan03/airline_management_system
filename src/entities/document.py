@@ -1,9 +1,15 @@
-from datetime import date
-from uuid import UUID
-
 import uuid6
 
-from src.common.types import DocumentIdentityKey, DocumentId, DocumentNumber, ValidFrom, ValidUntil, IssueCountry, PassengerId, DocumentTypeId
+from src.common.types import (
+    DocumentId,
+    DocumentIdentityKey,
+    DocumentNumber,
+    DocumentTypeId,
+    IssueCountry,
+    PassengerId,
+    ValidFrom,
+    ValidUntil,
+)
 from src.entities.base_entity import BaseEntity
 
 

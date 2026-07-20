@@ -5,7 +5,15 @@ from decimal import ROUND_HALF_UP, Decimal
 
 import uuid6
 
-from src.common.types import BasePriceUsd, BookingId, BookingReference, PaidAmountUsd, BookingDatetime, CurrentStatusId, PassengerId
+from src.common.types import (
+    BasePriceUsd,
+    BookingDatetime,
+    BookingId,
+    BookingReference,
+    CurrentStatusId,
+    PaidAmountUsd,
+    PassengerId,
+)
 from src.entities.base_entity import BaseEntity
 from src.entities.flight import Flight
 from src.entities.ticket import Ticket
@@ -98,7 +106,10 @@ class Booking(BaseEntity):
         self._current_status_id = value
 
     def generate_tickets(
-        self, passenger_ids: list[PassengerId], flights: list[Flight], booking_id: BookingId
+        self,
+        passenger_ids: list[PassengerId],
+        flights: list[Flight],
+        booking_id: BookingId,
     ) -> list[Ticket]:
         tickets_created: list[Ticket] = []
 

@@ -3,7 +3,13 @@ from datetime import datetime
 from pydantic import BaseModel, Field, field_validator
 
 from src.api.schemas.passenger_schema import PassengerRequest
-from src.common.types import FlightId, BookingReference, TicketNumber, BoardingDatetime, PaidAmountUsd
+from src.common.types import (
+    BoardingDatetime,
+    BookingReference,
+    FlightId,
+    PaidAmountUsd,
+    TicketNumber,
+)
 
 
 class BookingRequest(BaseModel):

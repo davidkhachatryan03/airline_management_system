@@ -1,4 +1,10 @@
-from src.common.types import IssueDatetime, BoardingPassId, TicketId, BoardingDatetime, CurrentStatusId
+from src.common.types import (
+    BoardingDatetime,
+    BoardingPassId,
+    CurrentStatusId,
+    IssueDatetime,
+    TicketId,
+)
 from src.entities.base_entity import BaseEntity
 
 

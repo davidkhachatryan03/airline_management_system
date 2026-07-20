@@ -2,7 +2,21 @@ from decimal import ROUND_HALF_UP, Decimal
 
 import uuid6
 
-from src.common.types import DurationMin, FlightId, ScheduledDepartureDatetime, ScheduledArrivalDatetime, ActualDepartureDatetime, ActualArrivalDatetime, OperatingCostUsd, BasePriceUsd, CurrentStatusId, RouteId, AirplaneId, FlightIdentityKey, FlightHourCostUsd
+from src.common.types import (
+    ActualArrivalDatetime,
+    ActualDepartureDatetime,
+    AirplaneId,
+    BasePriceUsd,
+    CurrentStatusId,
+    DurationMin,
+    FlightHourCostUsd,
+    FlightId,
+    FlightIdentityKey,
+    OperatingCostUsd,
+    RouteId,
+    ScheduledArrivalDatetime,
+    ScheduledDepartureDatetime,
+)
 from src.entities.base_entity import BaseEntity
 
 
@@ -76,7 +90,9 @@ class Flight(BaseEntity):
 
     @actual_departure_datetime.setter
     def actual_departure_datetime(self, value: ActualDepartureDatetime | None) -> None:
-        if value is not None and not isinstance(value, ActualDepartureDatetime.__value__):
+        if value is not None and not isinstance(
+            value, ActualDepartureDatetime.__value__
+        ):
             raise TypeError(
                 "The type of the actual departure datetime must be datetime or none."
             )
@@ -194,7 +210,9 @@ class Flight(BaseEntity):
         )
 
     @staticmethod
-    def _calculate_base_price_usd(operating_cost_usd: OperatingCostUsd) -> OperatingCostUsd:
+    def _calculate_base_price_usd(
+        operating_cost_usd: OperatingCostUsd,
+    ) -> OperatingCostUsd:
         return (operating_cost_usd * Decimal("1.30")).quantize(
             Decimal("0.01"), ROUND_HALF_UP
         )
