@@ -86,7 +86,7 @@ def test_route_valid_input(route: Route) -> None:
         ),
         (
             "destination",
-            "CORB",  # 4 caracteres
+            "CORB", 
             ValueError,
             "The destination must be 3 characters long.",  
         ),
