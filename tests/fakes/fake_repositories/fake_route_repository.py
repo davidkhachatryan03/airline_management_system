@@ -1,4 +1,4 @@
-from src.common.types import DistanceKm, RouteId
+from src.common.types import DistanceKm, DurationMin, RouteId
 from src.entities import Route
 
 
@@ -29,7 +29,7 @@ class FakeRouteRepository:
 
         return []
 
-    def retrieve_duration_min_by_id(self, routes_id: list[RouteId]) -> list[DistanceKm]:
+    def retrieve_duration_min_by_id(self, routes_id: list[RouteId]) -> list[DurationMin]:
         for route in self.routes:
             if route.id == routes_id[0]:
                 return [route.duration_min]

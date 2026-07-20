@@ -1,7 +1,6 @@
 from collections.abc import KeysView
-from uuid import UUID
 
-from src.common.types import FlightIdentityKey
+from src.common.types import FlightId, FlightIdentityKey
 from src.entities import Flight
 
 
@@ -14,8 +13,15 @@ class FakeFlightRepository:
         for flight in flights:
             self.flights[flight] = seats
 
-    def retrieve_flights_by_id(self, flights_id: list[UUID]) -> list[Flight]:
-        return list(self.flights.keys())
+    def retrieve_flights_by_id(self, flight_ids: list[FlightId]) -> list[Flight]:
+        flights_retrieved: list[Flight] = []
+
+        flight_stored_ids: dict[FlightId, Flight] = {flight.id: flight for flight in self.flights}
+        for flight_id in flight_ids:
+            if flight_id in flight_stored_ids:
+                flights_retrieved.append(flight_stored_ids[flight_id])
+        
+        return flights_retrieved
 
     def retrieve_flights_by_identity_key(
         self, flights: list[FlightIdentityKey]
@@ -34,9 +40,9 @@ class FakeFlightRepository:
 
     def retrieve_seats_available_per_flight(
         self, flights: list[Flight]
-    ) -> dict[UUID, int]:
+    ) -> dict[FlightId, int]:
         flights_stored: KeysView[Flight] = self.flights.keys()
-        seats_available_per_flight: dict[UUID, int] = {}
+        seats_available_per_flight: dict[FlightId, int] = {}
 
         for flight in flights_stored:
             seats_available_per_flight[flight.id] = self.flights[flight]

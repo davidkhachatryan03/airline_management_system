@@ -1,7 +1,5 @@
-from uuid import UUID
-
+from src.common.types import PassengerId
 from src.entities import Passenger
-
 
 class FakePassengerRepository:
 
@@ -11,7 +9,7 @@ class FakePassengerRepository:
     def insert_passengers(self, passengers: list[Passenger]) -> None:
         self.passengers.extend(passengers)
 
-    def retrieve_passengers_by_id(self, passengers_id: list[UUID]) -> list[Passenger]:
+    def retrieve_passengers_by_id(self, passengers_id: list[PassengerId]) -> list[Passenger]:
         return self.passengers
 
     def retrieve_passengers_by_document(
