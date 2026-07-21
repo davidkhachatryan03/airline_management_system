@@ -42,10 +42,15 @@ class FakeFlightRepository:
         self, flight_ids: list[FlightId]
     ) -> dict[FlightId, int]:
         seats_available_per_flight: dict[FlightId, int] = {}
-        
-        seats_available_per_flight_stored: dict[FlightId, int] = {flight.id: seats_available for flight, seats_available in self.flights.items()}
+
+        seats_available_per_flight_stored: dict[FlightId, int] = {
+            flight.id: seats_available
+            for flight, seats_available in self.flights.items()
+        }
         for flight_id in flight_ids:
             if flight_id in seats_available_per_flight_stored:
-                seats_available_per_flight[flight_id] = seats_available_per_flight_stored[flight_id]
+                seats_available_per_flight[flight_id] = (
+                    seats_available_per_flight_stored[flight_id]
+                )
 
         return seats_available_per_flight

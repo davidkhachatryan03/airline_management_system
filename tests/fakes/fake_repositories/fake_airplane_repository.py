@@ -41,7 +41,7 @@ class FakeAirplaneRepository:
         self, airplane_ids: list[AirplaneId]
     ) -> list[FlightHourCostUsd]:
         flight_hour_cost_ids: list[FlightHourCostUsd] = []
-        
+
         for airplane in self.airplanes:
             if airplane.id == airplane_ids[0]:
                 flight_hour_cost_ids.append(airplane.flight_hour_cost_usd)
