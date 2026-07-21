@@ -19,8 +19,7 @@ CREATE TABLE passengers (
     email VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     is_blacklisted BOOLEAN NOT NULL,
-    is_vip BOOLEAN NOT NULL,
-    UNIQUE(national_identity_number, issue_country)
+    is_vip BOOLEAN NOT NULL
 ); 
 
 CREATE TABLE booking_statuses (
@@ -135,7 +134,7 @@ CREATE TABLE maintenance_assignments (
     staff_id INT UNSIGNED NOT NULL,
     maintenance_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (staff_id) REFERENCES staff(id),
-    FOREIGN KEY (maintenance_id) REFERENCES maintenance_assignments(id)
+    FOREIGN KEY (maintenance_id) REFERENCES scheduled_maintenances(id)
 );
 
 CREATE TABLE crew_assignments (
