@@ -77,13 +77,13 @@ class DBManager:
             raise InexistentSQLFile from e
 
         except Exception as e:
-            raise DatabaseError(e) from e
+            raise DatabaseError(str(e)) from e
 
     def retrieve_many_columns(
         self, query: str, values: tuple[Any, ...] | list[Any] = ()
     ) -> list[tuple[Any, ...]]:
         if not self.connection.is_connected():
-            raise InexistentConnection("Connection not found.")
+            raise InexistentConnection
 
         try:
             values_formatted: list = self.uuid_to_bytes(list(values))
@@ -97,13 +97,13 @@ class DBManager:
             return self.bytes_to_uuid(rows)
 
         except Exception as e:
-            raise DatabaseError(e) from e
+            raise DatabaseError(str(e)) from e
 
     def retrieve_single_column(
         self, query: str, values: tuple[Any, ...] | list[Any] = ()
     ) -> list[Any]:
         if not self.connection.is_connected():
-            raise InexistentConnection("Connection not found.")
+            raise InexistentConnection
 
         try:
             values_formatted: list = self.uuid_to_bytes(list(values))
@@ -119,11 +119,11 @@ class DBManager:
             return self.bytes_to_uuid(result)
 
         except Exception as e:
-            raise DatabaseError(e) from e
+            raise DatabaseError(str(e)) from e
 
     def insert_rows(self, table_name: str, entities: list) -> int:
         if not self.connection.is_connected():
-            raise InexistentConnection("Connection not found.")
+            raise InexistentConnection
 
         try:
             row: dict = entities[0].to_dict()
@@ -146,10 +146,10 @@ class DBManager:
             return cast(int, self.cursor.rowcount)
 
         except AttributeError as e:
-            raise ValueError("The entity has not to_dict method.") from e
+            raise ValueError() from e
 
         except Exception as e:
-            raise DatabaseError(e) from e
+            raise DatabaseError(str(e)) from e
 
     def uuid_to_bytes(self, rows: list) -> list[bytes]:
         rows_formatted: list[bytes] = []
