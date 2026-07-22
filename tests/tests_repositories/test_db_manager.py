@@ -12,8 +12,8 @@ def test_db_manager_enter_and_exit(db: DBManager) -> None:
     with db:
         assert db.host == os.environ["DB_HOST"]
         assert db.user == os.environ["DB_USER"]
-        assert db.password == os.environ["DB_PASS"]
-        assert db.database == os.environ["DB_NAME"]
+        assert db.password == os.environ["DB_TEST_PASS"]
+        assert db.database == os.environ["DB_TEST_NAME"]
 
         assert db.connection.is_connected()
 

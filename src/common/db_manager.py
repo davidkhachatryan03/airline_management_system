@@ -7,14 +7,14 @@ from dotenv import load_dotenv
 from mysql.connector.connection import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
 
+load_dotenv()
+
 from src.common.exceptions import (
     DatabaseError,
     InexistentConnection,
     InexistentSQLFile,
     InvalidBytes,
 )
-
-load_dotenv()
 
 
 class DBManager:
@@ -23,7 +23,15 @@ class DBManager:
         self.host: str = os.environ["DB_HOST"]
         self.user: str = os.environ["DB_USER"]
         self.password: str = os.environ["DB_PASS"]
-        self.database: str = os.environ["DB_NAME"]
+
+        if os.environ.get("TESTING") == "True":
+            self.database: str = os.environ["DB_TEST_NAME"]
+            self.port: int = int(os.environ["DB_TEST_PORT"])
+            self.password: str = os.environ["DB_TEST_PASS"]
+        else:
+            self.database: str = os.environ["DB_NAME"]
+            self.port: int = int(os.environ["DB_PORT"])
+            self.password: str = os.environ["DB_PASS"]
 
     def __enter__(self):
         self.connect()
@@ -44,7 +52,7 @@ class DBManager:
             MySQLConnection,
             mysql.connector.connect(
                 host=self.host,
-                port=3306,
+                port=self.port,
                 user=self.user,
                 password=self.password,
                 database=self.database,

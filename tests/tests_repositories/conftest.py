@@ -1,10 +1,12 @@
-import random
+import os, random
 from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID
 
 import pytest
 from uuid6 import uuid7
+
+os.environ["TESTING"] = "True"
 
 from src.common import DBManager
 from src.core.repositories import (

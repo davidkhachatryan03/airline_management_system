@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    build: . 
+    ports:
+      - "8000:8000" 
+    volumes:
+      - .:/app  
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    env_file:
+      - .env
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - db_airline_data:/var/lib/mysql  
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  db_test:
+      image: mysql:8.0
+      env_file:
+      - .env 
+      ports:
+        - "3308:3306"
+      environment:
+        MYSQL_ROOT_PASSWORD: ${DB_TEST_PASS}
+        MYSQL_DATABASE: ${DB_TEST_NAME}
+      volumes:
+        - db_test_airline_data:/var/lib/mysql
+        - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  db_airline_data:
+  db_test_airline_data:
