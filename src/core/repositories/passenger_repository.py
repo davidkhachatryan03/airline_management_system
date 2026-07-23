@@ -17,7 +17,7 @@ class PassengerRepository:
         if not passengers_id:
             return []
 
-        placeholders = ",".join(["%s" * len(passengers_id)])
+        placeholders = ",".join(["%s"] * len(passengers_id))
 
         query = """
                 SELECT  id, 
@@ -65,8 +65,10 @@ class PassengerRepository:
                 WHERE   (d.document_number, d.issue_country) IN ({})
                 """.format(placeholders)
 
+        document_identity_keys_plain = [value for identity_key in documents_identity_keys for value in identity_key]
+
         result: list[PassengerRow] = self.db_manager.retrieve_many_columns(
-            query, documents_identity_keys
+            query, document_identity_keys_plain
         )
 
         if result:

@@ -41,7 +41,7 @@ class FlightRepository:
         if not flights_id:
             return []
 
-        placeholders = ",".join(["%s" * len(flights_id)])
+        placeholders = ",".join(["%s"] * len(flights_id))
 
         query = """
                 SELECT  id, 
@@ -74,7 +74,7 @@ class FlightRepository:
         if not flights_id:
             return {}
 
-        placeholders = "".join(["%s" * len(flights_id)])
+        placeholders = ",".join(["%s"] * len(flights_id))
 
         query = """
                 SELECT      f.id, 

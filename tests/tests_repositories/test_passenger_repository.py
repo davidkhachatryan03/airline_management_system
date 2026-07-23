@@ -1,5 +1,6 @@
-from src.core.repositories import PassengerRepository
-from src.entities import Passenger
+from src.common.types import DocumentIdentityKey, PassengerId, PassengerIdentityKey
+from src.core.repositories import DocumentRepository, PassengerRepository
+from src.entities import Document, Passenger
 
 
 def test_insert_passenger(
@@ -11,16 +12,10 @@ def test_insert_passenger(
         limit=1
     )[0]
 
-    assert last_inserted_passenger.id == passenger.id
-    assert last_inserted_passenger.full_name == passenger.full_name
-    assert last_inserted_passenger.birth_date == passenger.birth_date
-    assert last_inserted_passenger.email == passenger.email
-    assert last_inserted_passenger.phone_number == passenger.phone_number
-    assert last_inserted_passenger.is_blacklisted == passenger.is_blacklisted
-    assert last_inserted_passenger.is_vip == passenger.is_vip
+    assert last_inserted_passenger == passenger
 
 
-def test_retrieve_all_bookings(
+def test_retrieve_all_passengers(
     passenger_repository: PassengerRepository, passengers: list[Passenger]
 ) -> None:
     passenger_repository.insert_passengers(passengers)
@@ -30,3 +25,28 @@ def test_retrieve_all_bookings(
     )
 
     assert len(all_inserted_passengers) == len(passengers)
+
+
+def test_retrieve_passengers_by_id(
+    passenger_repository: PassengerRepository, passengers: list[Passenger]
+) -> None:
+    passenger_repository.insert_passengers(passengers)
+
+    passenger_ids: list[PassengerId] = [passenger.id for passenger in passengers]
+
+    passengers_retrieved: list[Passenger] = passenger_repository.retrieve_passengers_by_id(passenger_ids)
+
+    assert set(passengers_retrieved) == set(passengers)
+
+
+def test_retireve_passengers_by_document(
+        passenger_repository: PassengerRepository, document_repository: DocumentRepository, passengers: list[Passenger], documents: list[Document]
+) -> None:
+    passenger_repository.insert_passengers(passengers)
+    document_repository.insert_documents(documents)
+
+    document_identity_keys: list[DocumentIdentityKey] = [document.identity_key for document in documents]
+
+    passengers_retrieved: list[Passenger] = passenger_repository.retrieve_passengers_by_document(document_identity_keys)
+
+    assert set(passengers_retrieved) == set(passengers)

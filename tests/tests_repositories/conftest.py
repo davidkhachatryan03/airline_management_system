@@ -9,6 +9,7 @@ from uuid6 import uuid7
 os.environ["TESTING"] = "True"
 
 from src.common import DBManager
+from src.common.types import FlightId
 from src.core.repositories import (
     BookingRepository,
     DocumentRepository,
@@ -30,11 +31,6 @@ def db_connected():
 
     with db:
         yield db
-
-
-@pytest.fixture
-def airline_test() -> str:
-    return "airline_test"
 
 
 @pytest.fixture(autouse=True)
@@ -177,6 +173,11 @@ def tickets(
     booking: Booking, flight: Flight, passengers: list[Passenger]
 ) -> list[Ticket]:
     return [get_ticket(booking.id, flight.id, passenger.id) for passenger in passengers]
+
+
+@pytest.fixture
+def seats_available_per_flight_expected(flights: list[Flight]) -> dict[FlightId, int]:
+    return {flight.id: 18 for flight in flights}
 
 
 @pytest.fixture
