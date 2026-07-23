@@ -51,7 +51,7 @@ def get_booking() -> Booking:
     return Booking(
         id=uuid7(),
         booking_reference=Booking._generate_reference(),
-        booking_datetime=datetime.now(),
+        booking_datetime=datetime.now().replace(microsecond=0),
         paid_amount_usd=Decimal("10000"),
         current_status_id=1,
     )
