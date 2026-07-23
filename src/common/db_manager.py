@@ -1,5 +1,5 @@
 import os
-from typing import Any, cast
+from typing import Any, cast, Sequence
 from uuid import UUID
 
 import mysql.connector
@@ -88,7 +88,7 @@ class DBManager:
             raise DatabaseError(str(e)) from e
 
     def retrieve_many_columns(
-        self, query: str, values: tuple[Any, ...] | list[Any] = ()
+        self, query: str, values: Sequence[Any] = ()
     ) -> list[tuple[Any, ...]]:
         if not self.connection.is_connected():
             raise InexistentConnection
@@ -107,9 +107,7 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(str(e)) from e
 
-    def retrieve_single_column(
-        self, query: str, values: tuple[Any, ...] | list[Any] = ()
-    ) -> list[Any]:
+    def retrieve_single_column(self, query: str, values: Sequence[Any]) -> list[Any]:
         if not self.connection.is_connected():
             raise InexistentConnection
 
@@ -129,7 +127,7 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(str(e)) from e
 
-    def insert_rows(self, table_name: str, entities: list) -> int:
+    def insert_rows(self, table_name: str, entities: Sequence[Any]) -> int:
         if not self.connection.is_connected():
             raise InexistentConnection
 
@@ -159,7 +157,7 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(str(e)) from e
 
-    def uuid_to_bytes(self, rows: list) -> list[bytes]:
+    def uuid_to_bytes(self, rows: Sequence[Any]) -> list[bytes]:
         rows_formatted: list[bytes] = []
 
         for row in rows:
@@ -170,7 +168,7 @@ class DBManager:
 
         return rows_formatted
 
-    def bytes_to_uuid(self, rows: list) -> list:
+    def bytes_to_uuid(self, rows: Sequence[Any]) -> list[Any]:
         rows_formatted: list = []
 
         if not isinstance(rows[0], tuple):
@@ -185,7 +183,7 @@ class DBManager:
 
         else:
             for row in rows:
-                row_formatted: list = []
+                row_formatted: list[Any] = []
 
                 for element in row:
                     if isinstance(element, bytes) and len(element) == 16:
