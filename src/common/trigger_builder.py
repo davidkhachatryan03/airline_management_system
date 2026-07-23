@@ -19,7 +19,7 @@ class TriggerBuilder:
                 FOR EACH ROW
                 BEGIN
                 INSERT INTO audit_logs (table_name, action, record_id, column_name, old_value, new_value, changed_at, changed_by_staff_id)
-                VALUES ('{table_name}', 'INSERT', NEW.id, NULL, NULL, NULL, NOW(), @user);
+                VALUES ('{table_name}', 'INSERT', NEW.id, NULL, NULL, NULL, NOW(6), @user);
                 END
                 """
 
@@ -33,18 +33,18 @@ class TriggerBuilder:
         query = "SELECT COLUMN_NAME FROM information_schema.columns WHERE TABLE_NAME = %s AND TABLE_SCHEMA = 'airline'"
         values = [table_name]
 
-        columns: list[str] = db_manager.retrieve(query, values)
+        columns: list[str] = db_manager.retrieve_single_column(query, values)
 
         inserts = ""
         for column in columns:
             inserts += f"""
                         IF NOT (OLD.{column} <=> NEW.{column}) THEN
                             INSERT INTO audit_logs (table_name, action, record_id, column_name, old_value, new_value, changed_at, changed_by_staff_id)
-                            VALUES ('{table_name}', 'UPDATE', OLD.id, '{column}', OLD.{column}, NEW.{column}, NOW(), @user);
+                            VALUES ('{table_name}', 'UPDATE', OLD.id, '{column}', OLD.{column}, NEW.{column}, NOW(6), @user);
                         END IF;
                         """
 
-        query: str = f"""
+        query = f"""
                 CREATE TRIGGER tr_{table_name}_au
                 AFTER UPDATE ON {table_name}
                 FOR EACH ROW
@@ -60,13 +60,13 @@ class TriggerBuilder:
     ) -> None:
         db_manager.cursor.execute(f"DROP TRIGGER IF EXISTS tr_{table_name}_ad")
 
-        query: str = f"""
+        query = f"""
                 CREATE TRIGGER tr_{table_name}_ad
                 AFTER DELETE ON {table_name}
                 FOR EACH ROW
                 BEGIN
                 INSERT INTO audit_logs (table_name, action, record_id, column_name, old_value, new_value, changed_at, changed_by_staff_id)
-                VALUES ('{table_name}', 'DELETE', OLD.id, NULL, NULL, NULL, NOW(), @usuario);
+                VALUES ('{table_name}', 'DELETE', OLD.id, NULL, NULL, NULL, NOW(6), @usuario);
                 END
                 """
 

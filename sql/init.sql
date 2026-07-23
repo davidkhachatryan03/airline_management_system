@@ -197,7 +197,7 @@ CREATE TABLE audit_logs (
     column_name VARCHAR(100),
     old_value VARCHAR(100),
     new_value VARCHAR(100),
-    changed_at DATETIME NOT NULL,
+    changed_at DATETIME(6) NOT NULL,
     changed_by_staff_id INT UNSIGNED
 );
 
