@@ -22,13 +22,13 @@ class AirplaneRepository:
 
         return []
 
-    def retrieve_airplanes_by_id(
+    def retrieve_airplanes_by_ids(
         self, airplanes_id: list[AirplaneId]
     ) -> list[AirplaneId]:
         if not airplanes_id:
             return []
 
-        placeholders = ",".join(["%s" * len(airplanes_id)])
+        placeholders = ",".join(["%s"] * len(airplanes_id))
 
         query = "SELECT id FROM airplanes WHERE id IN ({})".format(placeholders)
 
@@ -41,11 +41,11 @@ class AirplaneRepository:
 
         return []
 
-    def retrieve_range_km_by_id(self, airplanes_id: list[AirplaneId]) -> list[RangeKm]:
+    def retrieve_ranges_km_by_ids(self, airplanes_id: list[AirplaneId]) -> list[RangeKm]:
         if not airplanes_id:
             return []
 
-        placeholders = ",".join(["%s" * len(airplanes_id)])
+        placeholders = ",".join(["%s"] * len(airplanes_id))
 
         query = "SELECT range_km FROM airplanes WHERE id IN ({})".format(placeholders)
 
@@ -58,13 +58,13 @@ class AirplaneRepository:
 
         return []
 
-    def retrieve_flight_hour_cost_usd_by_id(
+    def retrieve_flight_hour_costs_usd_by_ids(
         self, airplanes_id: list[AirplaneId]
     ) -> list[FlightHourCostUsd]:
         if not airplanes_id:
             return []
 
-        placeholders = ",".join(["%s" * len(airplanes_id)])
+        placeholders = ",".join(["%s"] * len(airplanes_id))
 
         query = "SELECT flight_hour_cost_usd FROM airplanes WHERE id IN ({})".format(
             placeholders
