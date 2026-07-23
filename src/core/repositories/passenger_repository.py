@@ -11,13 +11,13 @@ class PassengerRepository:
     def insert_passengers(self, passengers: list[Passenger]) -> None:
         self.db_manager.insert_rows("passengers", passengers)
 
-    def retrieve_passengers_by_id(
-        self, passengers_id: list[PassengerId]
+    def retrieve_passengers_by_ids(
+        self, passenger_ids: list[PassengerId]
     ) -> list[Passenger]:
-        if not passengers_id:
+        if not passenger_ids:
             return []
 
-        placeholders = ",".join(["%s"] * len(passengers_id))
+        placeholders = ",".join(["%s"] * len(passenger_ids))
 
         query = """
                 SELECT  id, 
@@ -31,24 +31,24 @@ class PassengerRepository:
                 WHERE   id IN ({})
                 """.format(placeholders)
 
-        result: list[PassengerRow] = self.db_manager.retrieve_many_columns(
-            query, passengers_id
+        results: list[PassengerRow] = self.db_manager.retrieve_many_columns(
+            query, passenger_ids
         )
 
-        if result:
-            return [Passenger(*row) for row in result]
+        if results:
+            return [Passenger(*row) for row in results]
 
         return []
 
-    def retrieve_passengers_by_document(
-        self, documents_identity_keys: list[DocumentIdentityKey]
+    def retrieve_passengers_by_documents(
+        self, document_identity_keys: list[DocumentIdentityKey]
     ) -> list[Passenger]:
-        if not documents_identity_keys:
+        if not document_identity_keys:
             return []
 
         placeholders = ",".join(
-            ["(" + ",".join(["%s"] * len(documents_identity_keys[0])) + ")"]
-            * len(documents_identity_keys)
+            ["(" + ",".join(["%s"] * len(document_identity_keys[0])) + ")"]
+            * len(document_identity_keys)
         )
 
         query = """
@@ -65,14 +65,16 @@ class PassengerRepository:
                 WHERE   (d.document_number, d.issue_country) IN ({})
                 """.format(placeholders)
 
-        document_identity_keys_plain = [value for identity_key in documents_identity_keys for value in identity_key]
+        document_identity_keys_plain = [
+            value for identity_key in document_identity_keys for value in identity_key
+        ]
 
-        result: list[PassengerRow] = self.db_manager.retrieve_many_columns(
+        results: list[PassengerRow] = self.db_manager.retrieve_many_columns(
             query, document_identity_keys_plain
         )
 
-        if result:
-            return [Passenger(*row) for row in result]
+        if results:
+            return [Passenger(*row) for row in results]
 
         return []
 

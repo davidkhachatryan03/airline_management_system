@@ -10,7 +10,7 @@ class FakeRouteRepository:
     def insert_routes(self, routes: list[Route]) -> None:
         self.routes.extend(routes)
 
-    def retrieve_routes_by_id(self, route_ids: list[RouteId]) -> list[Route]:
+    def retrieve_routes_by_ids(self, route_ids: list[RouteId]) -> list[Route]:
         routes_retrieved: list[Route] = []
 
         routes_stored_ids: dict[RouteId, Route] = {
@@ -22,14 +22,16 @@ class FakeRouteRepository:
 
         return routes_retrieved
 
-    def retrieve_distance_km_by_id(self, route_ids: list[RouteId]) -> list[DistanceKm]:
+    def retrieve_distances_km_by_ids(
+        self, route_ids: list[RouteId]
+    ) -> list[DistanceKm]:
         for route in self.routes:
             if route.id == route_ids[0]:
                 return [route.distance_km]
 
         return []
 
-    def retrieve_duration_min_by_id(
+    def retrieve_durations_min_by_ids(
         self, route_ids: list[RouteId]
     ) -> list[DurationMin]:
         for route in self.routes:

@@ -11,7 +11,7 @@ class FakeFlightRepository:
         for flight in flights:
             self.flights[flight] = seats
 
-    def retrieve_flights_by_id(self, flight_ids: list[FlightId]) -> list[Flight]:
+    def retrieve_flights_by_ids(self, flight_ids: list[FlightId]) -> list[Flight]:
         flights_retrieved: list[Flight] = []
 
         flight_stored_ids: dict[FlightId, Flight] = {
@@ -23,7 +23,7 @@ class FakeFlightRepository:
 
         return flights_retrieved
 
-    def retrieve_flights_by_identity_key(
+    def retrieve_flights_by_identity_keys(
         self, flights: list[FlightIdentityKey]
     ) -> list[Flight]:
         flights_retrieved: list[Flight] = []

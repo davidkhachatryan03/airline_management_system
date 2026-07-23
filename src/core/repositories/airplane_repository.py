@@ -23,17 +23,17 @@ class AirplaneRepository:
         return []
 
     def retrieve_airplanes_by_ids(
-        self, airplanes_id: list[AirplaneId]
+        self, airplane_ids: list[AirplaneId]
     ) -> list[AirplaneId]:
-        if not airplanes_id:
+        if not airplane_ids:
             return []
 
-        placeholders = ",".join(["%s"] * len(airplanes_id))
+        placeholders = ",".join(["%s"] * len(airplane_ids))
 
         query = "SELECT id FROM airplanes WHERE id IN ({})".format(placeholders)
 
         results: list[AirplaneId] = self.db_manager.retrieve_single_column(
-            query, airplanes_id
+            query, airplane_ids
         )
 
         if results:
@@ -41,16 +41,18 @@ class AirplaneRepository:
 
         return []
 
-    def retrieve_ranges_km_by_ids(self, airplanes_id: list[AirplaneId]) -> list[RangeKm]:
-        if not airplanes_id:
+    def retrieve_ranges_km_by_ids(
+        self, airplane_ids: list[AirplaneId]
+    ) -> list[RangeKm]:
+        if not airplane_ids:
             return []
 
-        placeholders = ",".join(["%s"] * len(airplanes_id))
+        placeholders = ",".join(["%s"] * len(airplane_ids))
 
         query = "SELECT range_km FROM airplanes WHERE id IN ({})".format(placeholders)
 
         results: list[RangeKm] = self.db_manager.retrieve_single_column(
-            query, airplanes_id
+            query, airplane_ids
         )
 
         if results:
@@ -59,19 +61,19 @@ class AirplaneRepository:
         return []
 
     def retrieve_flight_hour_costs_usd_by_ids(
-        self, airplanes_id: list[AirplaneId]
+        self, airplane_ids: list[AirplaneId]
     ) -> list[FlightHourCostUsd]:
-        if not airplanes_id:
+        if not airplane_ids:
             return []
 
-        placeholders = ",".join(["%s"] * len(airplanes_id))
+        placeholders = ",".join(["%s"] * len(airplane_ids))
 
         query = "SELECT flight_hour_cost_usd FROM airplanes WHERE id IN ({})".format(
             placeholders
         )
 
         results: list[FlightHourCostUsd] = self.db_manager.retrieve_single_column(
-            query, airplanes_id
+            query, airplane_ids
         )
 
         if results:
@@ -79,7 +81,7 @@ class AirplaneRepository:
 
         return []
 
-    def retrieve_available_airplanes_id(
+    def retrieve_available_airplanes_ids(
         self,
         range_km: RangeKm,
         scheduled_departure_datetime: datetime,

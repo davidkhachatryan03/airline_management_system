@@ -93,7 +93,7 @@ class RegisterFlight:
             routes_requested_id: list[RouteId] = [flight_request.route_id]
 
             flights_retrieved: list[Flight] = (
-                uow.flight_repository.retrieve_flights_by_identity_key(
+                uow.flight_repository.retrieve_flights_by_identity_keys(
                     flights_requested_identity_keys
                 )
             )
@@ -102,12 +102,12 @@ class RegisterFlight:
             ]
 
             airplanes_retrieved_id: list[AirplaneId] = (
-                uow.airplane_repository.retrieve_airplanes_by_id(
+                uow.airplane_repository.retrieve_airplanes_by_ids(
                     [flight_request.airplane_id]
                 )
             )
 
-            routes_retrieved: list[Route] = uow.route_repository.retrieve_routes_by_id(
+            routes_retrieved: list[Route] = uow.route_repository.retrieve_routes_by_ids(
                 routes_requested_id
             )
             routes_retrieved_id: list[RouteId] = [
@@ -122,7 +122,7 @@ class RegisterFlight:
             )
 
             available_airplanes_id: list[AirplaneId] = (
-                uow.airplane_repository.retrieve_available_airplanes_id(
+                uow.airplane_repository.retrieve_available_airplanes_ids(
                     routes_retrieved[0].distance_km,
                     flight_request.scheduled_departure_datetime,
                     flight_request.scheduled_arrival_datetime,
@@ -137,12 +137,12 @@ class RegisterFlight:
             )
 
             flight_hour_cost_usd: Decimal = (
-                uow.airplane_repository.retrieve_flight_hour_cost_usd_by_id(
+                uow.airplane_repository.retrieve_flight_hour_costs_usd_by_ids(
                     [flight_request.airplane_id]
                 )[0]
             )
             duration_min: DurationMin = (
-                uow.route_repository.retrieve_duration_min_by_id(
+                uow.route_repository.retrieve_durations_min_by_ids(
                     [flight_request.route_id]
                 )[0]
             )

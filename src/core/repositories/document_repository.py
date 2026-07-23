@@ -23,7 +23,7 @@ class DocumentRepository:
 
         return []
 
-    def retrieve_documents_by_identity_key(
+    def retrieve_documents_by_identity_keys(
         self, documents_requested: list[DocumentIdentityKey]
     ) -> list[Document]:
         if not documents_requested:
@@ -49,9 +49,11 @@ class DocumentRepository:
 
         values = [value for document in documents_requested for value in document]
 
-        result: list[DocumentRow] = self.db_manager.retrieve_many_columns(query, values)
+        results: list[DocumentRow] = self.db_manager.retrieve_many_columns(
+            query, values
+        )
 
-        if result:
-            return [Document(*row) for row in result]
+        if results:
+            return [Document(*row) for row in results]
 
         return []

@@ -18,18 +18,18 @@ class RouteRepository:
 
         return []
 
-    def retrieve_routes_by_id(self, routes_id: list[RouteId]) -> list[Route]:
-        if not routes_id:
+    def retrieve_routes_by_ids(self, route_ids: list[RouteId]) -> list[Route]:
+        if not route_ids:
             return []
 
-        placeholders = ",".join(["%s" * len(routes_id)])
+        placeholders = ",".join(["%s" * len(route_ids)])
 
         query = "SELECT id, flight_number, origin, destination, distance_km, duration_min FROM routes WHERE id IN ({})".format(
             placeholders
         )
 
         results: list[RouteRow] = self.db_manager.retrieve_many_columns(
-            query, routes_id
+            query, route_ids
         )
 
         if results:
@@ -37,16 +37,18 @@ class RouteRepository:
 
         return []
 
-    def retrieve_distance_km_by_id(self, routes_id: list[RouteId]) -> list[DistanceKm]:
-        if not routes_id:
+    def retrieve_distances_km_by_ids(
+        self, route_ids: list[RouteId]
+    ) -> list[DistanceKm]:
+        if not route_ids:
             return []
 
-        placeholders = ",".join(["%s" * len(routes_id)])
+        placeholders = ",".join(["%s" * len(route_ids)])
 
         query = "SELECT distance_km FROM routes WHERE id IN ({})".format(placeholders)
 
         results: list[RouteId] = self.db_manager.retrieve_single_column(
-            query, routes_id
+            query, route_ids
         )
 
         if results:
@@ -54,18 +56,18 @@ class RouteRepository:
 
         return []
 
-    def retrieve_duration_min_by_id(
-        self, routes_id: list[RouteId]
+    def retrieve_durations_min_by_ids(
+        self, route_ids: list[RouteId]
     ) -> list[DurationMin]:
-        if not routes_id:
+        if not route_ids:
             return []
 
-        placeholders = ",".join(["%s" * len(routes_id)])
+        placeholders = ",".join(["%s" * len(route_ids)])
 
         query = "SELECT duration_min FROM routes WHERE id IN ({})".format(placeholders)
 
         results: list[RouteId] = self.db_manager.retrieve_single_column(
-            query, routes_id
+            query, route_ids
         )
 
         if results:

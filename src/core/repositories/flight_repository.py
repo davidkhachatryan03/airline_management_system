@@ -37,7 +37,7 @@ class FlightRepository:
 
         return []
 
-    def retrieve_flights_by_id(self, flights_id: list[FlightId]) -> list[Flight]:
+    def retrieve_flights_by_ids(self, flights_id: list[FlightId]) -> list[Flight]:
         if not flights_id:
             return []
 
@@ -59,12 +59,12 @@ class FlightRepository:
                 IN      ({})
                 """.format(placeholders)
 
-        result: list[FlightRow] = self.db_manager.retrieve_many_columns(
+        results: list[FlightRow] = self.db_manager.retrieve_many_columns(
             query, flights_id
         )
 
-        if result:
-            return [Flight(*row) for row in result]
+        if results:
+            return [Flight(*row) for row in results]
 
         return []
 
@@ -93,17 +93,17 @@ class FlightRepository:
 
         values: list[FlightId] = [id for id in flights_id]
 
-        result: list[tuple[FlightId, int]] = self.db_manager.retrieve_many_columns(
+        results: list[tuple[FlightId, int]] = self.db_manager.retrieve_many_columns(
             query, values
         )
 
         result_dict: dict[FlightId, int] = {}
-        for row in result:
+        for row in results:
             result_dict[row[0]] = row[1]
 
         return result_dict
 
-    def retrieve_flights_by_identity_key(
+    def retrieve_flights_by_identity_keys(
         self, flights_requested: list[FlightIdentityKey]
     ) -> list[Flight]:
         if not flights_requested:
@@ -132,9 +132,9 @@ class FlightRepository:
 
         values = [value for flight in flights_requested for value in flight]
 
-        result: list[FlightRow] = self.db_manager.retrieve_many_columns(query, values)
+        results: list[FlightRow] = self.db_manager.retrieve_many_columns(query, values)
 
-        if result:
-            return [Flight(*row) for row in result]
+        if results:
+            return [Flight(*row) for row in results]
 
         return []

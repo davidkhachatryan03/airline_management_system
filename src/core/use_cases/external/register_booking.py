@@ -137,36 +137,38 @@ class RegisterBooking:
 
     def execute(self, booking_request: BookingRequest) -> BookingResponse:
         with self.uow as uow:
-            flights_requested_id: list[FlightId] = booking_request.flights_id
+            flight_requested_ids: list[FlightId] = booking_request.flights_id
             flights_retrieved: list[Flight] = (
-                uow.flight_repository.retrieve_flights_by_id(booking_request.flights_id)
+                uow.flight_repository.retrieve_flights_by_ids(
+                    booking_request.flights_id
+                )
             )
-            flights_retrieved_id: list[FlightId] = [
+            flight_retrieved_ids: list[FlightId] = [
                 flight.id for flight in flights_retrieved
             ]
 
             self.register_booking_validator.validate_data_logic(
-                flights_requested_id, flights_retrieved_id
+                flight_requested_ids, flight_retrieved_ids
             )
 
             seats_available_per_flight: dict[FlightId, int] = (
                 uow.flight_repository.retrieve_seats_available_per_flight(
-                    flights_retrieved_id
+                    flight_retrieved_ids
                 )
             )
 
             passengers_requested: list[PassengerRequest] = booking_request.passengers
-            documents_requested_identity_keys: list[DocumentIdentityKey] = [
+            document_requested_identity_keys: list[DocumentIdentityKey] = [
                 passenger.identity_key for passenger in passengers_requested
             ]
 
             documents_retrieved: list[Document] = (
-                uow.document_repository.retrieve_documents_by_identity_key(
-                    documents_requested_identity_keys
+                uow.document_repository.retrieve_documents_by_identity_keys(
+                    document_requested_identity_keys
                 )
             )
 
-            passengers_not_in_db, documents_not_in_db, all_passengers_id = (
+            passengers_not_in_db, documents_not_in_db, all_passengers_ids = (
                 self.passenger_processor.get_or_create_passengers(
                     passengers_requested, documents_retrieved
                 )
@@ -179,24 +181,24 @@ class RegisterBooking:
                 uow.document_repository.insert_documents(documents_not_in_db)
 
             all_passengers: list[Passenger] = (
-                uow.passenger_repository.retrieve_passengers_by_id(all_passengers_id)
+                uow.passenger_repository.retrieve_passengers_by_ids(all_passengers_ids)
             )
 
             self.register_booking_validator.validate_business_logic(
                 all_passengers, flights_retrieved, seats_available_per_flight
             )
 
-            flights_retrieved_base_prices: list[BasePriceUsd] = [
+            flight_retrieved_base_prices: list[BasePriceUsd] = [
                 flight.base_price_usd for flight in flights_retrieved
             ]
 
             booking_created = Booking.new_booking(
-                flights_retrieved_base_prices, len(all_passengers_id)
+                flight_retrieved_base_prices, len(all_passengers_ids)
             )
             uow.booking_repository.insert_booking(booking_created)
 
             tickets_created: list[Ticket] = booking_created.generate_tickets(
-                all_passengers_id, flights_retrieved, booking_created.id
+                all_passengers_ids, flights_retrieved, booking_created.id
             )
 
             uow.ticket_repository.insert_tickets(tickets_created)

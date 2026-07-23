@@ -12,7 +12,9 @@ def test_insert_documents(
     passenger_repository.insert_passengers(passengers)
     document_repository.insert_documents(documents)
 
-    last_inserted_documents: list[Document] = document_repository.retrieve_documents(limit=5)
+    last_inserted_documents: list[Document] = document_repository.retrieve_documents(
+        limit=5
+    )
 
     assert set(last_inserted_documents) == set(documents)
 
@@ -42,10 +44,12 @@ def test_retrieve_documents_by_identity_key(
     passenger_repository.insert_passengers(passengers)
     document_repository.insert_documents(documents)
 
-    document_identity_keys: list[DocumentIdentityKey] = [document.identity_key for document in documents]
+    document_identity_keys: list[DocumentIdentityKey] = [
+        document.identity_key for document in documents
+    ]
 
-    documents_retrieved: list[Document] = document_repository.retrieve_documents_by_identity_key(
-        document_identity_keys
+    documents_retrieved: list[Document] = (
+        document_repository.retrieve_documents_by_identity_keys(document_identity_keys)
     )
 
     assert set(documents) == set(documents_retrieved)
