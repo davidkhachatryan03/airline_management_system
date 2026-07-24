@@ -9,19 +9,19 @@ class FakeAirplaneRepository:
     def __init__(self) -> None:
         self.airplanes: list[Airplane] = []
 
-    def insert_airplanes(self, airplanes: list[Airplane]) -> None:
+    def insert(self, airplanes: list[Airplane]) -> None:
         self.airplanes.extend(airplanes)
 
-    def retrieve_airplanes_by_ids(
+    def retrieve_by_ids(
         self, airplane_ids: list[AirplaneId]
-    ) -> list[AirplaneId]:
-        airplane_retrieved_ids: list[AirplaneId] = []
+    ) -> list[Airplane]:
+        airplanes_retrieved: list[Airplane] = []
 
         for airplane_stored in self.airplanes:
             if airplane_stored.id == airplane_ids[0]:
-                airplane_retrieved_ids.append(airplane_stored.id)
+                airplanes_retrieved.append(airplane_stored)
 
-        return airplane_retrieved_ids
+        return airplanes_retrieved
 
     def retrieve_available_airplanes_ids(
         self,

@@ -39,8 +39,8 @@ def test_register_flight_valid_input(
 ) -> None:
     fake_uow = FakeRegisterFlightUoW(FakeDBManager())
 
-    fake_uow.airplane_repository.insert_airplanes([airplane_generated])
-    fake_uow.route_repository.insert_routes([route_generated])
+    fake_uow.airplane_repository.insert([airplane_generated])
+    fake_uow.route_repository.insert([route_generated])
 
     register_flight: RegisterFlight = create_register_flight(fake_uow)
     flight_response: FlightResponse = register_flight.execute(flight_request)
@@ -67,7 +67,7 @@ def test_register_flight_inexistent_airplane(
 ) -> None:
     fake_uow = FakeRegisterFlightUoW(FakeDBManager())
 
-    fake_uow.route_repository.insert_routes([route_generated])
+    fake_uow.route_repository.insert([route_generated])
 
     register_flight: RegisterFlight = create_register_flight(fake_uow)
 
@@ -87,8 +87,8 @@ def test_register_flight_unavailable_airplane(
 ) -> None:
     fake_uow = FakeRegisterFlightUoW(FakeDBManager())
 
-    fake_uow.airplane_repository.insert_airplanes([unavailable_airplane])
-    fake_uow.route_repository.insert_routes([route_generated])
+    fake_uow.airplane_repository.insert([unavailable_airplane])
+    fake_uow.route_repository.insert([route_generated])
 
     flight_request.airplane_id = unavailable_airplane.id
 
@@ -108,7 +108,7 @@ def test_register_flight_inexistent_route(
 ) -> None:
     fake_uow = FakeRegisterFlightUoW(FakeDBManager())
 
-    fake_uow.airplane_repository.insert_airplanes([airplane_generated])
+    fake_uow.airplane_repository.insert([airplane_generated])
 
     register_flight: RegisterFlight = create_register_flight(fake_uow)
 
@@ -129,9 +129,9 @@ def test_register_flight_duplicated_flight(
 ) -> None:
     fake_uow = FakeRegisterFlightUoW(FakeDBManager())
 
-    fake_uow.airplane_repository.insert_airplanes([airplane_generated])
-    fake_uow.route_repository.insert_routes([route_generated])
-    fake_uow.flight_repository.insert_flights([flight_generated])
+    fake_uow.airplane_repository.insert([airplane_generated])
+    fake_uow.route_repository.insert([route_generated])
+    fake_uow.flight_repository.insert([flight_generated])
 
     register_flight: RegisterFlight = create_register_flight(fake_uow)
 

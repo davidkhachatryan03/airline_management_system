@@ -7,7 +7,7 @@ class FakeDocumentRepository:
     def __init__(self) -> None:
         self.documents: list[Document] = []
 
-    def retrieve_documents_by_identity_keys(
+    def retrieve_by_identity_keys(
         self, documents_identity_keys: list[DocumentIdentityKey]
     ) -> list[Document]:
         documents_retrieved: list[Document] = []
@@ -23,5 +23,5 @@ class FakeDocumentRepository:
 
         return documents_retrieved
 
-    def insert_documents(self, documents: list[Document]) -> None:
+    def insert(self, documents: list[Document]) -> None:
         self.documents.extend(documents)

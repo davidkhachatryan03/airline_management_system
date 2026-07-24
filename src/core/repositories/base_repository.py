@@ -13,8 +13,8 @@ class BaseRepository(Generic[T]):
         db_manager: DBManager,
         table_name: str,
         columns: tuple[str, ...],
-        identity_key: tuple[str, ...],
         entity: type[T],
+        identity_key: tuple[str, ...] = (),
     ) -> None:
         self.db_manager = db_manager
         self.table_name = table_name

@@ -17,20 +17,14 @@ def test_insert_ticket(
     flight: Flight,
     passenger: Passenger,
 ) -> None:
-    booking_repository.insert_booking(booking)
-    flight_repository.insert_flights([flight])
-    passenger_repository.insert_passengers([passenger])
-    ticket_repository.insert_tickets([ticket])
+    booking_repository.insert([booking])
+    flight_repository.insert([flight])
+    passenger_repository.insert([passenger])
+    ticket_repository.insert([ticket])
 
-    last_inserted_ticket: Ticket = ticket_repository.retrieve_tickets(limit=1)[0]
+    last_inserted_ticket: Ticket = ticket_repository.retrieve(limit=1)[0]
 
-    assert last_inserted_ticket.id == ticket.id
-    assert last_inserted_ticket.ticket_number == ticket.ticket_number
-    assert last_inserted_ticket.paid_amount_usd == ticket.paid_amount_usd
-    assert last_inserted_ticket.current_status_id == ticket.current_status_id
-    assert last_inserted_ticket.booking_id == ticket.booking_id
-    assert last_inserted_ticket.flight_id == ticket.flight_id
-    assert last_inserted_ticket.passenger_id == ticket.passenger_id
+    assert last_inserted_ticket == ticket
 
 
 def test_retrieve_all_tickets(
@@ -43,11 +37,11 @@ def test_retrieve_all_tickets(
     flight: Flight,
     passengers: list[Passenger],
 ) -> None:
-    booking_repository.insert_booking(booking)
-    flight_repository.insert_flights([flight])
-    passenger_repository.insert_passengers(passengers)
-    ticket_repository.insert_tickets(tickets)
+    booking_repository.insert([booking])
+    flight_repository.insert([flight])
+    passenger_repository.insert(passengers)
+    ticket_repository.insert(tickets)
 
-    all_inserted_tickets: list[Ticket] = ticket_repository.retrieve_tickets(limit=3)
+    all_inserted_tickets: list[Ticket] = ticket_repository.retrieve(limit=3)
 
     assert len(all_inserted_tickets) == len(tickets)

@@ -31,7 +31,7 @@ def test_register_document_valid_input(
 ) -> None:
     fake_uow = FakeRegisterDocumentUoW(FakeDBManager())
 
-    fake_uow.passenger_repository.insert_passengers([passenger_generated])
+    fake_uow.passenger_repository.insert([passenger_generated])
 
     register_document: RegisterDocument = create_register_document(fake_uow)
     document_response: DocumentResponse = register_document.execute(document_request)
@@ -73,7 +73,7 @@ def test_register_document_duplicated_document(
 ) -> None:
     fake_uow = FakeRegisterDocumentUoW(FakeDBManager())
 
-    fake_uow.passenger_repository.insert_passengers([passenger_generated])
+    fake_uow.passenger_repository.insert([passenger_generated])
 
     register_document: RegisterDocument = create_register_document(fake_uow)
 
