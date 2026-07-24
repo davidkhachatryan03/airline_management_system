@@ -103,9 +103,9 @@ def test_register_booking_valid_input_existent_passengers(
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
     passengers_generated, documents_generated = passengers_and_documents_generated
 
-    fake_uow.document_repository.insert_documents(documents_generated)
-    fake_uow.flight_repository.insert_flights(flights_generated)
-    fake_uow.passenger_repository.insert_passengers(passengers_generated)
+    fake_uow.document_repository.insert(documents_generated)
+    fake_uow.flight_repository.insert(flights_generated)
+    fake_uow.passenger_repository.insert(passengers_generated)
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
     booking_response: BookingResponse = register_booking.execute(booking_request)
@@ -138,7 +138,7 @@ def test_register_booking_valid_input_non_existent_passengers(
     passengers_generated, documents_generated = passengers_and_documents_generated
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 
-    fake_uow.flight_repository.insert_flights(flights_generated)
+    fake_uow.flight_repository.insert(flights_generated)
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
     booking_response: BookingResponse = register_booking.execute(booking_request)
@@ -171,9 +171,9 @@ def test_register_booking_valid_input_existent_and_non_existent_passengers(
     passengers_generated, documents_generated = passengers_and_documents_generated
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 
-    fake_uow.flight_repository.insert_flights(flights_generated)
-    fake_uow.passenger_repository.insert_passengers([passengers_generated[0]])
-    fake_uow.document_repository.insert_documents([documents_generated[0]])
+    fake_uow.flight_repository.insert(flights_generated)
+    fake_uow.passenger_repository.insert([passengers_generated[0]])
+    fake_uow.document_repository.insert([documents_generated[0]])
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
     booking_response: BookingResponse = register_booking.execute(booking_request)
@@ -212,7 +212,7 @@ def test_register_booking_full_flight(
 ) -> None:
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 
-    fake_uow.flight_repository.insert_flights(flights_generated)
+    fake_uow.flight_repository.insert(flights_generated)
 
     fake_uow.flight_repository.flights[flights_generated[0]] = 0
 
@@ -232,7 +232,7 @@ def test_register_booking_not_seats_enough(
 ) -> None:
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 
-    fake_uow.flight_repository.insert_flights(flights_generated, seats=1)
+    fake_uow.flight_repository.insert(flights_generated, seats=1)
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
 
@@ -253,7 +253,7 @@ def test_register_booking_not_scheduled_flight(
 
     flights_generated[0].current_status_id = 99
 
-    fake_uow.flight_repository.insert_flights(flights_generated)
+    fake_uow.flight_repository.insert(flights_generated)
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
 
@@ -276,9 +276,9 @@ def test_register_booking_blacklisted_passenger(
 
     passengers_generated[0].is_blacklisted = True
 
-    fake_uow.flight_repository.insert_flights(flights_generated)
-    fake_uow.passenger_repository.insert_passengers(passengers_generated)
-    fake_uow.document_repository.insert_documents(documents_generated)
+    fake_uow.flight_repository.insert(flights_generated)
+    fake_uow.passenger_repository.insert(passengers_generated)
+    fake_uow.document_repository.insert(documents_generated)
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
 
@@ -302,9 +302,9 @@ def test_register_booking_multiple_exceptions(
     passengers_generated[0].is_blacklisted = True
     flights_generated[0].current_status_id = 99
 
-    fake_uow.flight_repository.insert_flights(flights_generated)
-    fake_uow.passenger_repository.insert_passengers(passengers_generated)
-    fake_uow.document_repository.insert_documents(documents_generated)
+    fake_uow.flight_repository.insert(flights_generated)
+    fake_uow.passenger_repository.insert(passengers_generated)
+    fake_uow.document_repository.insert(documents_generated)
 
     fake_uow.flight_repository.flights[flights_generated[0]] = 0
 

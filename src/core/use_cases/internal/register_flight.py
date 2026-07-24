@@ -12,7 +12,7 @@ from src.common.exceptions import (
 from src.common.types import AirplaneId, DurationMin, FlightIdentityKey, RouteId
 from src.core.units_of_work import RegisterFlightUoW
 from src.core.validators import BaseValidator, FlightValidator
-from src.entities import Flight, Route
+from src.entities import Airplane, Flight, Route
 
 
 class RegisterFlightValidator:
@@ -93,7 +93,7 @@ class RegisterFlight:
             routes_requested_id: list[RouteId] = [flight_request.route_id]
 
             flights_retrieved: list[Flight] = (
-                uow.flight_repository.retrieve_flights_by_identity_keys(
+                uow.flight_repository.retrieve_by_identity_keys(
                     flights_requested_identity_keys
                 )
             )
@@ -101,13 +101,14 @@ class RegisterFlight:
                 flight.identity_key for flight in flights_retrieved
             ]
 
-            airplanes_retrieved_id: list[AirplaneId] = (
-                uow.airplane_repository.retrieve_airplanes_by_ids(
+            airplanes_retrieved: list[Airplane] = (
+                uow.airplane_repository.retrieve_by_ids(
                     [flight_request.airplane_id]
                 )
             )
+            airplanes_retrieved_id: list[AirplaneId] = [airplane.id for airplane in airplanes_retrieved]
 
-            routes_retrieved: list[Route] = uow.route_repository.retrieve_routes_by_ids(
+            routes_retrieved: list[Route] = uow.route_repository.retrieve_by_ids(
                 routes_requested_id
             )
             routes_retrieved_id: list[RouteId] = [
@@ -157,6 +158,6 @@ class RegisterFlight:
                 airplane_id=flight_request.airplane_id,
             )
 
-            uow.flight_repository.insert_flights([flight_created])
+            uow.flight_repository.insert([flight_created])
 
             return FlightResponse(id=flight_created.id)

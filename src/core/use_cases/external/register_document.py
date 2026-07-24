@@ -66,7 +66,7 @@ class RegisterDocument:
     def execute(self, document_request: DocumentRequest) -> DocumentResponse:
         with self.uow as uow:
             passengers_retrieved: list[Passenger] = (
-                uow.passenger_repository.retrieve_passengers_by_ids(
+                uow.passenger_repository.retrieve_by_ids(
                     [document_request.passenger_id]
                 )
             )
@@ -75,7 +75,7 @@ class RegisterDocument:
             ]
 
             documents_retrieved: list[Document] = (
-                uow.document_repository.retrieve_documents_by_identity_keys(
+                uow.document_repository.retrieve_by_identity_keys(
                     [document_request.identity_key]
                 )
             )
@@ -99,7 +99,7 @@ class RegisterDocument:
                 document_type_id=document_request.document_type_id,
             )
 
-            uow.document_repository.insert_documents([document_created])
+            uow.document_repository.insert([document_created])
 
             return DocumentResponse(
                 document_number=document_created.document_number,

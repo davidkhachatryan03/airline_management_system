@@ -7,10 +7,10 @@ class FakeRouteRepository:
     def __init__(self) -> None:
         self.routes: list[Route] = []
 
-    def insert_routes(self, routes: list[Route]) -> None:
+    def insert(self, routes: list[Route]) -> None:
         self.routes.extend(routes)
 
-    def retrieve_routes_by_ids(self, route_ids: list[RouteId]) -> list[Route]:
+    def retrieve_by_ids(self, route_ids: list[RouteId]) -> list[Route]:
         routes_retrieved: list[Route] = []
 
         routes_stored_ids: dict[RouteId, Route] = {

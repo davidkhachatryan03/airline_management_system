@@ -1,45 +1,29 @@
 from datetime import datetime
 
 from src.common import DBManager
-from src.common.types import AirplaneId, AirplaneRow, FlightHourCostUsd, RangeKm
+from src.common.types import AirplaneId, FlightHourCostUsd, RangeKm
+from src.core.repositories.base_repository import BaseRepository
 from src.entities import Airplane
 
 
-class AirplaneRepository:
+class AirplaneRepository(BaseRepository[Airplane]):
 
     def __init__(self, db_manager: DBManager) -> None:
-        self.db_manager = db_manager
-
-    def retrieve_airplanes(self, limit: int = 5) -> list[Airplane]:
-        query = "SELECT id, tail_number, manufacturer, model, capacity, range_km, flight_hour_cost_usd, current_status_id FROM airplanes ORDER BY id DESC LIMIT %s"
-
-        results: list[AirplaneRow] = self.db_manager.retrieve_many_columns(
-            query, (limit,)
+        super().__init__(
+            db_manager,
+            "airplanes",
+            (
+                "id",
+                "tail_number",
+                "manufacturer",
+                "model",
+                "capacity",
+                "range_km",
+                "flight_hour_cost_usd",
+                "current_status_id",
+            ),
+            Airplane,
         )
-
-        if results:
-            return [Airplane(*result) for result in results]
-
-        return []
-
-    def retrieve_airplanes_by_ids(
-        self, airplane_ids: list[AirplaneId]
-    ) -> list[AirplaneId]:
-        if not airplane_ids:
-            return []
-
-        placeholders = ",".join(["%s"] * len(airplane_ids))
-
-        query = "SELECT id FROM airplanes WHERE id IN ({})".format(placeholders)
-
-        results: list[AirplaneId] = self.db_manager.retrieve_single_column(
-            query, airplane_ids
-        )
-
-        if results:
-            return results
-
-        return []
 
     def retrieve_ranges_km_by_ids(
         self, airplane_ids: list[AirplaneId]
@@ -55,10 +39,7 @@ class AirplaneRepository:
             query, airplane_ids
         )
 
-        if results:
-            return results
-
-        return []
+        return results
 
     def retrieve_flight_hour_costs_usd_by_ids(
         self, airplane_ids: list[AirplaneId]
@@ -76,10 +57,7 @@ class AirplaneRepository:
             query, airplane_ids
         )
 
-        if results:
-            return results
-
-        return []
+        return results
 
     def retrieve_available_airplanes_ids(
         self,

@@ -9,10 +9,10 @@ def test_insert_documents(
     documents: list[Document],
     passengers: list[Passenger],
 ) -> None:
-    passenger_repository.insert_passengers(passengers)
-    document_repository.insert_documents(documents)
+    passenger_repository.insert(passengers)
+    document_repository.insert(documents)
 
-    last_inserted_documents: list[Document] = document_repository.retrieve_documents(
+    last_inserted_documents: list[Document] = document_repository.retrieve(
         limit=5
     )
 
@@ -25,10 +25,10 @@ def test_retrieve_all_documents(
     documents: list[Document],
     passengers: list[Passenger],
 ) -> None:
-    passenger_repository.insert_passengers(passengers)
-    document_repository.insert_documents(documents)
+    passenger_repository.insert(passengers)
+    document_repository.insert(documents)
 
-    all_inserted_documents: list[Document] = document_repository.retrieve_documents(
+    all_inserted_documents: list[Document] = document_repository.retrieve(
         limit=3
     )
 
@@ -41,15 +41,15 @@ def test_retrieve_documents_by_identity_key(
     documents: list[Document],
     passengers: list[Passenger],
 ) -> None:
-    passenger_repository.insert_passengers(passengers)
-    document_repository.insert_documents(documents)
+    passenger_repository.insert(passengers)
+    document_repository.insert(documents)
 
     document_identity_keys: list[DocumentIdentityKey] = [
         document.identity_key for document in documents
     ]
 
     documents_retrieved: list[Document] = (
-        document_repository.retrieve_documents_by_identity_keys(document_identity_keys)
+        document_repository.retrieve_by_identity_keys(document_identity_keys)
     )
 
     assert set(documents) == set(documents_retrieved)

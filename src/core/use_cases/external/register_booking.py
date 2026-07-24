@@ -139,7 +139,7 @@ class RegisterBooking:
         with self.uow as uow:
             flight_requested_ids: list[FlightId] = booking_request.flights_id
             flights_retrieved: list[Flight] = (
-                uow.flight_repository.retrieve_flights_by_ids(
+                uow.flight_repository.retrieve_by_ids(
                     booking_request.flights_id
                 )
             )
@@ -163,7 +163,7 @@ class RegisterBooking:
             ]
 
             documents_retrieved: list[Document] = (
-                uow.document_repository.retrieve_documents_by_identity_keys(
+                uow.document_repository.retrieve_by_identity_keys(
                     document_requested_identity_keys
                 )
             )
@@ -175,13 +175,13 @@ class RegisterBooking:
             )
 
             if passengers_not_in_db:
-                uow.passenger_repository.insert_passengers(passengers_not_in_db)
+                uow.passenger_repository.insert(passengers_not_in_db)
 
             if documents_not_in_db:
-                uow.document_repository.insert_documents(documents_not_in_db)
+                uow.document_repository.insert(documents_not_in_db)
 
             all_passengers: list[Passenger] = (
-                uow.passenger_repository.retrieve_passengers_by_ids(all_passengers_ids)
+                uow.passenger_repository.retrieve_by_ids(all_passengers_ids)
             )
 
             self.register_booking_validator.validate_business_logic(
@@ -195,13 +195,13 @@ class RegisterBooking:
             booking_created = Booking.new_booking(
                 flight_retrieved_base_prices, len(all_passengers_ids)
             )
-            uow.booking_repository.insert_booking(booking_created)
+            uow.booking_repository.insert([booking_created])
 
             tickets_created: list[Ticket] = booking_created.generate_tickets(
                 all_passengers_ids, flights_retrieved, booking_created.id
             )
 
-            uow.ticket_repository.insert_tickets(tickets_created)
+            uow.ticket_repository.insert(tickets_created)
 
             return BookingResponse(
                 booking_reference=booking_created.booking_reference,
