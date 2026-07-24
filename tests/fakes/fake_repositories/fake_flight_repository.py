@@ -1,56 +1,20 @@
-from src.common.types import FlightId, FlightIdentityKey
+from src.common.types import FlightId
 from src.entities import Flight
+from tests.fakes.fake_repositories.fake_base_repository import FakeBaseRepository
 
 
-class FakeFlightRepository:
+class FakeFlightRepository(FakeBaseRepository[Flight]):
 
     def __init__(self) -> None:
-        self.flights: dict[Flight, int] = {}
+        super().__init__()
+        self.seats_available_per_flight: dict[FlightId, int] = {}
 
-    def insert(self, flights: list[Flight], seats: int = 10) -> None:
+    def insert(self, flights: list[Flight]) -> None:
+        super().insert(flights)
         for flight in flights:
-            self.flights[flight] = seats
-
-    def retrieve_by_ids(self, flight_ids: list[FlightId]) -> list[Flight]:
-        flights_retrieved: list[Flight] = []
-
-        flight_stored_ids: dict[FlightId, Flight] = {
-            flight.id: flight for flight in self.flights
-        }
-        for flight_id in flight_ids:
-            if flight_id in flight_stored_ids:
-                flights_retrieved.append(flight_stored_ids[flight_id])
-
-        return flights_retrieved
-
-    def retrieve_by_identity_keys(
-        self, flights: list[FlightIdentityKey]
-    ) -> list[Flight]:
-        flights_retrieved: list[Flight] = []
-        flights_stored: list[Flight] = list(self.flights.keys())
-
-        flight_stored_identity_keys: dict[FlightIdentityKey, Flight] = {
-            flight.identity_key: flight for flight in flights_stored
-        }
-        for flight in flights:
-            if flight in flight_stored_identity_keys:
-                flights_retrieved.append(flight_stored_identity_keys[flight])
-
-        return flights_retrieved
+            self.seats_available_per_flight[flight.id] = 10
 
     def retrieve_seats_available_per_flight(
         self, flight_ids: list[FlightId]
     ) -> dict[FlightId, int]:
-        seats_available_per_flight: dict[FlightId, int] = {}
-
-        seats_available_per_flight_stored: dict[FlightId, int] = {
-            flight.id: seats_available
-            for flight, seats_available in self.flights.items()
-        }
-        for flight_id in flight_ids:
-            if flight_id in seats_available_per_flight_stored:
-                seats_available_per_flight[flight_id] = (
-                    seats_available_per_flight_stored[flight_id]
-                )
-
-        return seats_available_per_flight
+        return {flight_id: self.seats_available_per_flight[flight_id] for flight_id in flight_ids}

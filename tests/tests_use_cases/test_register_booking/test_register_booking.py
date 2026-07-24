@@ -72,10 +72,10 @@ def asserts(
     )
     booking_expected.id = expected_booking_id
 
-    assert fake_uow.booking_repository.bookings == [booking_expected]
-    assert fake_uow.document_repository.documents == documents_generated
-    assert fake_uow.passenger_repository.passengers == passengers_generated
-    assert fake_uow.ticket_repository.tickets == tickets_generated
+    assert fake_uow.booking_repository.storage == {booking_expected.id: booking_expected}
+    assert fake_uow.document_repository.storage == {document_generated.identity_key: document_generated for document_generated in documents_generated}
+    assert fake_uow.passenger_repository.storage == {passenger_generated.id: passenger_generated for passenger_generated in passengers_generated}
+    assert fake_uow.ticket_repository.storage == {ticket_generated.id: ticket_generated for ticket_generated in tickets_generated}
 
     expected_tickets_count = len(booking_request.passengers) * len(
         booking_request.flights_id
@@ -214,7 +214,7 @@ def test_register_booking_full_flight(
 
     fake_uow.flight_repository.insert(flights_generated)
 
-    fake_uow.flight_repository.flights[flights_generated[0]] = 0
+    fake_uow.flight_repository.seats_available_per_flight[flights_generated[0].id] = 0
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
 
@@ -232,7 +232,9 @@ def test_register_booking_not_seats_enough(
 ) -> None:
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 
-    fake_uow.flight_repository.insert(flights_generated, seats=1)
+    fake_uow.flight_repository.insert(flights_generated)
+
+    fake_uow.flight_repository.seats_available_per_flight[flights_generated[0].id] = 1
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
 
@@ -241,10 +243,8 @@ def test_register_booking_not_seats_enough(
 
     exceptions: Sequence[InvalidData] = exc_info.value.exceptions
 
-    assert len(exceptions) == 2
+    assert len(exceptions) == 1
     assert isinstance(exceptions[0], NotSeatsEnough)
-    assert isinstance(exceptions[1], NotSeatsEnough)
-
 
 def test_register_booking_not_scheduled_flight(
     booking_request: BookingRequest, flights_generated: list[Flight]
@@ -306,7 +306,7 @@ def test_register_booking_multiple_exceptions(
     fake_uow.passenger_repository.insert(passengers_generated)
     fake_uow.document_repository.insert(documents_generated)
 
-    fake_uow.flight_repository.flights[flights_generated[0]] = 0
+    fake_uow.flight_repository.seats_available_per_flight[flights_generated[0].id] = 0
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
 

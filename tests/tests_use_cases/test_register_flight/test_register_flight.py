@@ -56,8 +56,8 @@ def test_register_flight_valid_input(
     )
     flight_expected.id = expected_flight_id
 
-    assert len(fake_uow.flight_repository.flights) == 1
-    assert list(fake_uow.flight_repository.flights.keys()) == [flight_expected]
+    assert len(fake_uow.flight_repository.storage) == 1
+    assert fake_uow.flight_repository.storage == {flight_expected.id: flight_expected}
 
     assert flight_response.id == expected_flight_id
 

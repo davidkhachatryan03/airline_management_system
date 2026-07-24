@@ -5,6 +5,7 @@ from uuid import UUID
 class BaseEntity:
 
     id: int | UUID
+    identity_key: tuple[str, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         result = {}
