@@ -4,18 +4,15 @@ from typing import cast
 import pytest
 
 from src.api.schemas import DocumentRequest, DocumentResponse
-from src.common.exceptions import (
-    DuplicatedDocument,
-    InexistentPassenger,
-    InvalidData,
-    MultipleExceptionsError,
-)
+from src.common.exceptions import (DuplicatedDocument, InexistentPassenger,
+                                InvalidData, MultipleExceptionsError)
 from src.core.units_of_work import RegisterDocumentUoW
 from src.core.use_cases import RegisterDocument, RegisterDocumentValidator
 from src.core.validators import BaseValidator
 from src.entities import Document, Passenger
 from tests.fakes.fake_db_manager import FakeDBManager
-from tests.fakes.fake_uows.fake_register_document_uow import FakeRegisterDocumentUoW
+from tests.fakes.fake_uows.fake_register_document_uow import \
+    FakeRegisterDocumentUoW
 
 
 def create_register_document(fake_uow: FakeRegisterDocumentUoW) -> RegisterDocument:

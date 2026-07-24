@@ -1,9 +1,5 @@
-from src.core.repositories import (
-    BookingRepository,
-    FlightRepository,
-    PassengerRepository,
-    TicketRepository,
-)
+from src.core.repositories import (BookingRepository, FlightRepository,
+                                PassengerRepository, TicketRepository)
 from src.entities import Booking, Flight, Passenger, Ticket
 
 

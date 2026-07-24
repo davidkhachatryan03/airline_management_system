@@ -1,15 +1,12 @@
 from decimal import Decimal
 
 from src.api.schemas import FlightRequest, FlightResponse
-from src.common.exceptions import (
-    DuplicatedFlight,
-    InexistentAirplane,
-    InexistentRoute,
-    InvalidData,
-    MultipleExceptionsError,
-    UnavailableAirplane,
-)
-from src.common.types import AirplaneId, DurationMin, FlightIdentityKey, RouteId
+from src.common.exceptions import (DuplicatedFlight, InexistentAirplane,
+                                   InexistentRoute, InvalidData,
+                                   MultipleExceptionsError,
+                                   UnavailableAirplane)
+from src.common.types import (AirplaneId, DurationMin, FlightIdentityKey,
+                              RouteId)
 from src.core.units_of_work import RegisterFlightUoW
 from src.core.validators import BaseValidator, FlightValidator
 from src.entities import Airplane, Flight, Route

@@ -1,13 +1,6 @@
-from src.common.types import (
-    AirplaneId,
-    Capacity,
-    CurrentStatusId,
-    FlightHourCostUsd,
-    Manufacturer,
-    Model,
-    RangeKm,
-    TailNumber,
-)
+from src.common.types import (AirplaneId, Capacity, CurrentStatusId,
+                              FlightHourCostUsd, Manufacturer, Model, RangeKm,
+                              TailNumber)
 from src.entities.base_entity import BaseEntity
 
 

@@ -1,11 +1,5 @@
-from src.common.types import (
-    Destination,
-    DistanceKm,
-    DurationMin,
-    FlightNumber,
-    Origin,
-    RouteId,
-)
+from src.common.types import (Destination, DistanceKm, DurationMin,
+                              FlightNumber, Origin, RouteId)
 from src.entities.base_entity import BaseEntity
 
 

@@ -1,6 +1,7 @@
 from src.common.types import DistanceKm, DurationMin, RouteId
 from src.entities import Route
-from tests.fakes.fake_repositories.fake_base_repository import FakeBaseRepository
+from tests.fakes.fake_repositories.fake_base_repository import \
+    FakeBaseRepository
 
 
 class FakeRouteRepository(FakeBaseRepository[Route]):

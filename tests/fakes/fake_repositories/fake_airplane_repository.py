@@ -2,7 +2,8 @@ from datetime import datetime
 
 from src.common.types import AirplaneId, FlightHourCostUsd, RangeKm
 from src.entities import Airplane
-from tests.fakes.fake_repositories.fake_base_repository import FakeBaseRepository
+from tests.fakes.fake_repositories.fake_base_repository import \
+    FakeBaseRepository
 
 
 class FakeAirplaneRepository(FakeBaseRepository[Airplane]):

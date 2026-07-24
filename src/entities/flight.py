@@ -2,21 +2,12 @@ from decimal import ROUND_HALF_UP, Decimal
 
 import uuid6
 
-from src.common.types import (
-    ActualArrivalDatetime,
-    ActualDepartureDatetime,
-    AirplaneId,
-    BasePriceUsd,
-    CurrentStatusId,
-    DurationMin,
-    FlightHourCostUsd,
-    FlightId,
-    FlightIdentityKey,
-    OperatingCostUsd,
-    RouteId,
-    ScheduledArrivalDatetime,
-    ScheduledDepartureDatetime,
-)
+from src.common.types import (ActualArrivalDatetime, ActualDepartureDatetime,
+                              AirplaneId, BasePriceUsd, CurrentStatusId,
+                              DurationMin, FlightHourCostUsd, FlightId,
+                              FlightIdentityKey, OperatingCostUsd, RouteId,
+                              ScheduledArrivalDatetime,
+                              ScheduledDepartureDatetime)
 from src.entities.base_entity import BaseEntity
 
 

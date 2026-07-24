@@ -5,15 +5,9 @@ from decimal import ROUND_HALF_UP, Decimal
 
 import uuid6
 
-from src.common.types import (
-    BasePriceUsd,
-    BookingDatetime,
-    BookingId,
-    BookingReference,
-    CurrentStatusId,
-    PaidAmountUsd,
-    PassengerId,
-)
+from src.common.types import (BasePriceUsd, BookingDatetime, BookingId,
+                              BookingReference, CurrentStatusId, PaidAmountUsd,
+                              PassengerId)
 from src.entities.base_entity import BaseEntity
 from src.entities.flight import Flight
 from src.entities.ticket import Ticket

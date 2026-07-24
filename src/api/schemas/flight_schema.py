@@ -1,13 +1,8 @@
 from pydantic import BaseModel, Field
 
-from src.common.types import (
-    AirplaneId,
-    FlightId,
-    FlightIdentityKey,
-    RouteId,
-    ScheduledArrivalDatetime,
-    ScheduledDepartureDatetime,
-)
+from src.common.types import (AirplaneId, FlightId, FlightIdentityKey, RouteId,
+                            ScheduledArrivalDatetime,
+                            ScheduledDepartureDatetime)
 
 
 class FlightRequest(BaseModel):

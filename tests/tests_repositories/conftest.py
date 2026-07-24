@@ -1,4 +1,5 @@
-import os, random
+import os
+import random
 from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID
@@ -10,13 +11,9 @@ os.environ["TESTING"] = "True"
 
 from src.common import DBManager
 from src.common.types import FlightId
-from src.core.repositories import (
-    BookingRepository,
-    DocumentRepository,
-    FlightRepository,
-    PassengerRepository,
-    TicketRepository,
-)
+from src.core.repositories import (BookingRepository, DocumentRepository,
+                                FlightRepository, PassengerRepository,
+                                TicketRepository)
 from src.entities import Booking, Document, Flight, Passenger, Ticket
 
 

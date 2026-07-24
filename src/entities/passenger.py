@@ -1,14 +1,7 @@
 import uuid6
 
-from src.common.types import (
-    BirthDate,
-    Email,
-    FullName,
-    IsBlacklisted,
-    IsVip,
-    PassengerId,
-    PhoneNumber,
-)
+from src.common.types import (BirthDate, Email, FullName, IsBlacklisted, IsVip,
+                              PassengerId, PhoneNumber)
 from src.entities.base_entity import BaseEntity
 
 
