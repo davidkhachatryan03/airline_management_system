@@ -138,10 +138,8 @@ class RegisterBooking:
     def execute(self, booking_request: BookingRequest) -> BookingResponse:
         with self.uow as uow:
             flight_requested_ids: list[FlightId] = booking_request.flights_id
-            flights_retrieved: list[Flight] = (
-                uow.flight_repository.retrieve_by_ids(
-                    booking_request.flights_id
-                )
+            flights_retrieved: list[Flight] = uow.flight_repository.retrieve_by_ids(
+                booking_request.flights_id
             )
             flight_retrieved_ids: list[FlightId] = [
                 flight.id for flight in flights_retrieved
@@ -180,8 +178,8 @@ class RegisterBooking:
             if documents_not_in_db:
                 uow.document_repository.insert(documents_not_in_db)
 
-            all_passengers: list[Passenger] = (
-                uow.passenger_repository.retrieve_by_ids(all_passengers_ids)
+            all_passengers: list[Passenger] = uow.passenger_repository.retrieve_by_ids(
+                all_passengers_ids
             )
 
             self.register_booking_validator.validate_business_logic(

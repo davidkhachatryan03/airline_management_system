@@ -46,7 +46,9 @@ def test_register_document_valid_input(
     )
 
     assert len(fake_uow.document_repository.storage)
-    assert fake_uow.document_repository.storage == {document_expected.identity_key: document_expected}
+    assert fake_uow.document_repository.storage == {
+        document_expected.identity_key: document_expected
+    }
 
     assert document_response.document_number == document_expected.document_number
     assert document_response.document_type_id == document_expected.document_type_id

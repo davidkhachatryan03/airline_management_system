@@ -17,4 +17,7 @@ class FakeFlightRepository(FakeBaseRepository[Flight]):
     def retrieve_seats_available_per_flight(
         self, flight_ids: list[FlightId]
     ) -> dict[FlightId, int]:
-        return {flight_id: self.seats_available_per_flight[flight_id] for flight_id in flight_ids}
+        return {
+            flight_id: self.seats_available_per_flight[flight_id]
+            for flight_id in flight_ids
+        }

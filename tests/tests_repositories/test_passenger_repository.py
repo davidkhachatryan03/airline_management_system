@@ -8,9 +8,7 @@ def test_insert_passenger(
 ) -> None:
     passenger_repository.insert([passenger])
 
-    last_inserted_passenger: Passenger = passenger_repository.retrieve(
-        limit=1
-    )[0]
+    last_inserted_passenger: Passenger = passenger_repository.retrieve(limit=1)[0]
 
     assert last_inserted_passenger == passenger
 
@@ -20,9 +18,7 @@ def test_retrieve_all_passengers(
 ) -> None:
     passenger_repository.insert(passengers)
 
-    all_inserted_passengers: list[Passenger] = passenger_repository.retrieve(
-        limit=3
-    )
+    all_inserted_passengers: list[Passenger] = passenger_repository.retrieve(limit=3)
 
     assert len(all_inserted_passengers) == len(passengers)
 
@@ -34,8 +30,8 @@ def test_retrieve_passengers_by_id(
 
     passenger_ids: list[PassengerId] = [passenger.id for passenger in passengers]
 
-    passengers_retrieved: list[Passenger] = (
-        passenger_repository.retrieve_by_ids(passenger_ids)
+    passengers_retrieved: list[Passenger] = passenger_repository.retrieve_by_ids(
+        passenger_ids
     )
 
     assert set(passengers_retrieved) == set(passengers)
@@ -54,8 +50,8 @@ def test_retrieve_passengers_by_document(
         document.identity_key for document in documents
     ]
 
-    passengers_retrieved: list[Passenger] = (
-        passenger_repository.retrieve_by_documents(document_identity_keys)
+    passengers_retrieved: list[Passenger] = passenger_repository.retrieve_by_documents(
+        document_identity_keys
     )
 
     assert set(passengers_retrieved) == set(passengers)

@@ -72,10 +72,20 @@ def asserts(
     )
     booking_expected.id = expected_booking_id
 
-    assert fake_uow.booking_repository.storage == {booking_expected.id: booking_expected}
-    assert fake_uow.document_repository.storage == {document_generated.identity_key: document_generated for document_generated in documents_generated}
-    assert fake_uow.passenger_repository.storage == {passenger_generated.id: passenger_generated for passenger_generated in passengers_generated}
-    assert fake_uow.ticket_repository.storage == {ticket_generated.id: ticket_generated for ticket_generated in tickets_generated}
+    assert fake_uow.booking_repository.storage == {
+        booking_expected.id: booking_expected
+    }
+    assert fake_uow.document_repository.storage == {
+        document_generated.identity_key: document_generated
+        for document_generated in documents_generated
+    }
+    assert fake_uow.passenger_repository.storage == {
+        passenger_generated.id: passenger_generated
+        for passenger_generated in passengers_generated
+    }
+    assert fake_uow.ticket_repository.storage == {
+        ticket_generated.id: ticket_generated for ticket_generated in tickets_generated
+    }
 
     expected_tickets_count = len(booking_request.passengers) * len(
         booking_request.flights_id
@@ -245,6 +255,7 @@ def test_register_booking_not_seats_enough(
 
     assert len(exceptions) == 1
     assert isinstance(exceptions[0], NotSeatsEnough)
+
 
 def test_register_booking_not_scheduled_flight(
     booking_request: BookingRequest, flights_generated: list[Flight]

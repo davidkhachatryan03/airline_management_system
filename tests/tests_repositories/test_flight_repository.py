@@ -30,9 +30,7 @@ def test_retrieve_flights_by_id(
 
     flight_ids: list[FlightId] = [flight.id for flight in flights]
 
-    flights_retrieved: list[Flight] = flight_repository.retrieve_by_ids(
-        flight_ids
-    )
+    flights_retrieved: list[Flight] = flight_repository.retrieve_by_ids(flight_ids)
 
     assert set(flights) == set(flights_retrieved)
 
@@ -46,8 +44,8 @@ def test_retrieve_flights_by_identity_key(
         flight.identity_key for flight in flights
     ]
 
-    flights_retrieved: list[Flight] = (
-        flight_repository.retrieve_by_identity_keys(flight_identity_keys)
+    flights_retrieved: list[Flight] = flight_repository.retrieve_by_identity_keys(
+        flight_identity_keys
     )
 
     assert set(flights) == set(flights_retrieved)

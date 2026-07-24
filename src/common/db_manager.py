@@ -107,7 +107,9 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(str(e)) from e
 
-    def retrieve_single_column(self, query: str, values: Sequence[Any] = ()) -> list[Any]:
+    def retrieve_single_column(
+        self, query: str, values: Sequence[Any] = ()
+    ) -> list[Any]:
         if not self.connection.is_connected():
             raise InexistentConnection
 

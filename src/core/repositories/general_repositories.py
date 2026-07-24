@@ -37,7 +37,7 @@ class DocumentRepository(BaseRepository[Document]):
                 "document_type_id",
             ),
             Document,
-            ("document_number", "issue_country")
+            ("document_number", "issue_country"),
         )
 
 
@@ -45,16 +45,17 @@ class TicketRepository(BaseRepository[Ticket]):
 
     def __init__(self, db_manager: DBManager) -> None:
         self.db_manager = db_manager
-        super().__init__(db_manager,
-                        "tickets",
-                        (
-                            "id",
-                            "ticket_number",
-                            "paid_amount_usd",
-                            "current_status_id",
-                            "booking_id",
-                            "flight_id",
-                            "passenger_id"
-                        ),
-                        Ticket,
-                    )
+        super().__init__(
+            db_manager,
+            "tickets",
+            (
+                "id",
+                "ticket_number",
+                "paid_amount_usd",
+                "current_status_id",
+                "booking_id",
+                "flight_id",
+                "passenger_id",
+            ),
+            Ticket,
+        )

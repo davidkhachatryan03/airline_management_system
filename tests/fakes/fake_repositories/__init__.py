@@ -6,4 +6,9 @@ from tests.fakes.fake_repositories.fake_flight_repository import FakeFlightRepos
 
 from tests.fakes.fake_repositories.fake_route_repository import FakeRouteRepository
 
-from tests.fakes.fake_repositories.fake_general_repositories import FakeBookingRepository, FakeDocumentRepository, FakePassengerRepository, FakeTicketRepository
+from tests.fakes.fake_repositories.fake_general_repositories import (
+    FakeBookingRepository,
+    FakeDocumentRepository,
+    FakePassengerRepository,
+    FakeTicketRepository,
+)

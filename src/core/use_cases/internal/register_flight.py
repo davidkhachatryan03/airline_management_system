@@ -102,11 +102,11 @@ class RegisterFlight:
             ]
 
             airplanes_retrieved: list[Airplane] = (
-                uow.airplane_repository.retrieve_by_ids(
-                    [flight_request.airplane_id]
-                )
+                uow.airplane_repository.retrieve_by_ids([flight_request.airplane_id])
             )
-            airplanes_retrieved_id: list[AirplaneId] = [airplane.id for airplane in airplanes_retrieved]
+            airplanes_retrieved_id: list[AirplaneId] = [
+                airplane.id for airplane in airplanes_retrieved
+            ]
 
             routes_retrieved: list[Route] = uow.route_repository.retrieve_by_ids(
                 routes_requested_id

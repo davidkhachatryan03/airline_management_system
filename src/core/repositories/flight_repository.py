@@ -21,10 +21,10 @@ class FlightRepository(BaseRepository[Flight]):
                 "base_price_usd",
                 "current_status_id",
                 "route_id",
-                "airplane_id"
+                "airplane_id",
             ),
             Flight,
-            ("scheduled_departure_datetime", "route_id")
+            ("scheduled_departure_datetime", "route_id"),
         )
 
     def retrieve_seats_available_per_flight(
