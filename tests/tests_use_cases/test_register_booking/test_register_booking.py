@@ -8,9 +8,9 @@ from freezegun import freeze_time
 
 from src.api.schemas import BookingRequest, BookingResponse
 from src.common.exceptions import (BlacklistedPassenger, FullFlight,
-                                   InexistentFlight, InvalidData,
-                                   MultipleExceptionsError, NotScheduledFlight,
-                                   NotSeatsEnough)
+                                InexistentFlight, InvalidData,
+                                MultipleExceptionsError, NotScheduledFlight,
+                                NotSeatsEnough)
 from src.common.types import BookingId, BookingReference, TicketNumber
 from src.core.units_of_work import RegisterBookingUoW
 from src.core.use_cases import (PassengerProcessor, RegisterBooking,
