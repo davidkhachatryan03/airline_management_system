@@ -1,0 +1,30 @@
+name: Backend Pipeline - Airline Management System
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest 
+
+    steps:
+    - name: Clone
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.4' 
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest pytest-mock black isort
+
+    - name: Check imports (isort)
+      run: isort --check-only .
+
+    - name: Check format (black)
+      run: black --check .
+
+    - name: Testing (pytest)
+      run: pytest -v

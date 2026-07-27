@@ -1,0 +1,31 @@
+[project]
+name = "airline-management-system"
+version = "1.0.0"
+authors = [
+    {name = "David", email = "david.v.khachatryan03@gmail.com"}
+]
+dependencies = [
+    "fastapi>=0.136.1",
+    "uvicorn>=0.47.0",
+    "mysql-connector-python>=9.5.0",
+    "pydantic>=2.13.4",
+    "email-validator>=2.3.0",
+    "python-dotenv>=1.2.1",
+    "uuid6>=2025.0.1",
+    "pytokens>=0.4.1"
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=26.5.1",
+    "isort>=8.0.1",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.1.0",
+    "pytest-mock>=3.15.1",
+    "Faker>=40.1.2",
+    "freezegun>=1.5.5",
+    "httpx>=0.28.1"
+]
+
+[tool.isort]
+profile = "black"
