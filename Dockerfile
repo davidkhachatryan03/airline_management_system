@@ -1,10 +1,11 @@
-FROM python:3.14-slim
+FROM python:3.12.4-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY pyproject.toml .
 
-RUN pip install -r requirements.txt
+RUN python -m pip install --upgrade pip && \
+    pip install ".[dev]"
 
 COPY . .
 
