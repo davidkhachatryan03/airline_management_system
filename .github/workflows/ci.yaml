@@ -31,7 +31,7 @@ jobs:
           PYTHONPATH: .
           DB_HOST: localhost
           DB_USER: root
-          DB_TEST_PASSWORD: test_password
+          DB_TEST_PASS: test_password
           DB_TEST_NAME: airline_test
           DB_TEST_PORT: "3308"
       run: pytest -v
