@@ -1,8 +1,14 @@
 from pydantic import BaseModel, Field
 
-from src.common.types import (DocumentIdentityKey, DocumentNumber,
-                            DocumentTypeId, IssueCountry, PassengerId,
-                            ValidFrom, ValidUntil)
+from src.common.types import (
+    DocumentIdentityKey,
+    DocumentNumber,
+    DocumentTypeId,
+    IssueCountry,
+    PassengerId,
+    ValidFrom,
+    ValidUntil,
+)
 
 
 class DocumentRequest(BaseModel):

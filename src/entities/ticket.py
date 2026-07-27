@@ -1,11 +1,17 @@
 import random
 import string
 
-import uuid6
+from uuid6 import uuid7
 
-from src.common.types import (BookingId, CurrentStatusId, FlightId,
-                              PaidAmountUsd, PassengerId, TicketId,
-                              TicketNumber)
+from src.common.types import (
+    BookingId,
+    CurrentStatusId,
+    FlightId,
+    PaidAmountUsd,
+    PassengerId,
+    TicketId,
+    TicketNumber,
+)
 from src.entities.base_entity import BaseEntity
 
 
@@ -133,7 +139,7 @@ class Ticket(BaseEntity):
         passenger_id: PassengerId,
     ) -> "Ticket":
         return cls(
-            id=uuid6.uuid7(),
+            id=uuid7(),
             ticket_number=cls._generate_ticket_number(),
             paid_amount_usd=paid_amount_usd,
             current_status_id=1,

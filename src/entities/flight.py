@@ -1,13 +1,22 @@
 from decimal import ROUND_HALF_UP, Decimal
 
-import uuid6
+from uuid6 import uuid7
 
-from src.common.types import (ActualArrivalDatetime, ActualDepartureDatetime,
-                              AirplaneId, BasePriceUsd, CurrentStatusId,
-                              DurationMin, FlightHourCostUsd, FlightId,
-                              FlightIdentityKey, OperatingCostUsd, RouteId,
-                              ScheduledArrivalDatetime,
-                              ScheduledDepartureDatetime)
+from src.common.types import (
+    ActualArrivalDatetime,
+    ActualDepartureDatetime,
+    AirplaneId,
+    BasePriceUsd,
+    CurrentStatusId,
+    DurationMin,
+    FlightHourCostUsd,
+    FlightId,
+    FlightIdentityKey,
+    OperatingCostUsd,
+    RouteId,
+    ScheduledArrivalDatetime,
+    ScheduledDepartureDatetime,
+)
 from src.entities.base_entity import BaseEntity
 
 
@@ -188,7 +197,7 @@ class Flight(BaseEntity):
     ) -> "Flight":
 
         return cls(
-            id=uuid6.uuid7(),
+            id=uuid7(),
             scheduled_departure_datetime=scheduled_departure_datetime,
             scheduled_arrival_datetime=scheduled_arrival_datetime,
             actual_departure_datetime=None,

@@ -1,7 +1,14 @@
-import uuid6
+from uuid6 import uuid7
 
-from src.common.types import (BirthDate, Email, FullName, IsBlacklisted, IsVip,
-                              PassengerId, PhoneNumber)
+from src.common.types import (
+    BirthDate,
+    Email,
+    FullName,
+    IsBlacklisted,
+    IsVip,
+    PassengerId,
+    PhoneNumber,
+)
 from src.entities.base_entity import BaseEntity
 
 
@@ -138,7 +145,7 @@ class Passenger(BaseEntity):
         phone_number: PhoneNumber,
     ) -> "Passenger":
         return cls(
-            id=uuid6.uuid7(),
+            id=uuid7(),
             full_name=full_name,
             birth_date=birth_date,
             email=email,

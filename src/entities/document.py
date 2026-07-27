@@ -1,8 +1,15 @@
-import uuid6
+from uuid6 import uuid7
 
-from src.common.types import (DocumentId, DocumentIdentityKey, DocumentNumber,
-                              DocumentTypeId, IssueCountry, PassengerId,
-                              ValidFrom, ValidUntil)
+from src.common.types import (
+    DocumentId,
+    DocumentIdentityKey,
+    DocumentNumber,
+    DocumentTypeId,
+    IssueCountry,
+    PassengerId,
+    ValidFrom,
+    ValidUntil,
+)
 from src.entities.base_entity import BaseEntity
 
 
@@ -138,7 +145,7 @@ class Document(BaseEntity):
         document_type_id: DocumentTypeId,
     ) -> "Document":
         return cls(
-            id=uuid6.uuid7(),
+            id=uuid7(),
             document_number=document_number,
             valid_from=valid_from,
             valid_until=valid_until,

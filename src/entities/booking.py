@@ -3,11 +3,17 @@ import string
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 
-import uuid6
+from uuid6 import uuid7
 
-from src.common.types import (BasePriceUsd, BookingDatetime, BookingId,
-                              BookingReference, CurrentStatusId, PaidAmountUsd,
-                              PassengerId)
+from src.common.types import (
+    BasePriceUsd,
+    BookingDatetime,
+    BookingId,
+    BookingReference,
+    CurrentStatusId,
+    PaidAmountUsd,
+    PassengerId,
+)
 from src.entities.base_entity import BaseEntity
 from src.entities.flight import Flight
 from src.entities.ticket import Ticket
@@ -125,7 +131,7 @@ class Booking(BaseEntity):
         cls, flights_base_prices: list[BasePriceUsd], number_of_passengers: int
     ) -> "Booking":
         return cls(
-            id=uuid6.uuid7(),
+            id=uuid7(),
             booking_reference=cls._generate_reference(),
             booking_datetime=datetime.now(),
             paid_amount_usd=cls._calculate_paid_amount_usd(

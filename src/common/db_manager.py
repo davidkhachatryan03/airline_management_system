@@ -9,8 +9,12 @@ from mysql.connector.cursor import MySQLCursor
 
 load_dotenv()
 
-from src.common.exceptions import (DatabaseError, InexistentConnection,
-                                InexistentSQLFile, InvalidBytes)
+from src.common.exceptions import (
+    DatabaseError,
+    InexistentConnection,
+    InexistentSQLFile,
+    InvalidBytes,
+)
 
 
 class DBManager:
