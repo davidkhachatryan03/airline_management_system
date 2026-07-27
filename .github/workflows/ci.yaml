@@ -27,11 +27,11 @@ jobs:
       run: black --check .
 
     - name: Testing (pytest)
-    env:
-        PYTHONPATH: .
-        DB_HOST: localhost
-        DB_USER: root
-        DB_PASSWORD: test_password
-        DB_NAME: airline_test_db
-        DB_PORT: "3306"
+      env:
+          PYTHONPATH: .
+          DB_HOST: localhost
+          DB_USER: root
+          DB_PASSWORD: test_password
+          DB_NAME: airline_test_db
+          DB_PORT: "3306"
       run: pytest -v
