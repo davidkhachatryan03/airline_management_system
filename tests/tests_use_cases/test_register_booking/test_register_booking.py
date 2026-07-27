@@ -7,20 +7,26 @@ import pytest
 from freezegun import freeze_time
 
 from src.api.schemas import BookingRequest, BookingResponse
-from src.common.exceptions import (BlacklistedPassenger, FullFlight,
-                                InexistentFlight, InvalidData,
-                                MultipleExceptionsError, NotScheduledFlight,
-                                NotSeatsEnough)
+from src.common.exceptions import (
+    BlacklistedPassenger,
+    FullFlight,
+    InexistentFlight,
+    InvalidData,
+    MultipleExceptionsError,
+    NotScheduledFlight,
+    NotSeatsEnough,
+)
 from src.common.types import BookingId, BookingReference, TicketNumber
 from src.core.units_of_work import RegisterBookingUoW
-from src.core.use_cases import (PassengerProcessor, RegisterBooking,
-                                RegisterBookingValidator)
-from src.core.validators import (BaseValidator, FlightValidator,
-                                PassengerValidator)
+from src.core.use_cases import (
+    PassengerProcessor,
+    RegisterBooking,
+    RegisterBookingValidator,
+)
+from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
 from src.entities import Booking, Document, Flight, Passenger, Ticket
 from tests.fakes.fake_db_manager import FakeDBManager
-from tests.fakes.fake_uows.fake_register_booking_uow import \
-    FakeRegisterBookingUoW
+from tests.fakes.fake_uows.fake_register_booking_uow import FakeRegisterBookingUoW
 
 
 def calculate_paid_amount_usd(
@@ -70,7 +76,7 @@ def asserts(
         booking_expected.id: booking_expected
     }
     assert fake_uow.document_repository.storage == {
-        document_generated.identity_key: document_generated
+        document_generated.id: document_generated
         for document_generated in documents_generated
     }
     assert fake_uow.passenger_repository.storage == {
@@ -176,8 +182,8 @@ def test_register_booking_valid_input_existent_and_non_existent_passengers(
     fake_uow = FakeRegisterBookingUoW(FakeDBManager())
 
     fake_uow.flight_repository.insert(flights_generated)
-    fake_uow.passenger_repository.insert([passengers_generated[0]])
-    fake_uow.document_repository.insert([documents_generated[0]])
+    fake_uow.passenger_repository.insert([passengers_generated[1]])
+    fake_uow.document_repository.insert([documents_generated[1]])
 
     register_booking: RegisterBooking = create_register_booking(fake_uow)
     booking_response: BookingResponse = register_booking.execute(booking_request)

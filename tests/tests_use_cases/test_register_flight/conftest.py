@@ -42,7 +42,7 @@ def fixed_flight_identifiers(
     mocker: MockerFixture, expected_flight_id: DocumentId
 ) -> None:
 
-    mocker.patch("src.entities.flight.uuid6.uuid7", return_value=expected_flight_id)
+    mocker.patch("src.entities.flight.uuid7", return_value=expected_flight_id)
 
 
 @pytest.fixture

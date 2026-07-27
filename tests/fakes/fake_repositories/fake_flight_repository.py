@@ -1,7 +1,6 @@
 from src.common.types import FlightId
 from src.entities import Flight
-from tests.fakes.fake_repositories.fake_base_repository import \
-    FakeBaseRepository
+from tests.fakes.fake_repositories.fake_base_repository import FakeBaseRepository
 
 
 class FakeFlightRepository(FakeBaseRepository[Flight]):

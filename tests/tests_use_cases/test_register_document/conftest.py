@@ -26,7 +26,7 @@ def fixed_document_identifiers(
     mocker: MockerFixture, expected_document_id: DocumentId
 ) -> None:
 
-    mocker.patch("src.entities.document.uuid6.uuid7", return_value=expected_document_id)
+    mocker.patch("src.entities.document.uuid7", return_value=expected_document_id)
 
 
 @pytest.fixture

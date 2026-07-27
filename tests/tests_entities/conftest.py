@@ -4,8 +4,16 @@ from uuid import UUID
 
 import pytest
 
-from src.entities import (Airplane, BoardingPass, Booking, Document, Flight,
-                        Passenger, Route, Ticket)
+from src.entities import (
+    Airplane,
+    BoardingPass,
+    Booking,
+    Document,
+    Flight,
+    Passenger,
+    Route,
+    Ticket,
+)
 
 
 @pytest.fixture

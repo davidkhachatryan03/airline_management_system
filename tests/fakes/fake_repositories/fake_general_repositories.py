@@ -1,6 +1,5 @@
 from src.entities import Booking, Document, Passenger, Ticket
-from tests.fakes.fake_repositories.fake_base_repository import \
-    FakeBaseRepository
+from tests.fakes.fake_repositories.fake_base_repository import FakeBaseRepository
 
 
 class FakeBookingRepository(FakeBaseRepository[Booking]):

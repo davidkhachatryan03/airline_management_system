@@ -6,8 +6,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from src.api.schemas import BookingRequest, PassengerRequest
-from src.common.types import (BookingId, BookingReference, FlightId,
-                            TicketNumber)
+from src.common.types import BookingId, BookingReference, FlightId, TicketNumber
 from src.entities import Document, Flight, Passenger, Ticket
 
 
@@ -140,9 +139,12 @@ def fixed_booking_identifiers(
     expected_booking_id: BookingId,
     expected_booking_reference: BookingReference,
     expected_ticket_number: TicketNumber,
+    tickets_generated: list[Ticket],
+    documents_generated: list[Document],
+    passengers_generated: list[Passenger],
 ):
 
-    mocker.patch("src.entities.booking.uuid6.uuid7", return_value=expected_booking_id)
+    mocker.patch("src.entities.booking.uuid7", return_value=expected_booking_id)
 
     mocker.patch(
         "src.entities.Booking._generate_reference",
@@ -152,6 +154,21 @@ def fixed_booking_identifiers(
     mocker.patch(
         "src.entities.Ticket._generate_ticket_number",
         return_value=expected_ticket_number,
+    )
+
+    mocker.patch(
+        "src.entities.ticket.uuid7",
+        side_effect=[ticket.id for ticket in tickets_generated],
+    )
+
+    mocker.patch(
+        "src.entities.document.uuid7",
+        side_effect=[document.id for document in documents_generated],
+    )
+
+    mocker.patch(
+        "src.entities.passenger.uuid7",
+        side_effect=[passenger.id for passenger in passengers_generated],
     )
 
 
