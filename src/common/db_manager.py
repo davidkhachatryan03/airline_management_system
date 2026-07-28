@@ -22,7 +22,6 @@ class DBManager:
     def __init__(self) -> None:
         self.host: str = os.environ["DB_HOST"]
         self.user: str = os.environ["DB_USER"]
-        self.password: str = os.environ["DB_PASS"]
 
         if os.environ.get("TESTING") == "True":
             self.database: str = os.environ["DB_TEST_NAME"]
