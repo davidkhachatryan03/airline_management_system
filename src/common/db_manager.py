@@ -34,7 +34,6 @@ class DBManager:
 
     def __enter__(self):
         self.connect()
-        self.connection.autocommit = False
         return self
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
@@ -60,6 +59,7 @@ class DBManager:
 
         if self.connection.is_connected():
             print("Connected.")
+            self.connection.autocommit = False
             self.cursor: MySQLCursor = cast(MySQLCursor, self.connection.cursor())
 
     def disconnect(self) -> None:
