@@ -6,6 +6,15 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest 
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          DB_TEST_NAME: ${{ secrets.DB_TEST_NAME }}
+          DB_TEST_PASS: ${{ secrets.DB_TEST_PASS }}
+        ports:
+          - 3308:3306
+
     steps:
     - name: Clone
       uses: actions/checkout@v3
@@ -28,3 +37,10 @@ jobs:
 
     - name: Testing (pytest)
       run: pytest -v
+      env:
+        TESTING: "True"
+        DB_HOST: "127.0.0.1"
+        DB_USER: "root"
+        DB_TEST_PASS: ${{ secrets.DB_TEST_PASS }} 
+        DB_TEST_NAME: ${{ secrets.DB_TEST_NAME }}
+        DB_TERST_PORT: "3308"
