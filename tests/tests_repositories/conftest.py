@@ -10,6 +10,7 @@ from uuid6 import uuid7
 from src.common import DBManager
 from src.common.types import FlightId
 from src.core.repositories import (
+    BaseRepository,
     BookingRepository,
     DocumentRepository,
     FlightRepository,
@@ -39,6 +40,43 @@ def revert_changes(db_connected: DBManager):
     yield db_connected
 
     db_connected.connection.rollback()
+
+
+@pytest.fixture
+def base_document_repository(db_connected: DBManager) -> BaseRepository:
+    return BaseRepository(
+        db_connected,
+        "documents",
+        (
+            "id",
+            "document_number",
+            "valid_from",
+            "valid_until",
+            "issue_country",
+            "passenger_id",
+            "document_type_id",
+        ),
+        Document,
+        ("document_number", "issue_country"),
+    )
+
+
+@pytest.fixture
+def base_passenger_repository(db_connected: DBManager) -> BaseRepository:
+    return BaseRepository(
+        db_connected,
+        "passengers",
+        (
+            "id",
+            "full_name",
+            "birth_date",
+            "email",
+            "phone_number",
+            "is_blacklisted",
+            "is_vip",
+        ),
+        Passenger,
+    )
 
 
 @pytest.fixture()
