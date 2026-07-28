@@ -38,7 +38,7 @@ class DBManager:
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
         if self.connection and self.connection.is_connected():
-            if exception_type is not None:
+            if exception_type is not None or os.environ["TESTING"] == True:
                 self.connection.rollback()
             else:
                 self.connection.commit()
