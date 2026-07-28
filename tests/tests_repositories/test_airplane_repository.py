@@ -8,6 +8,7 @@ from src.entities import Airplane
 def test_airplane_repository_retrieve_ranges_km_by_ids(
     airplane_repository: AirplaneRepository, airplanes: list[Airplane]
 ) -> None:
+    airplane_repository.delete()
     airplane_repository.insert(airplanes)
 
     airplane_ids: list[AirplaneId] = [airplane.id for airplane in airplanes]
@@ -23,6 +24,7 @@ def test_airplane_repository_retrieve_ranges_km_by_ids(
 def test_ariplane_repository_retrieve_flight_hour_costs_by_ids(
     airplane_repository: AirplaneRepository, airplanes: list[Airplane]
 ) -> None:
+    airplane_repository.delete()
     airplane_repository.insert(airplanes)
 
     airplane_ids: list[AirplaneId] = [airplane.id for airplane in airplanes]
@@ -40,6 +42,7 @@ def test_ariplane_repository_retrieve_flight_hour_costs_by_ids(
 def test_retrieve_available_airplanes_ids(
     airplane_repository: AirplaneRepository, airplanes: list[Airplane]
 ) -> None:
+    airplane_repository.delete()
     airplane_repository.insert(airplanes)
 
     airplane_ids: list[AirplaneId] = [airplane.id for airplane in airplanes]
@@ -56,6 +59,7 @@ def test_retrieve_available_airplanes_ids(
 def test_retrieve_available_airplanes_ids_empty(
     airplane_repository: AirplaneRepository, airplanes: list[Airplane]
 ) -> None:
+    airplane_repository.delete()
     airplane_repository.insert(airplanes)
 
     available_airplanes_retrieved: list[AirplaneId] = (

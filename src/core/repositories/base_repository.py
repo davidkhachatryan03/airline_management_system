@@ -34,6 +34,11 @@ class BaseRepository(Generic[T]):
 
         return [self.entity(*result) for result in results]
 
+    def delete(self) -> None:
+        query = "DELETE FROM {}".format(self.table_name)
+
+        self.db_manager.cursor.execute(query)
+
     def retrieve_by_ids(self, ids: Sequence[UUID] | Sequence[int]) -> list[T]:
         if not ids:
             return []
