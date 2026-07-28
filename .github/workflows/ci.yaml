@@ -29,10 +29,9 @@ jobs:
     - name: Testing (pytest)
       env:
           PYTHONPATH: .
-          TESTING: "True"
-          DB_HOST: localhost
-          DB_USER: root
-          DB_TEST_PASS: test_password
-          DB_TEST_NAME: airline_test
-          DB_TEST_PORT: "3308"
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_TEST_NAME: ${{ secrets.DB_TEST_NAME }}
+          DB_TEST_PASS: ${{ secrets.DB_TEST_PASS }}
+          DB_TEST_PORT: ${{ secrets.DB_TEST_PORT }}
       run: pytest -v
