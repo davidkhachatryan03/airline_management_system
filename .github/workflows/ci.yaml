@@ -43,4 +43,4 @@ jobs:
         DB_USER: "root"
         DB_TEST_PASS: ${{ secrets.DB_TEST_PASS }} 
         DB_TEST_NAME: ${{ secrets.DB_TEST_NAME }}
-        DB_TERST_PORT: "3308"
+        DB_TEST_PORT: "3308"
