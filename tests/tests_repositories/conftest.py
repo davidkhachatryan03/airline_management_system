@@ -10,14 +10,14 @@ from uuid6 import uuid7
 from src.common import DBManager
 from src.common.types import FlightId
 from src.core.repositories import (
-    BaseRepository,
+    AirplaneRepository,
     BookingRepository,
     DocumentRepository,
     FlightRepository,
     PassengerRepository,
     TicketRepository,
 )
-from src.entities import Booking, Document, Flight, Passenger, Ticket
+from src.entities import Airplane, Booking, Document, Flight, Passenger, Ticket
 
 
 @pytest.fixture
@@ -43,40 +43,36 @@ def revert_changes(db_connected: DBManager):
 
 
 @pytest.fixture
-def base_document_repository(db_connected: DBManager) -> BaseRepository:
-    return BaseRepository(
-        db_connected,
-        "documents",
-        (
-            "id",
-            "document_number",
-            "valid_from",
-            "valid_until",
-            "issue_country",
-            "passenger_id",
-            "document_type_id",
-        ),
-        Document,
-        ("document_number", "issue_country"),
+def airplane_repository(db_connected: DBManager) -> AirplaneRepository:
+    return AirplaneRepository(db_connected)
+
+
+def get_airplane(airplane_id: int = 1) -> Airplane:
+    return Airplane(
+        id=airplane_id,
+        tail_number=f"LV-{random.randint(1000, 9999)}",
+        manufacturer="Boeing",
+        model="737-800",
+        capacity=18,
+        range_km=5400,
+        flight_hour_cost_usd=Decimal("5000.00"),
+        current_status_id=1,
     )
 
 
 @pytest.fixture
-def base_passenger_repository(db_connected: DBManager) -> BaseRepository:
-    return BaseRepository(
-        db_connected,
-        "passengers",
-        (
-            "id",
-            "full_name",
-            "birth_date",
-            "email",
-            "phone_number",
-            "is_blacklisted",
-            "is_vip",
-        ),
-        Passenger,
-    )
+def airplane() -> Airplane:
+    return get_airplane()
+
+
+@pytest.fixture
+def airplanes(cant: int = 3) -> list[Airplane]:
+    return [get_airplane(airplane_id=i) for i in range(1, cant + 1)]
+
+
+@pytest.fixture
+def document_repository(db_connected: DBManager) -> DocumentRepository:
+    return DocumentRepository(db_connected)
 
 
 @pytest.fixture()
@@ -130,11 +126,6 @@ def passenger() -> Passenger:
 @pytest.fixture
 def passengers(cant: int = 3) -> list[Passenger]:
     return [get_passenger() for _ in range(cant)]
-
-
-@pytest.fixture
-def document_repository(db_connected: DBManager) -> DocumentRepository:
-    return DocumentRepository(db_connected)
 
 
 def get_document(passenger_id: UUID) -> Document:
