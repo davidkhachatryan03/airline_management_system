@@ -27,11 +27,4 @@ jobs:
       run: black --check .
 
     - name: Testing (pytest)
-      env:
-          PYTHONPATH: .
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_TEST_NAME: ${{ secrets.DB_TEST_NAME }}
-          DB_TEST_PASS: ${{ secrets.DB_TEST_PASS }}
-          DB_TEST_PORT: ${{ secrets.DB_TEST_PORT }}
       run: pytest -v

@@ -7,8 +7,6 @@ from uuid import UUID
 import pytest
 from uuid6 import uuid7
 
-os.environ["TESTING"] = "True"
-
 from src.common import DBManager
 from src.common.types import FlightId
 from src.core.repositories import (
