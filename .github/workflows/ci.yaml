@@ -40,6 +40,10 @@ jobs:
     - name: Check format (black)
       run: black --check .
 
+    - name: Create database tables
+      run: |
+        mysql -h 127.0.0.1 -P 3308 -u root -ptestpassword testdb < sql/init.sql
+
     - name: Testing (pytest)
       run: pytest -v
       env:
