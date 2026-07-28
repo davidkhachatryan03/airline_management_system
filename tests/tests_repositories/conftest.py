@@ -1,4 +1,3 @@
-import os
 import random
 from datetime import date, datetime
 from decimal import Decimal
@@ -8,16 +7,17 @@ import pytest
 from uuid6 import uuid7
 
 from src.common import DBManager
-from src.common.types import FlightId
+from src.common.types import FlightId, RouteId
 from src.core.repositories import (
     AirplaneRepository,
     BookingRepository,
     DocumentRepository,
     FlightRepository,
     PassengerRepository,
+    RouteRepository,
     TicketRepository,
 )
-from src.entities import Airplane, Booking, Document, Flight, Passenger, Ticket
+from src.entities import Airplane, Booking, Document, Flight, Passenger, Route, Ticket
 
 
 @pytest.fixture
@@ -201,6 +201,11 @@ def tickets(
     booking: Booking, flight: Flight, passengers: list[Passenger]
 ) -> list[Ticket]:
     return [get_ticket(booking.id, flight.id, passenger.id) for passenger in passengers]
+
+
+@pytest.fixture
+def route_repository(db_connected: DBManager) -> RouteRepository:
+    return RouteRepository(db_connected)
 
 
 @pytest.fixture
