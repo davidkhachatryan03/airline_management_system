@@ -10,8 +10,8 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_TEST_NAME }}
-          MYSQL_DATABASE: ${{ secrets.DB_TEST_PASS }}
+          MYSQL_ROOT_PASSWORD: "testpassword"
+          MYSQL_DATABASE: "testdb"
         ports:
           - 3308:3306
         options: >-
@@ -46,6 +46,6 @@ jobs:
         TESTING: "True"
         DB_HOST: "127.0.0.1"
         DB_USER: "root"
-        DB_TEST_PASS: ${{ secrets.DB_TEST_PASS }} 
-        DB_TEST_NAME: ${{ secrets.DB_TEST_NAME }}
+        DB_TEST_PASS: "testpassword"
+        DB_TEST_NAME: "testdb"
         DB_TEST_PORT: "3308"
