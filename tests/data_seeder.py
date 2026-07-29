@@ -1,5 +1,6 @@
 import random
 from datetime import date, datetime, timedelta
+from decimal import Decimal
 
 from faker import Faker
 
@@ -21,70 +22,70 @@ AIRPLANE_MODELS = [
         "model": "G650ER",
         "capacity": 18,
         "range_km": 13890,
-        "cost_usd": 15500.00,
+        "flight_hour_cost_usd": Decimal("15500.00"),
     },
     {
         "manufacturer": "Bombardier",
         "model": "Global 7500",
         "capacity": 19,
         "range_km": 14260,
-        "cost_usd": 16200.00,
+        "flight_hour_cost_usd": Decimal("16200.00"),
     },
     {
         "manufacturer": "Dassault",
         "model": "Falcon 8X",
         "capacity": 14,
         "range_km": 11945,
-        "cost_usd": 14800.50,
+        "flight_hour_cost_usd": Decimal("14800.50"),
     },
     {
         "manufacturer": "Cessna",
         "model": "Citation X+",
         "capacity": 12,
         "range_km": 6400,
-        "cost_usd": 9500.00,
+        "flight_hour_cost_usd": Decimal("9500.00"),
     },
     {
         "manufacturer": "Bombardier",
         "model": "Challenger 350",
         "capacity": 9,
         "range_km": 5900,
-        "cost_usd": 8700.00,
+        "flight_hour_cost_usd": Decimal("8700.00"),
     },
     {
         "manufacturer": "Cessna",
         "model": "Citation CJ4",
         "capacity": 10,
         "range_km": 4010,
-        "cost_usd": 5600.00,
+        "flight_hour_cost_usd": Decimal("5600.00"),
     },
     {
         "manufacturer": "Embraer",
         "model": "Phenom 300E",
         "capacity": 10,
         "range_km": 3650,
-        "cost_usd": 5200.00,
+        "flight_hour_cost_usd": Decimal("5200.00"),
     },
     {
         "manufacturer": "Learjet",
         "model": "75 Liberty",
         "capacity": 8,
         "range_km": 3850,
-        "cost_usd": 5100.00,
+        "flight_hour_cost_usd": Decimal("5100.00"),
     },
     {
         "manufacturer": "Pilatus",
         "model": "PC-24",
         "capacity": 11,
         "range_km": 3704,
-        "cost_usd": 4900.00,
+        "flight_hour_cost_usd": Decimal("4900.00"),
     },
     {
         "manufacturer": "Honda Aircraft",
         "model": "HondaJet Elite",
         "capacity": 5,
         "range_km": 2661,
-        "cost_usd": 3800.00,
+        "flight_hour_cost_usd": Decimal("3800.00"),
     },
 ]
 
@@ -399,6 +400,11 @@ class DataSeeder:
     def airplanes(self, cant: int = 10) -> list[Airplane]:
         airplanes_created: list[Airplane] = []
 
+        try:
+            starting_id: int = max(self.storage.airplanes.keys()) + 1
+        except:
+            starting_id = 1
+
         for _ in range(cant):
             base_model = random.choice(AIRPLANE_MODELS)
 
@@ -410,11 +416,6 @@ class DataSeeder:
 
             status_id = random.choices([1, 2], weights=[0.9, 0.1])[0]
 
-            try:
-                starting_id: int = max(self.storage.airplanes.keys())
-            except:
-                starting_id: int = 1
-
             airplanes_created.append(
                 Airplane(
                     id=starting_id,
@@ -423,10 +424,12 @@ class DataSeeder:
                     model=base_model["model"],
                     capacity=base_model["capacity"],
                     range_km=base_model["range_km"],
-                    flight_hour_cost_usd=base_model["cost_usd"],
+                    flight_hour_cost_usd=base_model["flight_hour_cost_usd"],
                     current_status_id=status_id,
                 )
             )
+
+            starting_id += 1
 
         for airplane in airplanes_created:
             self.storage.airplanes[airplane.id] = airplane
