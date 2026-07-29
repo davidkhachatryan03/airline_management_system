@@ -18,12 +18,6 @@ from src.core.repositories import (
     TicketRepository,
 )
 from src.entities import Airplane, Booking, Document, Flight, Passenger, Route, Ticket
-from tests.data_seeder import DataSeeder, FakeStorage
-
-
-@pytest.fixture
-def data_seeder() -> DataSeeder:
-    return DataSeeder(FakeStorage())
 
 
 @pytest.fixture
@@ -72,8 +66,8 @@ def airplane() -> Airplane:
 
 
 @pytest.fixture
-def airplanes(data_seeder: DataSeeder) -> list[Airplane]:
-    return data_seeder.airplanes()
+def airplanes(cant: int = 3) -> list[Airplane]:
+    return [get_airplane(airplane_id=i) for i in range(1, cant + 1)]
 
 
 @pytest.fixture
