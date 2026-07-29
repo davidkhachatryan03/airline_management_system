@@ -1,5 +1,4 @@
 import random
-import string
 from datetime import date, datetime, timedelta
 
 from faker import Faker
@@ -7,13 +6,9 @@ from faker import Faker
 from src.common.types import (
     AirplaneId,
     BookingId,
-    DistanceKm,
     DocumentId,
     DocumentTypeId,
-    DurationMin,
-    FlightHourCostUsd,
     FlightId,
-    OperatingCostUsd,
     PassengerId,
     RouteId,
     TicketId,
