@@ -46,6 +46,7 @@ class FlightRepository(BaseRepository[Flight]):
                 AND         t.current_status_id = 1 
                 WHERE       f.id 
                 IN          ({}) 
+                AND         f.current_status_id = 1
                 GROUP BY    f.id, 
                             a.capacity;
                 """.format(placeholders)
