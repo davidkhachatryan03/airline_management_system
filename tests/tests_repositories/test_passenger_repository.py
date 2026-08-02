@@ -1,14 +1,21 @@
-from src.common.types import DocumentIdentityKey
+from factory.declarations import Iterator
+
+from src.common.types import DocumentIdentityKey, PassengerId
 from src.core.repositories import DocumentRepository, PassengerRepository
 from src.entities import Document, Passenger
+from tests.factories import DocumentFactory, PassengerFactory
 
 
 def test_passenger_repository_retrieve_by_documents(
     passenger_repository: PassengerRepository,
     document_repository: DocumentRepository,
-    passengers: list[Passenger],
-    documents: list[Document],
 ) -> None:
+    passengers: list[Passenger] = PassengerFactory.build_batch(50)
+    passenger_ids: list[PassengerId] = [passenger.id for passenger in passengers]
+    documents: list[Document] = DocumentFactory.build_batch(
+        50, passenger_id=Iterator(passenger_ids)
+    )
+
     passenger_repository.insert(passengers)
     document_repository.insert(documents)
 

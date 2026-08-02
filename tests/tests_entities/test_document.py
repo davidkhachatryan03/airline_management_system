@@ -2,37 +2,43 @@ from datetime import date
 from uuid import UUID
 
 import pytest
+from uuid6 import uuid7
 
 from src.entities import Document
 
 
-def test_document_valid_input(document: Document) -> None:
-    assert document.id == UUID("019e92b3-e0db-7244-a9a2-43322a076e75")
-    assert document.document_number == "AB12345678"
-    assert document.valid_from == date(2024, 1, 1)
-    assert document.valid_until == date(2034, 1, 1)
-    assert document.issue_country == "ARG"
-    assert document.passenger_id == UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7")
-    assert document.document_type_id == 1
+@pytest.fixture
+def data():
+    return {
+        "id": uuid7(),
+        "document_number": "AB12345678",
+        "valid_from": date(2024, 1, 1),
+        "valid_until": date(2034, 1, 1),
+        "issue_country": "ARG",
+        "passenger_id": uuid7(),
+        "document_type_id": 1,
+    }
 
 
-def test_new_document_classmethod_valid_input(document: Document) -> None:
-    new_doc = Document.new_document(
-        document_number=document.document_number,
-        valid_from=document.valid_from,
-        valid_until=document.valid_until,
-        issue_country=document.issue_country,
-        passenger_id=document.passenger_id,
-        document_type_id=document.document_type_id,
+def test_document_valid_input(data) -> None:
+    document = Document(**data)
+
+    assert document.to_dict() == data
+
+
+def test_new_document_classmethod_valid_input(mocker, data) -> None:
+    mocker.patch("src.entities.document.uuid7", return_value=data["id"])
+
+    document = Document.new_document(
+        document_number=data["document_number"],
+        valid_from=data["valid_from"],
+        valid_until=data["valid_until"],
+        issue_country=data["issue_country"],
+        passenger_id=data["passenger_id"],
+        document_type_id=data["document_type_id"],
     )
 
-    assert isinstance(new_doc.id, UUID)
-    assert new_doc.document_number == document.document_number
-    assert new_doc.valid_from == document.valid_from
-    assert new_doc.valid_until == document.valid_until
-    assert new_doc.issue_country == document.issue_country
-    assert new_doc.passenger_id == document.passenger_id
-    assert new_doc.document_type_id == document.document_type_id
+    assert document.to_dict() == data
 
 
 @pytest.mark.parametrize(
@@ -99,9 +105,8 @@ def test_new_document_classmethod_valid_input(document: Document) -> None:
         ),
     ],
 )
-def test_invalid_document(document: Document, field, value, exception, message) -> None:
-    test_data: dict = document.to_dict()
-    test_data[field] = value
+def test_invalid_document(data, field, value, exception, message) -> None:
+    data[field] = value
 
     with pytest.raises(exception, match=message):
-        Document(**test_data)
+        Document(**data)

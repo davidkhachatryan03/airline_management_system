@@ -2,36 +2,48 @@ from decimal import Decimal
 from uuid import UUID
 
 import pytest
+from uuid6 import uuid7
 
 from src.entities import Ticket
 
 
-def test_ticket_valid_input(ticket: Ticket) -> None:
+@pytest.fixture
+def data():
+    return {
+        "id": uuid7(),
+        "ticket_number": "1234567890123",
+        "paid_amount_usd": Decimal("13000"),
+        "current_status_id": 1,
+        "booking_id": uuid7(),
+        "flight_id": uuid7(),
+        "passenger_id": uuid7(),
+    }
 
-    assert ticket.id == UUID("019e92b3-e0db-7244-a9a2-43322a076e75")
-    assert ticket.ticket_number == "1234567890123"
-    assert ticket.paid_amount_usd == Decimal("13000")
-    assert ticket.current_status_id == 1
-    assert ticket.booking_id == UUID("019e97c2-2c47-70a5-a87d-a04de3b9c11f")
-    assert ticket.flight_id == UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7")
-    assert ticket.passenger_id == UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7")
+
+def test_ticket_valid_input(data) -> None:
+    ticket = Ticket(**data)
+
+    assert ticket.to_dict() == data
 
 
-def test_new_booking_classmethod_valid_input(ticket: Ticket) -> None:
-    new_ticket = Ticket.new_ticket(
-        paid_amount_usd=ticket.paid_amount_usd,
-        booking_id=ticket.booking_id,
-        flight_id=ticket.flight_id,
-        passenger_id=ticket.passenger_id,
+def test_new_booking_classmethod_valid_input(mocker, data) -> None:
+    mocker.patch("src.entities.ticket.uuid7", return_value=data["id"])
+
+    ticket = Ticket.new_ticket(
+        paid_amount_usd=data["paid_amount_usd"],
+        booking_id=data["booking_id"],
+        flight_id=data["flight_id"],
+        passenger_id=data["passenger_id"],
     )
 
-    assert isinstance(new_ticket.id, UUID)
-    assert isinstance(new_ticket.ticket_number, str)
-    assert new_ticket.paid_amount_usd == ticket.paid_amount_usd
-    assert new_ticket.current_status_id == 1
-    assert new_ticket.booking_id == ticket.booking_id
-    assert new_ticket.flight_id == ticket.flight_id
-    assert new_ticket.passenger_id == ticket.passenger_id
+    assert ticket.id == data["id"]
+    assert len(ticket.ticket_number) == 13
+    assert ticket.ticket_number.isnumeric()
+    assert ticket.paid_amount_usd == ticket.paid_amount_usd
+    assert ticket.current_status_id == 1
+    assert ticket.booking_id == ticket.booking_id
+    assert ticket.flight_id == ticket.flight_id
+    assert ticket.passenger_id == ticket.passenger_id
 
 
 @pytest.mark.parametrize(
@@ -99,9 +111,8 @@ def test_new_booking_classmethod_valid_input(ticket: Ticket) -> None:
         ("passenger_id", 123, TypeError, "The type of the passenger id is not UUID."),
     ],
 )
-def test_invalid_ticket(ticket: Ticket, field, value, exception, message) -> None:
-    test_data: dict = ticket.to_dict()
-    test_data[field] = value
+def test_invalid_ticket(data, field, value, exception, message) -> None:
+    data[field] = value
 
     with pytest.raises(exception, match=message):
-        Ticket(**test_data)
+        Ticket(**data)

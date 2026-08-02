@@ -1,14 +1,18 @@
 from src.common.types import DocumentId, DocumentIdentityKey, PassengerId
 from src.core.repositories import DocumentRepository, PassengerRepository
 from src.entities import Document, Passenger
+from tests.factories import DocumentFactory, PassengerFactory
 
 
 def test_base_repository_insert_and_retrieve(
     passenger_repository: PassengerRepository,
     document_repository: DocumentRepository,
-    documents: list[Document],
-    passengers: list[Passenger],
 ) -> None:
+    passengers: list[Passenger] = PassengerFactory.build_batch(50)
+    documents: list[Document] = [
+        DocumentFactory(passenger_id=passenger.id) for passenger in passengers
+    ]
+
     passenger_repository.insert(passengers)
     document_repository.insert(documents)
 

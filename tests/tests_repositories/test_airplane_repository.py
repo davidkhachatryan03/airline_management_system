@@ -3,12 +3,16 @@ from datetime import datetime
 from src.common.types import AirplaneId, FlightHourCostUsd, RangeKm
 from src.core.repositories import AirplaneRepository
 from src.entities import Airplane
+from tests.factories import AirplaneFactory
 
 
 def test_airplane_repository_retrieve_ranges_km_by_ids(
-    airplane_repository: AirplaneRepository, airplanes: list[Airplane]
+    airplane_repository: AirplaneRepository,
 ) -> None:
     airplane_repository.delete()
+
+    airplanes: list[Airplane] = AirplaneFactory.build_batch(5)
+
     airplane_repository.insert(airplanes)
 
     airplane_ids: list[AirplaneId] = [airplane.id for airplane in airplanes]
@@ -22,16 +26,19 @@ def test_airplane_repository_retrieve_ranges_km_by_ids(
 
 
 def test_ariplane_repository_retrieve_flight_hour_costs_by_ids(
-    airplane_repository: AirplaneRepository, airplanes: list[Airplane]
+    airplane_repository: AirplaneRepository,
 ) -> None:
     airplane_repository.delete()
+
+    airplanes: list[Airplane] = AirplaneFactory.build_batch(5)
+
     airplane_repository.insert(airplanes)
 
-    airplane_ids: list[AirplaneId] = [airplane.id for airplane in airplanes]
     flight_hour_costs_usd: list[FlightHourCostUsd] = [
         airplane.flight_hour_cost_usd for airplane in airplanes
     ]
 
+    airplane_ids: list[AirplaneId] = [airplane.id for airplane in airplanes]
     flight_hour_costs_usd_retrieved: list[FlightHourCostUsd] = (
         airplane_repository.retrieve_flight_hour_costs_usd_by_ids(airplane_ids)
     )
@@ -40,12 +47,13 @@ def test_ariplane_repository_retrieve_flight_hour_costs_by_ids(
 
 
 def test_retrieve_available_airplanes_ids(
-    airplane_repository: AirplaneRepository, airplanes: list[Airplane]
+    airplane_repository: AirplaneRepository,
 ) -> None:
     airplane_repository.delete()
-    airplane_repository.insert(airplanes)
 
-    airplane_ids: list[AirplaneId] = [airplane.id for airplane in airplanes]
+    airplanes: list[Airplane] = AirplaneFactory.build_batch(5)
+
+    airplane_repository.insert(airplanes)
 
     available_airplane_ids_retrieved: list[AirplaneId] = (
         airplane_repository.retrieve_available_airplanes_ids(
@@ -53,13 +61,20 @@ def test_retrieve_available_airplanes_ids(
         )
     )
 
-    assert set(airplane_ids) == set(available_airplane_ids_retrieved)
+    available_airplane_ids_expected: list[AirplaneId] = [
+        airplane.id for airplane in airplanes
+    ]
+
+    assert set(available_airplane_ids_expected) == set(available_airplane_ids_retrieved)
 
 
 def test_retrieve_available_airplanes_ids_empty(
-    airplane_repository: AirplaneRepository, airplanes: list[Airplane]
+    airplane_repository: AirplaneRepository,
 ) -> None:
     airplane_repository.delete()
+
+    airplanes: list[Airplane] = AirplaneFactory.build_batch(5)
+
     airplane_repository.insert(airplanes)
 
     available_airplanes_retrieved: list[AirplaneId] = (

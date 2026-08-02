@@ -5,15 +5,24 @@ import pytest
 from src.entities.airplane import Airplane
 
 
-def test_airplane_valid_input(airplane: Airplane) -> None:
-    assert airplane.id == 10
-    assert airplane.tail_number == "ABC-123"
-    assert airplane.manufacturer == "Airbus"
-    assert airplane.model == "123-200"
-    assert airplane.capacity == 132
-    assert airplane.range_km == 6749
-    assert airplane.flight_hour_cost_usd == Decimal("2000")
-    assert airplane.current_status_id == 1
+@pytest.fixture
+def data():
+    return {
+        "id": 10,
+        "tail_number": "ABC-123",
+        "manufacturer": "Airbus",
+        "model": "123-400",
+        "capacity": 132,
+        "range_km": 6749,
+        "flight_hour_cost_usd": Decimal("2000"),
+        "current_status_id": 1,
+    }
+
+
+def test_airplane_valid_input(data) -> None:
+    airplane = Airplane(**data)
+
+    assert airplane.to_dict() == data
 
 
 @pytest.mark.parametrize(
@@ -115,9 +124,8 @@ def test_airplane_valid_input(airplane: Airplane) -> None:
         ),
     ],
 )
-def test_invalid_airplane(airplane: Airplane, field, value, exception, message) -> None:
-    test_data: dict = airplane.to_dict()
-    test_data[field] = value
+def test_invalid_airplane(data, field, value, exception, message) -> None:
+    data[field] = value
 
     with pytest.raises(exception, match=message):
-        Airplane(**test_data)
+        Airplane(**data)

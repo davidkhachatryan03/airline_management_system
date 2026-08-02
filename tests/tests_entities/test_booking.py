@@ -1,35 +1,51 @@
 from datetime import datetime
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import Decimal
 from uuid import UUID
 
 import pytest
+from freezegun import freeze_time
+from uuid6 import uuid7
 
-from src.entities import Booking, Flight
+from src.entities import Booking
 
 
-def test_booking_valid_input(booking: Booking) -> None:
+@pytest.fixture
+def data():
+    return {
+        "id": uuid7(),
+        "booking_reference": "ABC123",
+        "booking_datetime": datetime(2026, 1, 1),
+        "paid_amount_usd": Decimal("10000.76"),
+        "current_status_id": 1,
+    }
 
-    assert booking.id == UUID("019e92b3-e0db-7244-a9a2-43322a076e75")
-    assert booking.booking_reference == "ABC123"
-    assert booking.booking_datetime == datetime(2026, 1, 1)
-    assert booking.paid_amount_usd == Decimal("10000.76")
+
+def test_booking_valid_input(data) -> None:
+    booking = Booking(**data)
+
+    assert booking.to_dict() == data
+
+
+@freeze_time("2026-01-01 12:00:00")
+def test_new_booking_classmethod_valid_input(mocker, data) -> None:
+    mocker.patch("src.entities.booking.uuid7", return_value=data["id"])
+
+    flights_base_prices = [Decimal("1000"), Decimal("2000")]
+    number_of_passengers = 4
+    booking = Booking.new_booking(
+        flights_base_prices=flights_base_prices,
+        number_of_passengers=number_of_passengers,
+    )
+
+    calculated_paid_amount_usd: Decimal = Decimal("12000")
+
+    assert booking.id == data["id"]
+    assert len(booking.booking_reference) == 6
+    assert booking.booking_reference.isupper()
+    assert booking.booking_reference.isalnum()
+    assert booking.booking_datetime == datetime(2026, 1, 1, 12, 0, 0)
+    assert booking.paid_amount_usd == calculated_paid_amount_usd
     assert booking.current_status_id == 1
-
-
-def test_new_booking_classmethod_valid_input(
-    flight: Flight, number_of_passengers=4
-) -> None:
-    new_booking = Booking.new_booking([flight.base_price_usd], number_of_passengers)
-
-    calculated_paid_amount_usd: Decimal = (
-        flight.base_price_usd * number_of_passengers
-    ).quantize(Decimal("0.01"), ROUND_HALF_UP)
-
-    assert isinstance(new_booking.id, UUID)
-    assert isinstance(new_booking.booking_reference, str)
-    assert isinstance(new_booking.booking_datetime, datetime)
-    assert new_booking.paid_amount_usd == calculated_paid_amount_usd
-    assert new_booking.current_status_id == 1
 
 
 @pytest.mark.parametrize(
@@ -104,9 +120,8 @@ def test_new_booking_classmethod_valid_input(
         ),
     ],
 )
-def test_invalid_booking(booking: Booking, field, value, exception, message) -> None:
-    test_data: dict = booking.to_dict()
-    test_data[field] = value
+def test_invalid_booking(data, field, value, exception, message) -> None:
+    data[field] = value
 
     with pytest.raises(exception, match=message):
-        Booking(**test_data)
+        Booking(**data)

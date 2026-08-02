@@ -2,16 +2,26 @@ from datetime import datetime
 from uuid import UUID
 
 import pytest
+from uuid6 import uuid7
 
 from src.entities.boarding_pass import BoardingPass
 
 
-def test_boarding_pass_valid_input(boarding_pass: BoardingPass) -> None:
-    assert boarding_pass.id == UUID("019e92b3-e0db-7244-a9a2-43322a076e75")
-    assert boarding_pass.issue_datetime == datetime(2024, 1, 1, 10, 0, 0)
-    assert boarding_pass.boarding_datetime == datetime(2024, 1, 1, 10, 30, 0)
-    assert boarding_pass.current_status_id == 1
-    assert boarding_pass.ticket_id == UUID("019e97c2-2c47-73ad-8730-18e7d13cfbf7")
+@pytest.fixture
+def data():
+    return {
+        "id": uuid7(),
+        "issue_datetime": datetime(2024, 1, 1, 10, 0, 0),
+        "boarding_datetime": datetime(2024, 1, 1, 10, 30, 0),
+        "current_status_id": 1,
+        "ticket_id": uuid7(),
+    }
+
+
+def test_boarding_pass_valid_input(data) -> None:
+    boarding_pass = BoardingPass(**data)
+
+    assert boarding_pass.to_dict() == data
 
 
 @pytest.mark.parametrize(
@@ -51,11 +61,8 @@ def test_boarding_pass_valid_input(boarding_pass: BoardingPass) -> None:
         ("ticket_id", 123, TypeError, "The type of 123 is not UUID."),
     ],
 )
-def test_invalid_boarding_pass(
-    boarding_pass: BoardingPass, field, value, exception, message
-) -> None:
-    test_data: dict = boarding_pass.to_dict()
-    test_data[field] = value
+def test_invalid_boarding_pass(data, field, value, exception, message) -> None:
+    data[field] = value
 
     with pytest.raises(exception, match=message):
-        BoardingPass(**test_data)
+        BoardingPass(**data)

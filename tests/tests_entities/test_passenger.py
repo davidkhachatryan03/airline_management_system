@@ -2,36 +2,41 @@ from datetime import date
 from uuid import UUID
 
 import pytest
+from uuid6 import uuid7
 
 from src.entities import Passenger
 
 
-def test_passenger_valid_input(passenger: Passenger) -> None:
+@pytest.fixture
+def data():
+    return {
+        "id": uuid7(),
+        "full_name": "David Khachatryan",
+        "birth_date": date(2000, 1, 1),
+        "email": "example@mail.com",
+        "phone_number": "123456789",
+        "is_blacklisted": False,
+        "is_vip": False,
+    }
 
-    assert passenger.id == UUID("019e92b3-e0db-7244-a9a2-43322a076e75")
-    assert passenger.full_name == "David Khachatryan"
-    assert passenger.birth_date == date(2000, 1, 1)
-    assert passenger.email == "dkh@email.com"
-    assert passenger.phone_number == "12345678"
-    assert passenger.is_blacklisted is False
-    assert passenger.is_vip is True
+
+def test_passenger_valid_input(data) -> None:
+    passenger = Passenger(**data)
+
+    assert passenger.to_dict() == data
 
 
-def test_new_passenger_classmethod_valid_input(passenger: Passenger) -> None:
-    new_passenger = Passenger.new_passenger(
-        full_name=passenger.full_name,
-        birth_date=passenger.birth_date,
-        email=passenger.email,
-        phone_number=passenger.phone_number,
+def test_new_passenger_classmethod_valid_input(mocker, data) -> None:
+    mocker.patch("src.entities.passenger.uuid7", return_value=data["id"])
+
+    passenger = Passenger.new_passenger(
+        full_name=data["full_name"],
+        birth_date=data["birth_date"],
+        email=data["email"],
+        phone_number=data["phone_number"],
     )
 
-    assert isinstance(new_passenger.id, UUID)
-    assert new_passenger.full_name == passenger.full_name
-    assert new_passenger.birth_date == passenger.birth_date
-    assert new_passenger.email == passenger.email
-    assert new_passenger.phone_number == passenger.phone_number
-    assert new_passenger.is_blacklisted is False
-    assert new_passenger.is_vip is False
+    assert passenger.to_dict() == data
 
 
 @pytest.mark.parametrize(
@@ -82,11 +87,8 @@ def test_new_passenger_classmethod_valid_input(passenger: Passenger) -> None:
         ),
     ],
 )
-def test_invalid_passenger(
-    passenger: Passenger, field, value, exception, message
-) -> None:
-    test_data: dict = passenger.to_dict()
-    test_data[field] = value
+def test_invalid_passenger(data, field, value, exception, message) -> None:
+    data[field] = value
 
     with pytest.raises(exception, match=message):
-        Passenger(**test_data)
+        Passenger(**data)

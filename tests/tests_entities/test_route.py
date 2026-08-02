@@ -3,13 +3,22 @@ import pytest
 from src.entities.route import Route
 
 
-def test_route_valid_input(route: Route) -> None:
-    assert route.id == 5
-    assert route.flight_number == "AR1234"
-    assert route.origin == "EZE"
-    assert route.destination == "COR"
-    assert route.distance_km == 645
-    assert route.duration_min == 90
+@pytest.fixture
+def data():
+    return {
+        "id": 5,
+        "flight_number": "AR1234",
+        "origin": "EZE",
+        "destination": "COR",
+        "distance_km": 645,
+        "duration_min": 90,
+    }
+
+
+def test_route_valid_input(data) -> None:
+    route = Route(**data)
+
+    assert route.to_dict() == data
 
 
 @pytest.mark.parametrize(
@@ -113,9 +122,8 @@ def test_route_valid_input(route: Route) -> None:
         ),
     ],
 )
-def test_invalid_route(route: Route, field, value, exception, message) -> None:
-    test_data: dict = route.to_dict()
-    test_data[field] = value
+def test_invalid_route(data, field, value, exception, message) -> None:
+    data[field] = value
 
     with pytest.raises(exception, match=message):
-        Route(**test_data)
+        Route(**data)

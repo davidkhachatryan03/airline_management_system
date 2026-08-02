@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime as dt
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -28,5 +28,7 @@ class BookingRequest(BaseModel):
 class BookingResponse(BaseModel):
     booking_reference: BookingReference
     tickets: list[TicketNumber]
-    booking_datetime: BoardingDatetime = Field(default_factory=datetime.now)
+    booking_datetime: BoardingDatetime = Field(
+        default_factory=lambda: dt.datetime.now()
+    )
     paid_amount_usd: PaidAmountUsd = Field(gt=0, decimal_places=2, max_digits=8)

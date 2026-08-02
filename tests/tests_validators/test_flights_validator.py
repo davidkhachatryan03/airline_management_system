@@ -1,12 +1,15 @@
+from uuid6 import uuid7
+
 from src.common.types import FlightId
 from src.core.validators import FlightValidator
 
 
-def test_check_seats_available_full_flight(
-    flight_validator: FlightValidator, seats_available_per_flight: dict[FlightId, int]
-) -> None:
-    first_flight: FlightId = list(seats_available_per_flight.keys())[0]
-    seats_available_per_flight[first_flight] = 0
+def test_check_seats_available_full_flight(flight_validator: FlightValidator) -> None:
+    seats_available_per_flight: dict[FlightId, int] = {
+        uuid7(): 0,
+        uuid7(): 1,
+        uuid7(): 4,
+    }
 
     full_flights, not_seats_enough = flight_validator.check_seats_available(
         seats_available_per_flight, number_of_passengers=1
@@ -17,8 +20,14 @@ def test_check_seats_available_full_flight(
 
 
 def test_check_seats_available_not_seats_enough(
-    flight_validator: FlightValidator, seats_available_per_flight: dict[FlightId, int]
+    flight_validator: FlightValidator,
 ) -> None:
+    seats_available_per_flight: dict[FlightId, int] = {
+        uuid7(): 6,
+        uuid7(): 1,
+        uuid7(): 4,
+    }
+
     full_flights, not_seats_enough = flight_validator.check_seats_available(
         seats_available_per_flight, number_of_passengers=999
     )
@@ -28,10 +37,13 @@ def test_check_seats_available_not_seats_enough(
 
 
 def test_check_seats_available_full_flight_and_not_seats_enough(
-    flight_validator: FlightValidator, seats_available_per_flight: dict[FlightId, int]
+    flight_validator: FlightValidator,
 ) -> None:
-    first_flight: FlightId = list(seats_available_per_flight.keys())[0]
-    seats_available_per_flight[first_flight] = 0
+    seats_available_per_flight: dict[FlightId, int] = {
+        uuid7(): 0,
+        uuid7(): 1,
+        uuid7(): 4,
+    }
 
     full_flights, not_seats_enough = flight_validator.check_seats_available(
         seats_available_per_flight, number_of_passengers=999

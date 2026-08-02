@@ -1,6 +1,6 @@
+import datetime as dt
 import random
 import string
-from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
 
 from uuid6 import uuid7
@@ -133,7 +133,7 @@ class Booking(BaseEntity):
         return cls(
             id=uuid7(),
             booking_reference=cls._generate_reference(),
-            booking_datetime=datetime.now(),
+            booking_datetime=dt.datetime.now(),
             paid_amount_usd=cls._calculate_paid_amount_usd(
                 flights_base_prices, number_of_passengers
             ),

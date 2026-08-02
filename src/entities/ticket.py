@@ -140,7 +140,7 @@ class Ticket(BaseEntity):
     ) -> "Ticket":
         return cls(
             id=uuid7(),
-            ticket_number=cls._generate_ticket_number(),
+            ticket_number=cls._generate_number(),
             paid_amount_usd=paid_amount_usd,
             current_status_id=1,
             booking_id=booking_id,
@@ -149,7 +149,7 @@ class Ticket(BaseEntity):
         )
 
     @staticmethod
-    def _generate_ticket_number() -> TicketNumber:
+    def _generate_number() -> TicketNumber:
         first_digit = str(random.randint(1, 9))
         rest_digits = "".join(random.choices(string.digits, k=12))
 
