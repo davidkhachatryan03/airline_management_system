@@ -1,5 +1,5 @@
 from src.common import DBManager
-from src.common.types import FlightId
+from src.common.types import FlightId, FlightIdentityKey, FlightRow
 from src.core.repositories.base_repository import BaseRepository
 from src.entities import Flight
 

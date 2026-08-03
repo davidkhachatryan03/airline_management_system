@@ -1,6 +1,6 @@
 from src.common import DBManager
 from src.core.repositories.base_repository import BaseRepository
-from src.entities import Booking, Document, Ticket
+from src.entities import Booking, Document, Passenger, Ticket
 
 
 class BookingRepository(BaseRepository[Booking]):
