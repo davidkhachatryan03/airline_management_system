@@ -1,5 +1,5 @@
 from src.common import DBManager
-from src.common.types import DistanceKm, DurationMin, RouteId, RouteRow
+from src.common.types import DistanceKm, DurationMin, RouteId
 from src.core.repositories.base_repository import BaseRepository
 from src.entities import Route
 
@@ -7,7 +7,19 @@ from src.entities import Route
 class RouteRepository(BaseRepository[Route]):
 
     def __init__(self, db_manager: DBManager) -> None:
-        self.db_manager = db_manager
+        super().__init__(
+            db_manager,
+            "routes",
+            (
+                "id",
+                "flight_number",
+                "origin",
+                "destination",
+                "distance_km",
+                "duration_min",
+            ),
+            Route,
+        )
 
     def retrieve_distances_km_by_ids(
         self, route_ids: list[RouteId]
@@ -15,7 +27,7 @@ class RouteRepository(BaseRepository[Route]):
         if not route_ids:
             return []
 
-        placeholders = ",".join(["%s" * len(route_ids)])
+        placeholders = ",".join(["%s"] * len(route_ids))
 
         query = "SELECT distance_km FROM routes WHERE id IN ({})".format(placeholders)
 
@@ -31,7 +43,7 @@ class RouteRepository(BaseRepository[Route]):
         if not route_ids:
             return []
 
-        placeholders = ",".join(["%s" * len(route_ids)])
+        placeholders = ",".join(["%s"] * len(route_ids))
 
         query = "SELECT duration_min FROM routes WHERE id IN ({})".format(placeholders)
 

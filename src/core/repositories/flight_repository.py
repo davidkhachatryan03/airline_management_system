@@ -7,7 +7,6 @@ from src.entities import Flight
 class FlightRepository(BaseRepository[Flight]):
 
     def __init__(self, db_manager: DBManager) -> None:
-        self.db_manager = db_manager
         super().__init__(
             db_manager,
             "flights",

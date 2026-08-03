@@ -23,7 +23,6 @@ class BookingRepository(BaseRepository[Booking]):
 class DocumentRepository(BaseRepository[Document]):
 
     def __init__(self, db_manager: DBManager) -> None:
-        self.db_manager = db_manager
         super().__init__(
             db_manager,
             "documents",
@@ -44,7 +43,6 @@ class DocumentRepository(BaseRepository[Document]):
 class TicketRepository(BaseRepository[Ticket]):
 
     def __init__(self, db_manager: DBManager) -> None:
-        self.db_manager = db_manager
         super().__init__(
             db_manager,
             "tickets",
