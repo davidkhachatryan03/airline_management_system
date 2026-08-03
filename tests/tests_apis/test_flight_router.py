@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from fastapi.testclient import TestClient
 from pytest_mock import MockerFixture
 
