@@ -1,5 +1,5 @@
 from src.common import DBManager
-from src.common.types import DocumentIdentityKey, PassengerId, PassengerRow
+from src.common.types import DocumentIdentityKey, PassengerRow
 from src.core.repositories.base_repository import BaseRepository
 from src.entities import Passenger
 

@@ -67,7 +67,7 @@ def test_flight_response_valid_data() -> None:
 
 
 def test_flight_response_invalid_uuid_raises_error() -> None:
-    data = {"id": "un-string-que-no-es-uuid"}
+    data = {"id": "not_uuid"}
 
     with pytest.raises(ValidationError) as exc_info:
         FlightResponse(**data)

@@ -1,12 +1,7 @@
-import re
-from datetime import datetime
-from decimal import Decimal
 from typing import cast
 from uuid import UUID
 
 import pytest
-from factory.declarations import Iterator
-from freezegun import freeze_time
 
 from src.api.schemas import FlightRequest, FlightResponse
 from src.common.exceptions import (
@@ -16,11 +11,10 @@ from src.common.exceptions import (
     MultipleExceptionsError,
     UnavailableAirplane,
 )
-from src.common.types import BookingDatetime, PaidAmountUsd, PassengerId
 from src.core.units_of_work import RegisterFlightUoW
 from src.core.use_cases import RegisterFlight, RegisterFlightValidator
-from src.core.validators import BaseValidator, FlightValidator, PassengerValidator
-from src.entities import Airplane, Booking, Document, Flight, Passenger, Route
+from src.core.validators import BaseValidator, FlightValidator
+from src.entities import Airplane, Flight, Route
 from tests.factories import AirplaneFactory, FlightFactory, RouteFactory
 from tests.fakes.fake_db_manager import FakeDBManager
 from tests.fakes.fake_uows.fake_register_flight_uow import FakeRegisterFlightUoW
