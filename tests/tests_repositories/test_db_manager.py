@@ -1,14 +1,14 @@
 import os
-from typing import Any
-from uuid import UUID
-
-import pytest
-from uuid6 import uuid7
 
 from src.common import DBManager
-from src.common.exceptions import InvalidBytes
-from src.entities import Passenger
-from tests.factories import PassengerFactory
+
+
+def test_db_manager_pool_is_shared() -> None:
+    db1 = DBManager()
+    db2 = DBManager()
+
+    assert DBManager._pool is not None
+    assert db1._pool is db2._pool
 
 
 def test_db_manager_enter_and_exit(db: DBManager) -> None:
@@ -20,7 +20,7 @@ def test_db_manager_enter_and_exit(db: DBManager) -> None:
 
         assert db.connection.is_connected()
 
-    assert not db.connection.is_connected()
+    assert getattr(db, "connection", None) is None
 
 
 def test_db_manager_connect_and_disconnect(db: DBManager) -> None:
@@ -30,7 +30,7 @@ def test_db_manager_connect_and_disconnect(db: DBManager) -> None:
 
     db.disconnect()
 
-    assert not db.connection.is_connected()
+    assert getattr(db, "connection", None) is None
 
 
 def test_db_manager_execute_sql_file(db_connected: DBManager) -> None:
@@ -38,83 +38,41 @@ def test_db_manager_execute_sql_file(db_connected: DBManager) -> None:
     db_connected.execute_sql_file(sql_file_route)
 
 
-def test_db_manager_retrieve(db_connected: DBManager) -> None:
-    query = "SELECT 1"
-
-    result: int = db_connected.retrieve_single_column(query)[0]
+def test_db_manager_execute_read(db_connected: DBManager) -> None:
+    result: int = db_connected.execute_read(query="SELECT 1")[0][0]
 
     assert result == 1
 
 
-def test_db_manager_insert_rows(db_connected: DBManager) -> None:
-    rows_count: int = db_connected.retrieve_single_column(
-        "SELECT COUNT(*) FROM passengers"
-    )[0]
+def test_db_manager_execute_read_single_column(db_connected: DBManager) -> None:
+    result: int = db_connected.execute_read_single_column(query="SELECT 1")[0]
 
-    assert rows_count == 0
-
-    passengers: list[Passenger] = PassengerFactory.build_batch(50)
-
-    db_connected.insert_rows("passengers", passengers)
-
-    rows_count: int = db_connected.retrieve_single_column(
-        "SELECT COUNT(*) FROM passengers"
-    )[0]
-
-    assert rows_count == len(passengers)
+    assert result == 1
 
 
-def test_db_manager_uuid_to_bytes(db: DBManager) -> None:
-    uuid_list: list[UUID] = [uuid7() for _ in range(10)]
-    uuid_bytes_list: list[bytes] = db.uuid_to_bytes(uuid_list)
+def test_db_manager_execute_write(db_connected: DBManager) -> None:
+    query = "INSERT INTO document_types VALUES (%s,%s)"
+    values = (7, "document_type")
 
-    for uuid in uuid_list:
-        assert uuid.bytes in uuid_bytes_list
+    result: int = db_connected.execute_write(query=query, values=values)
 
+    query = "SELECT id, description FROM document_types WHERE id = 7"
 
-def test_db_manager_bytes_to_uuid_one_element_per_row(db: DBManager) -> None:
-    uuid_bytes_list: list[bytes] = [uuid7().bytes for _ in range(10)]
-    uuid_list: list[UUID] = db.bytes_to_uuid(uuid_bytes_list)
+    documen_type_retrieved = db_connected.execute_read(query=query)[0]
 
-    for uuid in uuid_list:
-        assert uuid.bytes in uuid_bytes_list
+    assert result == 1
+    assert documen_type_retrieved == values
 
 
-def test_db_manager_bytes_to_uuid_one_element_per_row_with_invalid_bytes(
-    db: DBManager,
-) -> None:
-    invalid_uuid_bytes_list: list[tuple[Any, ...]] = [
-        (uuid7(), b"1234567890123456", uuid7()) for _ in range(5)
-    ]
-    with pytest.raises(InvalidBytes):
-        db.bytes_to_uuid(invalid_uuid_bytes_list)
+def test_db_manager_execute_write_many(db_connected: DBManager) -> None:
+    query = "INSERT INTO document_types VALUES (%s,%s)"
+    values = [(7, "document_type_1"), (8, "document_type_2"), (9, "document_type_3")]
 
+    result: int = db_connected.execute_write_many(query=query, values=values)
 
-def test_db_manager_bytes_to_uuid_many_elements_per_row(db: DBManager) -> None:
-    random_rows_retrieved: list[tuple[Any, ...]] = [
-        (uuid7().bytes, 1, "ABC", 12),
-        (uuid7().bytes, 99, "CDE", 90),
-    ]
-    rows_processed: list[tuple] = db.bytes_to_uuid(random_rows_retrieved)
+    query = "SELECT id, description FROM document_types WHERE id IN (7, 8, 9)"
 
-    for i in range(len(random_rows_retrieved)):
-        for j in range(len(random_rows_retrieved[0])):
-            if (
-                isinstance(random_rows_retrieved[i][j], bytes)
-                and len(random_rows_retrieved[i][j]) == 16
-            ):
-                assert rows_processed[i][j] == UUID(bytes=random_rows_retrieved[i][j])
+    documen_type_retrieved = db_connected.execute_read(query=query)
 
-            else:
-                assert rows_processed[i][j] == random_rows_retrieved[i][j]
-
-
-def test_db_manager_bytes_to_uuid_many_elements_per_row_with_invalid_bytes(
-    db: DBManager,
-) -> None:
-    random_rows_retrieved_invalid_bytes: list[tuple[Any, ...]] = [
-        (uuid7().bytes, 1, "ABC", 12),
-        (uuid7().bytes, 99, "CDE", 90, b"1234567890123456"),
-    ]
-    with pytest.raises(InvalidBytes):
-        db.bytes_to_uuid(random_rows_retrieved_invalid_bytes)
+    assert result == 3
+    assert documen_type_retrieved == values

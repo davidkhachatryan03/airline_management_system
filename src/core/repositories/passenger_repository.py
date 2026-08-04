@@ -8,9 +8,9 @@ class PassengerRepository(BaseRepository[Passenger]):
 
     def __init__(self, db_manager: DBManager) -> None:
         super().__init__(
-            db_manager,
-            "passengers",
-            (
+            db_manager=db_manager,
+            table_name="passengers",
+            columns=(
                 "id",
                 "full_name",
                 "birth_date",
@@ -19,7 +19,8 @@ class PassengerRepository(BaseRepository[Passenger]):
                 "is_blacklisted",
                 "is_vip",
             ),
-            Passenger,
+            entity=Passenger,
+            uuid_columns=tuple("id"),
         )
 
     def retrieve_by_documents(
@@ -51,8 +52,12 @@ class PassengerRepository(BaseRepository[Passenger]):
             value for identity_key in document_identity_keys for value in identity_key
         ]
 
-        results: list[PassengerRow] = self.db_manager.retrieve_many_columns(
+        results: list[PassengerRow] = self.db_manager.execute_read(
             query, document_identity_keys_plain
         )
 
-        return [Passenger(*row) for row in results]
+        parsed_results: list[PassengerRow] = [
+            (self._from_db_value(row[0]), *row[1:]) for row in results
+        ]
+
+        return [Passenger(*result) for result in parsed_results]

@@ -8,9 +8,9 @@ class RouteRepository(BaseRepository[Route]):
 
     def __init__(self, db_manager: DBManager) -> None:
         super().__init__(
-            db_manager,
-            "routes",
-            (
+            db_manager=db_manager,
+            table_name="routes",
+            columns=(
                 "id",
                 "flight_number",
                 "origin",
@@ -18,7 +18,7 @@ class RouteRepository(BaseRepository[Route]):
                 "distance_km",
                 "duration_min",
             ),
-            Route,
+            entity=Route,
         )
 
     def retrieve_distances_km_by_ids(
@@ -31,7 +31,7 @@ class RouteRepository(BaseRepository[Route]):
 
         query = "SELECT distance_km FROM routes WHERE id IN ({})".format(placeholders)
 
-        results: list[RouteId] = self.db_manager.retrieve_single_column(
+        results: list[RouteId] = self.db_manager.execute_read_single_column(
             query, route_ids
         )
 
@@ -47,7 +47,7 @@ class RouteRepository(BaseRepository[Route]):
 
         query = "SELECT duration_min FROM routes WHERE id IN ({})".format(placeholders)
 
-        results: list[RouteId] = self.db_manager.retrieve_single_column(
+        results: list[RouteId] = self.db_manager.execute_read_single_column(
             query, route_ids
         )
 

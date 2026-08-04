@@ -10,9 +10,9 @@ class AirplaneRepository(BaseRepository[Airplane]):
 
     def __init__(self, db_manager: DBManager) -> None:
         super().__init__(
-            db_manager,
-            "airplanes",
-            (
+            db_manager=db_manager,
+            table_name="airplanes",
+            columns=(
                 "id",
                 "tail_number",
                 "manufacturer",
@@ -22,7 +22,8 @@ class AirplaneRepository(BaseRepository[Airplane]):
                 "flight_hour_cost_usd",
                 "current_status_id",
             ),
-            Airplane,
+            entity=Airplane,
+            uuid_columns=tuple("id"),
         )
 
     def retrieve_ranges_km_by_ids(
@@ -35,7 +36,7 @@ class AirplaneRepository(BaseRepository[Airplane]):
 
         query = "SELECT range_km FROM airplanes WHERE id IN ({})".format(placeholders)
 
-        results: list[RangeKm] = self.db_manager.retrieve_single_column(
+        results: list[RangeKm] = self.db_manager.execute_read_single_column(
             query, airplane_ids
         )
 
@@ -53,7 +54,7 @@ class AirplaneRepository(BaseRepository[Airplane]):
             placeholders
         )
 
-        results: list[FlightHourCostUsd] = self.db_manager.retrieve_single_column(
+        results: list[FlightHourCostUsd] = self.db_manager.execute_read_single_column(
             query, airplane_ids
         )
 
@@ -101,7 +102,7 @@ class AirplaneRepository(BaseRepository[Airplane]):
             scheduled_arrival_datetime,
         )
 
-        results: list[AirplaneId] = self.db_manager.retrieve_single_column(
+        results: list[AirplaneId] = self.db_manager.execute_read_single_column(
             query, values
         )
 

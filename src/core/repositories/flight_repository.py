@@ -8,9 +8,9 @@ class FlightRepository(BaseRepository[Flight]):
 
     def __init__(self, db_manager: DBManager) -> None:
         super().__init__(
-            db_manager,
-            "flights",
-            (
+            db_manager=db_manager,
+            table_name="flights",
+            columns=(
                 "id",
                 "scheduled_departure_datetime",
                 "scheduled_arrival_datetime",
@@ -22,8 +22,9 @@ class FlightRepository(BaseRepository[Flight]):
                 "route_id",
                 "airplane_id",
             ),
-            Flight,
-            ("scheduled_departure_datetime", "route_id"),
+            entity=Flight,
+            identity_key=("scheduled_departure_datetime", "route_id"),
+            uuid_columns=tuple("id"),
         )
 
     def retrieve_seats_available_per_flight(
@@ -50,14 +51,19 @@ class FlightRepository(BaseRepository[Flight]):
                             a.capacity;
                 """.format(placeholders)
 
-        values: list[FlightId] = [id for id in flights_id]
+        values: list[FlightId] = [self._to_db_value(id) for id in flights_id]
 
-        results: list[tuple[FlightId, int]] = self.db_manager.retrieve_many_columns(
+        results: list[tuple[FlightId, int]] = self.db_manager.execute_read(
             query, values
         )
 
+        parsed_results = [
+            (self._from_db_value(flight_id), seats_count)
+            for flight_id, seats_count in results
+        ]
+
         result_dict: dict[FlightId, int] = {}
-        for row in results:
+        for row in parsed_results:
             result_dict[row[0]] = row[1]
 
         return result_dict

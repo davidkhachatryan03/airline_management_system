@@ -1,11 +1,10 @@
 import os
 from typing import Any, Sequence, cast
-from uuid import UUID
 
-import mysql.connector
 from dotenv import load_dotenv
-from mysql.connector.connection import MySQLConnection
+from mysql.connector import pooling
 from mysql.connector.cursor import MySQLCursor
+from mysql.connector.pooling import PooledMySQLConnection
 
 load_dotenv()
 
@@ -13,11 +12,11 @@ from src.common.exceptions import (
     DatabaseError,
     InexistentConnection,
     InexistentSQLFile,
-    InvalidBytes,
 )
 
 
 class DBManager:
+    _pool: pooling.MySQLConnectionPool | None = None
 
     def __init__(self) -> None:
         self.host: str = os.environ["DB_HOST"]
@@ -32,13 +31,31 @@ class DBManager:
             self.port: int = int(os.environ["DB_PORT"])
             self.password: str = os.environ["DB_PASS"]
 
+        if DBManager._pool is None:
+            self._initialize_pool()
+
+    def _initialize_pool(self) -> None:
+        try:
+            DBManager._pool = pooling.MySQLConnectionPool(
+                pool_name="app_pool",
+                pool_size=10,
+                pool_reset_session=True,
+                host=self.host,
+                port=self.port,
+                user=self.user,
+                password=self.password,
+                database=self.database,
+            )
+        except Exception as e:
+            raise DatabaseError(str(e)) from e
+
     def __enter__(self):
         self.connect()
         return self
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
-        if self.connection and self.connection.is_connected():
-            if exception_type is not None or os.environ["TESTING"] == True:
+        if hasattr(self, "connection") and self.connection.is_connected():
+            if exception_type is not None or os.environ.get("TESTING") == "True":
                 self.connection.rollback()
             else:
                 self.connection.commit()
@@ -46,27 +63,23 @@ class DBManager:
             self.disconnect()
 
     def connect(self) -> None:
-        self.connection: MySQLConnection = cast(
-            MySQLConnection,
-            mysql.connector.connect(
-                host=self.host,
-                port=self.port,
-                user=self.user,
-                password=self.password,
-                database=self.database,
-            ),
-        )
+        if DBManager._pool is None:
+            raise InexistentConnection()
+
+        self.connection: PooledMySQLConnection = DBManager._pool.get_connection()
 
         if self.connection.is_connected():
             print("Connected.")
-            self.connection.autocommit = False
             self.cursor: MySQLCursor = cast(MySQLCursor, self.connection.cursor())
 
     def disconnect(self) -> None:
-        if self.connection and self.cursor:
-            self.connection.close()
+        if hasattr(self, "cursor") and self.cursor:
             self.cursor.close()
-            print("Disconnected.")
+            del self.cursor
+
+        if hasattr(self, "connection") and self.connection:
+            self.connection.close()
+            del self.connection
 
     def execute_sql_file(self, route: str) -> None:
         if not self.connection.is_connected():
@@ -86,115 +99,38 @@ class DBManager:
         except Exception as e:
             raise DatabaseError(str(e)) from e
 
-    def retrieve_many_columns(
+    def execute_read(
         self, query: str, values: Sequence[Any] = ()
     ) -> list[tuple[Any, ...]]:
         if not self.connection.is_connected():
             raise InexistentConnection
-
         try:
-            values_formatted: list = self.uuid_to_bytes(list(values))
-
-            self.cursor.execute(query, values_formatted)
-            rows: list[tuple] = cast(list[tuple], self.cursor.fetchall())
-
-            if not rows:
-                return []
-
-            return self.bytes_to_uuid(rows)
-
+            self.cursor.execute(query, values)
+            rows = self.cursor.fetchall()
+            return cast(list[tuple[Any, ...]], rows) if rows else []
         except Exception as e:
             raise DatabaseError(str(e)) from e
 
-    def retrieve_single_column(
+    def execute_read_single_column(
         self, query: str, values: Sequence[Any] = ()
     ) -> list[Any]:
+        rows = self.execute_read(query, values)
+        return [row[0] for row in rows]
+
+    def execute_write(self, query: str, values: Sequence[Any] = ()) -> int:
         if not self.connection.is_connected():
             raise InexistentConnection
-
         try:
-            values_formatted: list = self.uuid_to_bytes(list(values))
-
-            self.cursor.execute(query, values_formatted)
-            rows: list[tuple] = cast(list[tuple], self.cursor.fetchall())
-
-            if not rows:
-                return []
-
-            result: list = [rows[i][0] for i in range(len(rows))]
-
-            return self.bytes_to_uuid(result)
-
+            self.cursor.execute(query, values)
+            return self.cursor.rowcount
         except Exception as e:
             raise DatabaseError(str(e)) from e
 
-    def insert_rows(self, table_name: str, entities: Sequence[Any]) -> int:
+    def execute_write_many(self, query: str, values: Sequence[Sequence[Any]]) -> int:
         if not self.connection.is_connected():
             raise InexistentConnection
-
         try:
-            row: dict = entities[0].to_dict()
-
-            columns: str = "(" + ",".join(row.keys()) + ")"
-            columns_amount: str = "(" + ",".join(["%s"] * len(row)) + ")"
-
-            values: list[list] = [
-                list(entity.to_dict().values()) for entity in entities
-            ]
-            values_formatted: list[list] = [
-                self.uuid_to_bytes(value) for value in values
-            ]
-
-            query = "INSERT INTO {} {} VALUES {}".format(
-                table_name, columns, columns_amount
-            )
-
-            self.cursor.executemany(query, values_formatted)
-            return cast(int, self.cursor.rowcount)
-
-        except AttributeError as e:
-            raise ValueError() from e
-
+            self.cursor.executemany(query, values)
+            return self.cursor.rowcount
         except Exception as e:
             raise DatabaseError(str(e)) from e
-
-    def uuid_to_bytes(self, rows: Sequence[Any]) -> list[bytes]:
-        rows_formatted: list[bytes] = []
-
-        for row in rows:
-            if isinstance(row, UUID):
-                rows_formatted.append(row.bytes)
-            else:
-                rows_formatted.append(row)
-
-        return rows_formatted
-
-    def bytes_to_uuid(self, rows: Sequence[Any]) -> list[Any]:
-        rows_formatted: list = []
-
-        if not isinstance(rows[0], tuple):
-            for row in rows:
-                if isinstance(row, bytes) and len(row) == 16:
-                    bytes_to_uuid: UUID = UUID(bytes=row)
-                    if bytes_to_uuid.version != 7:
-                        raise InvalidBytes
-                    rows_formatted.append(bytes_to_uuid)
-                else:
-                    rows_formatted.append(row)
-
-        else:
-            for row in rows:
-                row_formatted: list[Any] = []
-
-                for element in row:
-                    if isinstance(element, bytes) and len(element) == 16:
-                        bytes_to_uuid: UUID = UUID(bytes=element)
-                        if bytes_to_uuid.version != 7:
-                            raise InvalidBytes
-                        row_formatted.append(bytes_to_uuid)
-                    else:
-                        row_formatted.append(element)
-
-                rows_formatted.append(tuple(row_formatted))
-
-        return rows_formatted
