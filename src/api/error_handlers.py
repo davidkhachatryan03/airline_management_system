@@ -7,9 +7,7 @@ from src.common.exceptions import MultipleExceptionsError
 def setup_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(MultipleExceptionsError)
-    async def multiple_exceptions_handler(
-        request: Request, exc: MultipleExceptionsError
-    ):
+    def multiple_exceptions_handler(request: Request, exc: MultipleExceptionsError):
         details = []
 
         for error in exc.exceptions:
