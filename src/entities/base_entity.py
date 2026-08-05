@@ -41,7 +41,7 @@ class BaseEntity:
         if type(self) is not type(other):
             return False
 
-        return self.to_dict() == other.to_dict()
+        return self.id == other.id
 
     def __hash__(self) -> int:
         return hash((type(self), self.id))
