@@ -1,8 +1,9 @@
 from src.common.types import FlightId
+from src.core.validators.base_validator import BaseValidator
 from src.entities import Flight
 
 
-class FlightValidator:
+class FlightValidator(BaseValidator):
 
     def check_seats_available(
         self, seats_available_per_flight: dict[FlightId, int], number_of_passengers: int

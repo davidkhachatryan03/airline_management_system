@@ -1,8 +1,9 @@
 from src.common.types import PassengerId
+from src.core.validators.base_validator import BaseValidator
 from src.entities import Passenger
 
 
-class PassengerValidator:
+class PassengerValidator(BaseValidator):
 
     def is_blacklisted(self, passengers: list[Passenger]) -> list[PassengerId]:
         passengers_blacklisted: list[PassengerId] = []
